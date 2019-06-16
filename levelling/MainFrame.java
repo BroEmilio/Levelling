@@ -339,11 +339,11 @@ public class MainFrame extends JFrame {
     	
     	//set cells editors
     	table.getColumnModel().getColumn(1).setCellEditor(new NumerCellEditor(table));
-    	table.getColumnModel().getColumn(2).setCellEditor(new IntegerCellEditor(0,5000));
-    	table.getColumnModel().getColumn(3).setCellEditor(new IntegerCellEditor(0,5000));
-    	table.getColumnModel().getColumn(4).setCellEditor(new IntegerCellEditor(0,5000));
-    	table.getColumnModel().getColumn(5).setCellEditor(new IntegerCellEditor(0,5000));
-    	table.getColumnModel().getColumn(7).setCellEditor(new DoubleCellEditor(table));
+    	table.getColumnModel().getColumn(2).setCellEditor(new CellEditorForInteger(0,5000));
+    	table.getColumnModel().getColumn(3).setCellEditor(new CellEditorForInteger(0,5000));
+    	table.getColumnModel().getColumn(4).setCellEditor(new CellEditorForInteger(0,5000));
+    	table.getColumnModel().getColumn(5).setCellEditor(new CellEditorForInteger(0,5000));
+    	table.getColumnModel().getColumn(7).setCellEditor(new CellEditorForDouble(table));
     	
     }
     

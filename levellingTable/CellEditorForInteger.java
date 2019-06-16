@@ -18,7 +18,7 @@ import javax.swing.border.LineBorder;
 import javax.swing.text.DefaultFormatterFactory;
 import javax.swing.text.NumberFormatter;
 
-public class IntegerCellEditor extends DefaultCellEditor{
+public class CellEditorForInteger extends DefaultCellEditor{
 	private static final long serialVersionUID = 1L;
 		
 	JFormattedTextField fTextField;
@@ -28,7 +28,7 @@ public class IntegerCellEditor extends DefaultCellEditor{
     int row, column;
     JTable table;
  
-    public IntegerCellEditor(int min, int max) {
+    public CellEditorForInteger(int min, int max) {
         super(new JFormattedTextField());
         fTextField = (JFormattedTextField)getComponent();
         minimum = new Integer(min);

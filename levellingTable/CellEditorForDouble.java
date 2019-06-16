@@ -8,14 +8,14 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
-public class DoubleCellEditor extends DefaultCellEditor{
+public class CellEditorForDouble extends DefaultCellEditor{
 	private static final long serialVersionUID = 1L;
 		
 	private Object value;
 	JTable table;
 	int currentRow;
 	
-    public DoubleCellEditor(JTable table) {
+    public CellEditorForDouble(JTable table) {
         super( new JTextField() );
         ((JTextField)getComponent()).setHorizontalAlignment(JTextField.RIGHT);
         this.table = table;
