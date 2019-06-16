@@ -7,11 +7,11 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class CellRendererPointNumber extends DefaultTableCellRenderer {
+public class CellRendererNumer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
 	NiwelacjaTableModel model;
 	
-	public CellRendererPointNumber(NiwelacjaTableModel model) {
+	public CellRendererNumer(NiwelacjaTableModel model) {
 		this.model=model;
         this.setHorizontalAlignment(SwingConstants.CENTER);
 	}
