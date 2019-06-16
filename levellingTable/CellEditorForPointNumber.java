@@ -6,7 +6,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
-public class NumerCellEditor extends DefaultCellEditor{
+public class CellEditorForPointNumber extends DefaultCellEditor{
 	private static final long serialVersionUID = 1L;
 		
 	private Object value;
@@ -14,7 +14,7 @@ public class NumerCellEditor extends DefaultCellEditor{
 	JTextField textField;
 	int currentRow;
 	
-    public NumerCellEditor(JTable table) {
+    public CellEditorForPointNumber(JTable table) {
         super( new JTextField() );
         ((JTextField)getComponent()).setHorizontalAlignment(JTextField.RIGHT);
         this.table = table;
