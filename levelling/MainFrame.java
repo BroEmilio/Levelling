@@ -125,7 +125,7 @@ public class MainFrame extends JFrame {
         editorPane.setBorder(null);
         editorPane.setText(
         		"<body bgcolor=\"rgb(214,217,223)\">"+
-        		"<h2 align=\"center\"><u>NIWELACJA v0.951</u></h2>"
+        		"<h2 align=\"center\"><u>NIWELACJA v0.95x</u></h2>"
         		+"Film ukazuj¹cy obs³ugê programu w celu doliczenia niektórych odczytów niwelacji<br>"
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
         		+"<br>Film prezentuj¹cy jak korzystaæ z aplikacji aby wykreowaæ ca³¹ niwelacjê <br>"
@@ -329,7 +329,7 @@ public class MainFrame extends JFrame {
     	table.setCellSelectionEnabled(true);
     	
     	//set cells renderers
-    	table.getColumnModel().getColumn(1).setCellRenderer(new CellRendererNumer(model));
+    	table.getColumnModel().getColumn(1).setCellRenderer(new CellRendererPointNumber(model));
     	table.getColumnModel().getColumn(2).setCellRenderer(new CellRendererWsteczWprzod(model));
     	table.getColumnModel().getColumn(3).setCellRenderer(new CellRendererWsteczWprzod(model));
     	table.getColumnModel().getColumn(4).setCellRenderer(new CellRendererPosredni(model));
