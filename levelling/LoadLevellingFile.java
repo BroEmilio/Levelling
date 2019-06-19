@@ -108,7 +108,7 @@ public class LoadLevellingFile {
 			Calculating.updateWsteczWprzod(model);
 			Calculating.updateWsteczWprzod(model);
 			data.get(0).setLock(true);
-			lastWprzod(data.size()).setLock(true);
+			getLastForesight(data.size()).setLock(true);
 			return true;
 			}
 		} else return true; // nie wybrano pliku
@@ -126,13 +126,13 @@ public class LoadLevellingFile {
 		return true;
 	}
 	
-	Sight lastWprzod(int index) {
+	Sight getLastForesight(int index) {
 		List<Sight> data = model.getData();
 		ListIterator<Sight> it = data.listIterator(index);
 		while(it.hasPrevious()) {
-			Sight odczyt = it.previous();
-			if(odczyt.isBackSight==false &&  odczyt.isSightIntermediate==false) {
-				return odczyt;
+			Sight sight = it.previous();
+			if(sight.isBackSight==false &&  sight.isSightIntermediate==false) {
+				return sight;
 			}
 		}
 		return null;
@@ -150,7 +150,6 @@ public class LoadLevellingFile {
 				System.err.println(ex2);
 			}
 		}
-		
 		return integer;
 	}
 
