@@ -12,7 +12,7 @@ import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
-public class SaveNiwelacja {
+public class SaveLevellingFile {
 	NiwelacjaTableModel model;
 	JFileChooser chooser = new JFileChooser();
 	FileFilter filter = new FileNameExtensionFilter("Niwelacja C-Geo (.niw)", "niw");
@@ -20,7 +20,7 @@ public class SaveNiwelacja {
 	List<Sight> sortedData = new ArrayList<Sight>();
 	static File projectsPath = new File(".");
 	
-	public SaveNiwelacja(NiwelacjaTableModel model) {
+	public SaveLevellingFile(NiwelacjaTableModel model) {
 		for(Sight odczyt:model.getData()) {
 			sortedData.add(odczyt);
 		}

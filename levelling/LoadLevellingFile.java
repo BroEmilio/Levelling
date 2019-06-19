@@ -15,7 +15,7 @@ import javax.swing.filechooser.FileFilter;
 
 import levellingTable.NiwelacjaTableModel;
 
-public class LoadNiwelacja {
+public class LoadLevellingFile {
 	NiwelacjaTableModel model;
 	JFileChooser chooser = new JFileChooser();
 	//FileFilter filter = new FileNameExtensionFilter("Niwelacja C-Geo (.niw)", "niw");
@@ -35,17 +35,17 @@ public class LoadNiwelacja {
 	};
 	File file;
 
-	public LoadNiwelacja(NiwelacjaTableModel model) {
+	public LoadLevellingFile(NiwelacjaTableModel model) {
 		this.model = model;
 		chooser.setFileFilter(filter);
-		chooser.setCurrentDirectory(SaveNiwelacja.projectsPath);
+		chooser.setCurrentDirectory(SaveLevellingFile.projectsPath);
     	chooser.setDialogTitle("Wczytaj niwelacjê z pliku");
     	chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     	chooser.setAcceptAllFileFilterUsed(false);
     	chooser.showOpenDialog(null);
     	file=chooser.getSelectedFile();
     	if(chooser.getSelectedFile()!=null)
-    		SaveNiwelacja.projectsPath = chooser.getSelectedFile();
+    		SaveLevellingFile.projectsPath = chooser.getSelectedFile();
 	}
 	
 	public boolean loadFromNiwFile() {

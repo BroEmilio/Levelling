@@ -77,7 +77,7 @@ public class MainFrame extends JFrame {
         saveItem.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-	        	SaveNiwelacja saver = new SaveNiwelacja(model);
+	        	SaveLevellingFile saver = new SaveLevellingFile(model);
 	        	saver.saveToNiwFile();
         	}
         });
@@ -88,7 +88,7 @@ public class MainFrame extends JFrame {
         loadItem.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-	        	LoadNiwelacja loader = new LoadNiwelacja(model);
+	        	LoadLevellingFile loader = new LoadLevellingFile(model);
 	        	if(loader.loadFromNiwFile()==false) {
 	        		JOptionPane.showMessageDialog(null,
 	    					"Wyst¹pi³ b³ad przy odczycie pliku",
