@@ -10,10 +10,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class CellRendererBlad extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
-	NiwelacjaTableModel model;
+	LevellingTableModel model;
 	public static boolean isOverRange = false;
 	
-	public CellRendererBlad(NiwelacjaTableModel model) {
+	public CellRendererBlad(LevellingTableModel model) {
 		this.model=model;
 		this.setHorizontalAlignment(SwingConstants.CENTER);
 	}

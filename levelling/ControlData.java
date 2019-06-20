@@ -1,16 +1,16 @@
 package levelling;
 import java.util.List;
 import javax.swing.JOptionPane;
-import levellingTable.NiwelacjaTableModel;
+import levellingTable.LevellingTableModel;
 
 
 public class ControlData {
-	NiwelacjaTableModel model;
+	LevellingTableModel model;
 	public static int calcType = 0; //  0-TRYB KLASYCZNY,      1-TRYB KREOWANIA  
 	public static double lengthLeveling;
 	public static int wprzodCount = 0;
 	
-	public ControlData(NiwelacjaTableModel model) {
+	public ControlData(LevellingTableModel model) {
 		this.model = model;
 	}
 	

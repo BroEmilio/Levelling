@@ -10,14 +10,14 @@ import java.util.Random;
 import javax.swing.JOptionPane;
 
 import levellingTable.CellRendererBlad;
-import levellingTable.NiwelacjaTableModel;
+import levellingTable.LevellingTableModel;
 
 
 public class Calculating {
-	NiwelacjaTableModel model;
+	LevellingTableModel model;
 	private static final DecimalFormat formatterOnePlace = new DecimalFormat("#0.0");
 	
-	public Calculating(NiwelacjaTableModel model) {
+	public Calculating(LevellingTableModel model) {
 		this.model = model;
 	}
 
@@ -71,7 +71,7 @@ public class Calculating {
 	}
 	
 	
-	public static void updateWsteczWprzod(NiwelacjaTableModel model) {		// AKTUALIZACJA MODELU TABELI
+	public static void updateWsteczWprzod(LevellingTableModel model) {		// AKTUALIZACJA MODELU TABELI
 		List<Sight> data = model.getData();
 		Boolean isWstecz = true;
 		for(int i=0; i<data.size(); i++) {

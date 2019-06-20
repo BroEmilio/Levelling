@@ -9,9 +9,9 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class CellRendererNumer extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
-	NiwelacjaTableModel model;
+	LevellingTableModel model;
 	
-	public CellRendererNumer(NiwelacjaTableModel model) {
+	public CellRendererNumer(LevellingTableModel model) {
 		this.model=model;
         this.setHorizontalAlignment(SwingConstants.CENTER);
 	}

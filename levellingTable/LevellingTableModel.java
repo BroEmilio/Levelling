@@ -8,10 +8,10 @@ import javax.swing.table.AbstractTableModel;
 
 import levelling.*;
 
-public class NiwelacjaTableModel extends AbstractTableModel {
+public class LevellingTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 
-	public NiwelacjaTableModel() {
+	public LevellingTableModel() {
 		for(int i=0; i<500; i++)
 			data.add(new Sight());
 	}
@@ -19,18 +19,26 @@ public class NiwelacjaTableModel extends AbstractTableModel {
 	List<Sight> data = new ArrayList<Sight>();
 	String[] columnNames = {"Lp", "Numer",  "Wstecz/Wprzód I","Wstecz/Wprzód II", "Poœredni I", "Poœredni II", "B³¹d w mm", "Rzêdna"};
 	
+	/*int columnIndexFor(String columnName) {
+		for(int index=0; index<columnNames.length; index++){
+			if(columnNames[index].equalsIgnoreCase(columnName))
+				return index;
+		}
+		return -1;
+	}*/
+	
 	@Override
-	 public String getColumnName(int col) {
-         return columnNames[col];
+	 public String getColumnName(int column) {
+         return columnNames[column];
      }
 	
 	@Override
 	 public boolean isCellEditable(int rowIndex, int columnIndex) {
-		Sight odczyt = data.get(rowIndex);
-		if (columnIndex==0 || (odczyt.isLock() && columnIndex==7) )
+		Sight sight = data.get(rowIndex);
+		if (columnIndex==0 || (sight.isLock() && columnIndex==7) )
 			return false;
 		if(columnIndex == 7)
-			return odczyt.isEditable();
+			return sight.isEditable();
 		
 		return true;
 	 }
@@ -55,16 +63,16 @@ public class NiwelacjaTableModel extends AbstractTableModel {
 	
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Sight odczyt = data.get(rowIndex);
+		Sight sight = data.get(rowIndex);
 		switch(columnIndex) {
 			case 0 : return rowIndex+1;
-			case 1 : return odczyt.getPointNumber();
-			case 2 : return odczyt.getBackOrForeSight1();
-			case 3 : return odczyt.getBackOrForeSight2();
-			case 4 : return odczyt.getIntermediateSight1();
-			case 5 : return odczyt.getIntermediateSight2();
-			case 6 : return odczyt.getDifference();
-			case 7 : return odczyt.getElevation();
+			case 1 : return sight.getPointNumber();
+			case 2 : return sight.getBackOrForeSight1();
+			case 3 : return sight.getBackOrForeSight2();
+			case 4 : return sight.getIntermediateSight1();
+			case 5 : return sight.getIntermediateSight2();
+			case 6 : return sight.getDifference();
+			case 7 : return sight.getElevation();
 			
 			default : return null;
 		}
@@ -72,39 +80,39 @@ public class NiwelacjaTableModel extends AbstractTableModel {
 	
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
 		if(rowIndex<data.size()) {
-		Sight odczyt = data.get(rowIndex);
+		Sight sight = data.get(rowIndex);
 		switch(columnIndex) {
-		case 1 : odczyt.setPointNumber((String) aValue);break;
-		case 2 : odczyt.setBackOrForeSight1((Integer) aValue);
-					if(rowIndex==0 || isOdczytWstecz(rowIndex, columnIndex)) {
-						odczyt.setAsBackSight(true);
+		case 1 : sight.setPointNumber((String) aValue);break;
+		case 2 : sight.setBackOrForeSight1((Integer) aValue);
+					if(rowIndex==0 || isBackSight(rowIndex, columnIndex)) {
+						sight.setAsBackSight(true);
 						if(rowIndex==0) 
-							odczyt.setEditable(true);
+							sight.setEditable(true);
 					}
 					if(rowIndex<getLastNoNullIndexAtColumn(data.size(), 2))
 						Calculating.updateWsteczWprzod(this);
 					
 					MainFrame.secondCalcButton.setEnabled(false);
 					break;
-		case 3 :odczyt.setBackOrForeSight2( (Integer) aValue);break;
-		case 4 : if(odczyt.getBackOrForeSight1()==null && odczyt.getBackOrForeSight2()==null) {
-					 		odczyt.setIntermediateSight1( (Integer) aValue);
-					 		odczyt.setIntermediate(true);
+		case 3 :sight.setBackOrForeSight2( (Integer) aValue);break;
+		case 4 : if(sight.getBackOrForeSight1()==null && sight.getBackOrForeSight2()==null) {
+					 		sight.setIntermediateSight1( (Integer) aValue);
+					 		sight.setIntermediate(true);
 					 }		
 							MainFrame.secondCalcButton.setEnabled(false);
 					 		break;
-		case 5 : odczyt.setIntermediateSight2( (Integer) aValue);break;
-		case 6 : odczyt.setDifference( (Integer) aValue);break;
+		case 5 : sight.setIntermediateSight2( (Integer) aValue);break;
+		case 6 : sight.setDifference( (Integer) aValue);break;
 		case 7 :  if(aValue != null) {
 								double value = (Double) aValue;
 								value = Calculating.round(value, 3);
-								odczyt.setElevation(value);
-								if((rowIndex==0 || isOdczytWstecz(rowIndex, columnIndex)) && ! odczyt.isSightIntermediate()) {
-									odczyt.setAsBackSight(true);
+								sight.setElevation(value);
+								if((rowIndex==0 || isBackSight(rowIndex, columnIndex)) && ! sight.isSightIntermediate()) {
+									sight.setAsBackSight(true);
 									if(rowIndex == 0)
-										odczyt.setEditable(true);
+										sight.setEditable(true);
 								}
-								if( ! odczyt.isBackSight() && ! odczyt.isSightIntermediate() && rowIndex+1<data.size()) {
+								if( ! sight.isBackSight() && ! sight.isSightIntermediate() && rowIndex+1<data.size()) {
 									Sight nextOdczyt = data.get(rowIndex+1);
 									if(nextOdczyt.getElevation() == null && ! nextOdczyt.isSightIntermediate()) {
 									nextOdczyt.setElevation(value);
@@ -114,8 +122,8 @@ public class NiwelacjaTableModel extends AbstractTableModel {
 										nextWstecz.setElevation(value);
 									}
 								}
-						} else { odczyt.setElevation(null);
-									if( ! odczyt.isBackSight() && ! odczyt.isSightIntermediate() && rowIndex+1<data.size())
+						} else { sight.setElevation(null);
+									if( ! sight.isBackSight() && ! sight.isSightIntermediate() && rowIndex+1<data.size())
 										setValueAt(null, rowIndex+1, columnIndex);
 								   };
 		
@@ -156,24 +164,24 @@ public class NiwelacjaTableModel extends AbstractTableModel {
 		return index;
 	}
 	
-	public int getLastNoPosredniIndex(int row, int column) {
-		for(int i=row-1; i>=0; i--) {
-			Object object = getValueAt(i, column);
-			Sight odczyt = getOdczytAtIndex(i);
-			if(object != null && ! odczyt.isSightIntermediate())
-				return i;
-		}
-		return -1;
-	}
-	
-	public boolean isOdczytWstecz(int row, int column) {
-		int lastNoNullIndex = getLastNoPosredniIndex(row, column);
+	public boolean isBackSight(int row, int column) {
+		int lastNoNullIndex = getLastNoIntermediateSightIndex(row, column);
 		if(lastNoNullIndex > -1) {
 		Sight odczyt = getOdczytAtIndex(lastNoNullIndex);
 		if(odczyt.isBackSight())
 			return false;
 		else return true;
 		} return false;
+	}
+	
+	public int getLastNoIntermediateSightIndex(int row, int column) {
+		for(int i=row-1; i>=0; i--) {
+			Object object = getValueAt(i, column);
+			Sight sight = getOdczytAtIndex(i);
+			if(object != null && ! sight.isSightIntermediate())
+				return i;
+		}
+		return -1;
 	}
 	
 	Sight nextWstecz(int index) {

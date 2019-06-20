@@ -10,10 +10,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 public class CellRendererRzedna extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
-	NiwelacjaTableModel model;
+	LevellingTableModel model;
 	private static final DecimalFormat formatter = new DecimalFormat("#0.###");
 	
-	public CellRendererRzedna(NiwelacjaTableModel model) {
+	public CellRendererRzedna(LevellingTableModel model) {
 		super();
 		this.model=model;
         formatter.setMinimumFractionDigits(3);

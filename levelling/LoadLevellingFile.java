@@ -13,10 +13,10 @@ import java.util.regex.Pattern;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
 
-import levellingTable.NiwelacjaTableModel;
+import levellingTable.LevellingTableModel;
 
 public class LoadLevellingFile {
-	NiwelacjaTableModel model;
+	LevellingTableModel model;
 	JFileChooser chooser = new JFileChooser();
 	//FileFilter filter = new FileNameExtensionFilter("Niwelacja C-Geo (.niw)", "niw");
 	FileFilter filter = new FileFilter() {
@@ -35,7 +35,7 @@ public class LoadLevellingFile {
 	};
 	File file;
 
-	public LoadLevellingFile(NiwelacjaTableModel model) {
+	public LoadLevellingFile(LevellingTableModel model) {
 		this.model = model;
 		chooser.setFileFilter(filter);
 		chooser.setCurrentDirectory(SaveLevellingFile.projectsPath);

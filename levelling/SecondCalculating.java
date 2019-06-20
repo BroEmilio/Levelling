@@ -4,11 +4,11 @@ import java.util.*;
 import levellingTable.*;
 
 public class SecondCalculating {
-	NiwelacjaTableModel model;
+	LevellingTableModel model;
 	Calculating calc;
 	Random random = new Random();
 	
-	public SecondCalculating(NiwelacjaTableModel model) {
+	public SecondCalculating(LevellingTableModel model) {
 		calc = new Calculating(model);
 		this.model = model;
 	}

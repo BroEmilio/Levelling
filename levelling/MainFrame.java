@@ -11,7 +11,7 @@ import javax.swing.LayoutStyle.*;
 
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
-	NiwelacjaTableModel model = new NiwelacjaTableModel();
+	LevellingTableModel model = new LevellingTableModel();
 	RXTable table = new RXTable(model);
 	ControlData controlObject = new ControlData(model);
 	Calculating calc = new Calculating(model);

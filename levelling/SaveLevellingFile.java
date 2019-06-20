@@ -13,14 +13,14 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class SaveLevellingFile {
-	NiwelacjaTableModel model;
+	LevellingTableModel model;
 	JFileChooser chooser = new JFileChooser();
 	FileFilter filter = new FileNameExtensionFilter("Niwelacja C-Geo (.niw)", "niw");
 	File file;
 	List<Sight> sortedData = new ArrayList<Sight>();
 	static File projectsPath = new File(".");
 	
-	public SaveLevellingFile(NiwelacjaTableModel model) {
+	public SaveLevellingFile(LevellingTableModel model) {
 		for(Sight odczyt:model.getData()) {
 			sortedData.add(odczyt);
 		}
