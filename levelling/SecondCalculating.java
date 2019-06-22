@@ -39,7 +39,7 @@ public class SecondCalculating {
 	}
 	public void calcSecondValue(int index){
 		int shift;
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		Sight odczyt=data.get(index);
 		if(odczyt.isBackSight) {
 			int wsteczOdczyt = odczyt.getBackOrForeSight1();
@@ -100,14 +100,14 @@ public class SecondCalculating {
 	} 
 	
 	public void secondCalc() {
-		for(int i=0; i<model.getData().size(); i++)
+		for(int i=0; i<model.getLevellingData().size(); i++)
 			calcSecondValue(i);
 		calc.classicCalc();
 	}
 	
 	public void complementSecondCalc() {
 		calc.complementSecondValues();
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		for(int i=0; i<data.size(); i++) {
 			Sight odczyt = data.get(i);
 			if(odczyt.isBackSight) {

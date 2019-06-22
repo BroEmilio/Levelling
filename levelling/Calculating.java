@@ -9,7 +9,7 @@ import java.util.Random;
 
 import javax.swing.JOptionPane;
 
-import levellingTable.CellRendererBlad;
+import levellingTable.CellRendererDifference;
 import levellingTable.LevellingTableModel;
 
 
@@ -50,7 +50,7 @@ public class Calculating {
 	
 	Sight lastWstecz(int index) {													// ODSZUKANIE OSTATNIEGO ODCZYTU WSTECZ
 		Sight lastWstecz=null;
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		ListIterator<Sight> it = data.listIterator(index);
 		while(lastWstecz == null && it.hasPrevious()) {
 			if(it.previous().isBackSight)
@@ -61,7 +61,7 @@ public class Calculating {
 	
 	Sight nextWstecz(int index) {												// ODSZUKANIE NASTÊPNEGO ODCZYTU WSTECZ
 		Sight nextWstecz=null;
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		ListIterator<Sight> it = data.listIterator(index);
 		while(nextWstecz == null && it.hasNext()) {
 			if(it.next().isBackSight)
@@ -71,8 +71,8 @@ public class Calculating {
 	}
 	
 	
-	public static void updateWsteczWprzod(LevellingTableModel model) {		// AKTUALIZACJA MODELU TABELI
-		List<Sight> data = model.getData();
+	public static void updateBackAndForeSightSequence(LevellingTableModel model) {		// update sequence of backsights and foresights in levelling data
+		List<Sight> data = model.getLevellingData();
 		Boolean isWstecz = true;
 		for(int i=0; i<data.size(); i++) {
 			Sight odczyt = data.get(i);
@@ -125,7 +125,7 @@ public class Calculating {
 	}
 	
 	public List<Integer> getDeltaHighList(int firstOrSecond) {								// WYGENEROWANIE LISTY PRZEWY¯SZEÑ DLA PIERWSZYCH LUB DRUGICH ODCZYTÓW
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		List<Integer> deltaHighList = new ArrayList<Integer>();
 		switch(firstOrSecond) {
 		case 1 : {
@@ -178,7 +178,7 @@ public class Calculating {
 		}
 		double startPoint =0;
 		double endPoint = 0;
-		for(Sight odczyt:model.getData()) {
+		for(Sight odczyt:model.getLevellingData()) {
 			if(odczyt.isSightLock) {
 				if(odczyt.isBackSight)
 					startPoint = odczyt.getElevation();
@@ -198,7 +198,7 @@ public class Calculating {
 			        +"<html><u>Odchy³ka uzyskana: "+formatterOnePlace.format(disparity)+" mm\n",
 			        "Odchy³ka ok",
 			        JOptionPane.INFORMATION_MESSAGE);
-			CellRendererBlad.isOverRange=false;
+			CellRendererDifference.isOverRange=false;
 		}
 		else {
 			JOptionPane.showMessageDialog(null,
@@ -208,7 +208,7 @@ public class Calculating {
 			        +"<html><u>Odchy³ka uzyskana: "+formatterOnePlace.format(disparity)+" mm\n",
 			        "Przekroczona odchy³ka",
 			        JOptionPane.ERROR_MESSAGE);
-			CellRendererBlad.isOverRange = true;
+			CellRendererDifference.isOverRange = true;
 		}
 		
 		MainFrame.secondCalcButton.setEnabled(true);
@@ -223,7 +223,7 @@ public class Calculating {
 		double disparity = calcLevelingDisparity(firstDeltaHigh, secondDeltaHigh);
 		Integer[] scatterArray = scatterDisparity(disparity, ControlData.wprzodCount);
 		int wprzodIndex = 0;
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		Sight odczyt=null;
 		for(int i=0; i<data.size(); i++) {
 			odczyt = data.get(i);
@@ -340,7 +340,7 @@ public class Calculating {
 		int disparity = randomDisparity(maxDisparity);
 		Integer[] scatterArray = scatterDisparity((double)disparity, ControlData.wprzodCount);
 		int wprzodIndex = 0;
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		Sight odczyt=null;
 		for(int i=0; i<data.size(); i++) {
 			odczyt=data.get(i);
@@ -429,7 +429,7 @@ public class Calculating {
 	}
 	
 	public void complementCalc() {
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		Sight odczyt=null;
 		for(int i=0; i<data.size(); i++) {
 			odczyt=data.get(i);
@@ -485,7 +485,7 @@ public class Calculating {
 	
 	public void complementSecondValues() {
 		Random random = new Random();
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		Sight odczyt=null;
 		int shift = 0;
 		for(int i=0; i<data.size(); i++) {

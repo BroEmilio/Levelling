@@ -16,7 +16,7 @@ public class ControlData {
 	
 	public boolean controlData() {
 		boolean correct = false;
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		Sight odczyt;
 		wprzodCount = 0;
 		int countLock = 0;

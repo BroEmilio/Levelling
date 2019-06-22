@@ -7,11 +7,11 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class CellRendererNumer extends DefaultTableCellRenderer {
+public class CellRendererPointNumber extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
 	LevellingTableModel model;
 	
-	public CellRendererNumer(LevellingTableModel model) {
+	public CellRendererPointNumber(LevellingTableModel model) {
 		this.model=model;
         this.setHorizontalAlignment(SwingConstants.CENTER);
 	}

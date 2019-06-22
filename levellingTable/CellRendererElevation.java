@@ -8,12 +8,12 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class CellRendererRzedna extends DefaultTableCellRenderer {
+public class CellRendererElevation extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
 	LevellingTableModel model;
 	private static final DecimalFormat formatter = new DecimalFormat("#0.###");
 	
-	public CellRendererRzedna(LevellingTableModel model) {
+	public CellRendererElevation(LevellingTableModel model) {
 		super();
 		this.model=model;
         formatter.setMinimumFractionDigits(3);

@@ -63,9 +63,9 @@ public class MainFrame extends JFrame {
         newItem.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-	        	model.getData().clear();
+	        	model.getLevellingData().clear();
 	        	for(int i=0; i<500; i++)
-	    			model.getData().add(new Sight());
+	    			model.getLevellingData().add(new Sight());
 	        	model.fireTableDataChanged();
 	        	secondCalcButton.setEnabled(false);
         	}
@@ -94,9 +94,9 @@ public class MainFrame extends JFrame {
 	    					"Wyst¹pi³ b³ad przy odczycie pliku",
 	    			        "B³ad odczytu pliku",
 	    			        JOptionPane.ERROR_MESSAGE);
-		        	model.getData().clear();
+		        	model.getLevellingData().clear();
 		        	for(int i=0; i<500; i++)
-		    			model.getData().add(new Sight());
+		    			model.getLevellingData().add(new Sight());
 		        	model.fireTableDataChanged();
 		        	secondCalcButton.setEnabled(false);
 	        	}
@@ -329,13 +329,13 @@ public class MainFrame extends JFrame {
     	table.setCellSelectionEnabled(true);
     	
     	//set cells renderers
-    	table.getColumnModel().getColumn(1).setCellRenderer(new CellRendererNumer(model));
-    	table.getColumnModel().getColumn(2).setCellRenderer(new CellRendererWsteczWprzod(model));
-    	table.getColumnModel().getColumn(3).setCellRenderer(new CellRendererWsteczWprzod(model));
-    	table.getColumnModel().getColumn(4).setCellRenderer(new CellRendererPosredni(model));
-    	table.getColumnModel().getColumn(5).setCellRenderer(new CellRendererPosredni(model));
-    	table.getColumnModel().getColumn(6).setCellRenderer(new CellRendererBlad(model));
-    	table.getColumnModel().getColumn(7).setCellRenderer(new CellRendererRzedna(model));
+    	table.getColumnModel().getColumn(1).setCellRenderer(new CellRendererPointNumber(model));
+    	table.getColumnModel().getColumn(2).setCellRenderer(new CellRendererBackOrForeSight(model));
+    	table.getColumnModel().getColumn(3).setCellRenderer(new CellRendererBackOrForeSight(model));
+    	table.getColumnModel().getColumn(4).setCellRenderer(new CellRendererIntermediateSight(model));
+    	table.getColumnModel().getColumn(5).setCellRenderer(new CellRendererIntermediateSight(model));
+    	table.getColumnModel().getColumn(6).setCellRenderer(new CellRendererDifference(model));
+    	table.getColumnModel().getColumn(7).setCellRenderer(new CellRendererElevation(model));
     	
     	//set cells editors
     	table.getColumnModel().getColumn(1).setCellEditor(new CellEditorForPointNumber(table));

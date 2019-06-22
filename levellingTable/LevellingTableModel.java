@@ -10,22 +10,31 @@ import levelling.*;
 
 public class LevellingTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
+	
+	List<Sight> levellingData = new ArrayList<Sight>();
 
 	public LevellingTableModel() {
 		for(int i=0; i<500; i++)
-			data.add(new Sight());
+			levellingData.add(new Sight());
 	}
 	
-	List<Sight> data = new ArrayList<Sight>();
-	String[] columnNames = {"Lp", "Numer",  "Wstecz/Wprzód I","Wstecz/Wprzód II", "Poœredni I", "Poœredni II", "B³¹d w mm", "Rzêdna"};
+	String[] columnNames = {"Lp", "Numer",  "Wstecz/Wprzód I","Wstecz/Wprzód II",
+							"Poœredni I", "Poœredni II", "B³¹d w mm", "Rzêdna"};
 	
-	/*int columnIndexFor(String columnName) {
-		for(int index=0; index<columnNames.length; index++){
-			if(columnNames[index].equalsIgnoreCase(columnName))
-				return index;
+	int columnIndexFor(String columnName) {
+		columnName = columnName.toLowerCase();
+		switch(columnName) {
+			case "id" : return 0;
+			case "pointnumber" : return 1;
+			case "backorforesight1" : return 2;
+			case "backorforesight2" : return 3;
+			case "intermediatesight1" : return 4;
+			case "intermediatesight2" : return 5;
+			case "difference" : return 6;
+			case "elevation" : return 7;
+			default : throw new IllegalArgumentException("Not recognize columnName:"+columnName);
 		}
-		return -1;
-	}*/
+	}
 	
 	@Override
 	 public String getColumnName(int column) {
@@ -34,10 +43,10 @@ public class LevellingTableModel extends AbstractTableModel {
 	
 	@Override
 	 public boolean isCellEditable(int rowIndex, int columnIndex) {
-		Sight sight = data.get(rowIndex);
-		if (columnIndex==0 || (sight.isLock() && columnIndex==7) )
+		Sight sight = levellingData.get(rowIndex);
+		if (columnIndex==columnIndexFor("Id") || (sight.isLock() && columnIndex==columnIndexFor("Elevation")) )
 			return false;
-		if(columnIndex == 7)
+		if(columnIndex == columnIndexFor("Elevation"))
 			return sight.isEditable();
 		
 		return true;
@@ -51,7 +60,7 @@ public class LevellingTableModel extends AbstractTableModel {
 
 	@Override
 	public int getRowCount() {
-		return data.size();
+		return levellingData.size();
 	}
 	
 	@Override
@@ -63,7 +72,7 @@ public class LevellingTableModel extends AbstractTableModel {
 	
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		Sight sight = data.get(rowIndex);
+		Sight sight = levellingData.get(rowIndex);
 		switch(columnIndex) {
 			case 0 : return rowIndex+1;
 			case 1 : return sight.getPointNumber();
@@ -79,19 +88,16 @@ public class LevellingTableModel extends AbstractTableModel {
 	}
 	
 	public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-		if(rowIndex<data.size()) {
-		Sight sight = data.get(rowIndex);
+		if(rowIndex<levellingData.size()) {
+		Sight sight = levellingData.get(rowIndex);
 		switch(columnIndex) {
-		case 1 : sight.setPointNumber((String) aValue);break;
-		case 2 : sight.setBackOrForeSight1((Integer) aValue);
-					if(rowIndex==0 || isBackSight(rowIndex, columnIndex)) {
+		case 1 : sight.setPointNumber((String) aValue);break;									
+		case 2 : sight.setBackOrForeSight1((Integer) aValue);									
+					if(rowIndex==0 || isShouldBeAsBackSight(rowIndex, columnIndex)) {
 						sight.setAsBackSight(true);
 						if(rowIndex==0) 
 							sight.setEditable(true);
 					}
-					if(rowIndex<getLastNoNullIndexAtColumn(data.size(), 2))
-						Calculating.updateWsteczWprzod(this);
-					
 					MainFrame.secondCalcButton.setEnabled(false);
 					break;
 		case 3 :sight.setBackOrForeSight2( (Integer) aValue);break;
@@ -104,54 +110,55 @@ public class LevellingTableModel extends AbstractTableModel {
 		case 5 : sight.setIntermediateSight2( (Integer) aValue);break;
 		case 6 : sight.setDifference( (Integer) aValue);break;
 		case 7 :  if(aValue != null) {
-								double value = (Double) aValue;
-								value = Calculating.round(value, 3);
+								Double value = Calculating.round((Double) aValue, 3);
 								sight.setElevation(value);
-								if((rowIndex==0 || isBackSight(rowIndex, columnIndex)) && ! sight.isSightIntermediate()) {
+								if((rowIndex==0 || isShouldBeAsBackSight(rowIndex, columnIndex)) && ! sight.isSightIntermediate()) {
 									sight.setAsBackSight(true);
 									if(rowIndex == 0)
 										sight.setEditable(true);
 								}
-								if( ! sight.isBackSight() && ! sight.isSightIntermediate() && rowIndex+1<data.size()) {
-									Sight nextOdczyt = data.get(rowIndex+1);
-									if(nextOdczyt.getElevation() == null && ! nextOdczyt.isSightIntermediate()) {
-									nextOdczyt.setElevation(value);
-									nextOdczyt.setAsBackSight(true);
-									}  else {
-										Sight nextWstecz = nextWstecz(rowIndex+1);
-										nextWstecz.setElevation(value);
+								if( ! sight.isBackSight() && ! sight.isSightIntermediate() && rowIndex+1<levellingData.size()) {
+									Sight nextSight = levellingData.get(rowIndex+1);
+									if(nextSight.getElevation() == null && ! nextSight.isSightIntermediate()) {		
+										nextSight.setElevation(value);			// set elevation for next sight 
+										nextSight.setAsBackSight(true);			// and mark it as backsight
+									}  else {											// if elevation of next sight is not null
+										Sight nextBackSight = getNextBackSightFromIndex(rowIndex+1); 
+										nextBackSight.setElevation(value);				// change elevation of next backsight to the same as last foresight
 									}
 								}
-						} else { sight.setElevation(null);
-									if( ! sight.isBackSight() && ! sight.isSightIntermediate() && rowIndex+1<data.size())
-										setValueAt(null, rowIndex+1, columnIndex);
-								   };
+						} else { sight.setElevation(null);			// if change value to the null
+								  if( ! sight.isBackSight() && ! sight.isSightIntermediate() && rowIndex+1<levellingData.size()) {
+									 Sight nextBackSight = getNextBackSightFromIndex(rowIndex+1); 
+									 nextBackSight.setElevation(null); // if setting null for elevation of foresight, set null also for elevation of next backsight
+								  }
+								};
 		
-						if(rowIndex<getLastNoNullIndexAtColumn(data.size(), 7))
-							Calculating.updateWsteczWprzod(this);
+						if(rowIndex<getLastNoNullIndexAtColumn(levellingData.size(), 7))
+							Calculating.updateBackAndForeSightSequence(this);
 						
 						MainFrame.secondCalcButton.setEnabled(false);
 						break;
-		default: System.err.println("B³¹d w metodzie setValueAt()");
+		default: System.err.println("Error in method setValueAt()");
 		}
 		fireTableCellUpdated(rowIndex, columnIndex);
 		}
 	}
 		
 	
-	public List<Sight> getData(){
-		return data;
+	public List<Sight> getLevellingData(){
+		return levellingData;
 	}
 
 	public void addRow(int rowIndex) {
-		data.add(rowIndex, new Sight());
+		levellingData.add(rowIndex, new Sight());
 		fireTableRowsInserted(rowIndex, rowIndex);
 	}
 	
 	public void deleteRow(int rowIndex) {
-		data.remove(rowIndex);
+		levellingData.remove(rowIndex);
 		fireTableRowsDeleted(rowIndex,rowIndex);
-		Calculating.updateWsteczWprzod(this);
+		Calculating.updateBackAndForeSightSequence(this);
 	}
 	
 	public int getLastNoNullIndexAtColumn(int row, int column) {
@@ -164,13 +171,13 @@ public class LevellingTableModel extends AbstractTableModel {
 		return index;
 	}
 	
-	public boolean isBackSight(int row, int column) {
-		int lastNoNullIndex = getLastNoIntermediateSightIndex(row, column);
-		if(lastNoNullIndex > -1) {
-		Sight odczyt = getOdczytAtIndex(lastNoNullIndex);
-		if(odczyt.isBackSight())
-			return false;
-		else return true;
+	public boolean isShouldBeAsBackSight(int row, int column) {
+		int lastBackOrForeSightIndex = getLastNoIntermediateSightIndex(row, column);
+		if(lastBackOrForeSightIndex > -1) {
+			Sight sight = levellingData.get(lastBackOrForeSightIndex);
+			if(sight.isBackSight())
+				return false;
+			else return true;
 		} return false;
 	}
 	
@@ -184,19 +191,19 @@ public class LevellingTableModel extends AbstractTableModel {
 		return -1;
 	}
 	
-	Sight nextWstecz(int index) {
-		Sight nextWstecz=null;
-		ListIterator<Sight> it = data.listIterator(index);
-		while(nextWstecz == null && it.hasNext()) {
+	Sight getNextBackSightFromIndex(int index) {
+		Sight nextBackSight=null;
+		ListIterator<Sight> it = levellingData.listIterator(index);
+		while(nextBackSight == null && it.hasNext()) {
 			if(it.next().isBackSight())
-				nextWstecz=it.previous();
+				nextBackSight=it.previous();
 		}
-		return nextWstecz;
+		return nextBackSight;
 	}
 	
 	public void setFirstAndLastPoint(int rowIndex) {
-		if(rowIndex<=data.size()) {
-			Sight odczyt = data.get(rowIndex);
+		if(rowIndex<=levellingData.size()) {
+			Sight odczyt = levellingData.get(rowIndex);
 			int dispalyIndex = rowIndex+1;
 			String name = odczyt.getPointNumber();
 			if(name==null) 
@@ -228,9 +235,9 @@ public class LevellingTableModel extends AbstractTableModel {
 									if(answer == 0) {
 										odczyt.setLock(true);
 										odczyt.setIntermediate(false);
-										for(int i=data.size()-1;i>rowIndex;i--)
+										for(int i=levellingData.size()-1;i>rowIndex;i--)
 											if( ! getOdczytAtIndex(i).isSightIntermediate())
-											data.remove(i);
+											levellingData.remove(i);
 									}
 							}
 					} else  odczyt.setLock(! odczyt.isLock());	
@@ -239,27 +246,16 @@ public class LevellingTableModel extends AbstractTableModel {
 	}
 	
 	public void changePosredniStatus(int rowIndex) {
-		Sight odczyt = data.get(rowIndex);
+		Sight odczyt = levellingData.get(rowIndex);
 		odczyt.setIntermediate(! odczyt.isSightIntermediate());
 		if(odczyt.isSightIntermediate())
 			odczyt.setIntermediate(true);
-		Calculating.updateWsteczWprzod(this);
-	}
-	
-	public List<Integer> getOdczyt1List(){
-		List<Integer> list = new ArrayList<Integer>();
-		Integer odczyt1;
-		for(int index=0;index<data.size();index++) {
-				odczyt1 =(Integer) getValueAt(index, 2);
-				list.add(odczyt1);
-			}
-			
-		return list;
+		Calculating.updateBackAndForeSightSequence(this);
 	}
 	
 	public Sight getOdczytAtIndex(int index) {
-		if(index<data.size() && index>=0)
-			return data.get(index);
+		if(index<levellingData.size() && index>=0)
+			return levellingData.get(index);
 		else return null;
 	}
 	

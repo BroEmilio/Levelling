@@ -3,33 +3,31 @@ package levellingTable;
 import levelling.*;
 import java.awt.Color;
 import java.awt.Component;
+
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 
-public class CellRendererWsteczWprzod extends DefaultTableCellRenderer {
+public class CellRendererDifference extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
 	LevellingTableModel model;
+	public static boolean isOverRange = false;
 	
-	public CellRendererWsteczWprzod(LevellingTableModel model) {
+	public CellRendererDifference(LevellingTableModel model) {
 		this.model=model;
+		this.setHorizontalAlignment(SwingConstants.CENTER);
 	}
 	
 	
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,int row,int col) {
 		Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-		Sight odczyt = model.getOdczytAtIndex(row);
-		 if (value != null && ! odczyt.isSightIntermediate() ) {
-			 if(odczyt.isBackSight()) {
-				 comp.setBackground(Color.YELLOW);
-			 }
-			 else {
+		int indexInModel = table.convertRowIndexToModel(row);
+		Sight odczyt = model.getOdczytAtIndex(indexInModel);
+		if(odczyt.getDifference() != null) {
+			if((isOverRange && odczyt.isLock() && ! odczyt.isBackSight()) || (Math.abs(odczyt.getDifference()) > 3 && ! odczyt.isLock())) 
 				 comp.setBackground(Color.RED);
-			 }
-			 
-			 if((Integer)value>5000 || (Integer)value<0)
-				 comp.setBackground(Color.MAGENTA);
-		}
-		 else comp.setBackground(null);
+			else comp.setBackground(null);	
+		} else comp.setBackground(null);
 			
 		 table.repaint();
          return comp;  

@@ -51,7 +51,7 @@ public class LoadLevellingFile {
 	public boolean loadFromNiwFile() {
 		if(file!=null) {
 		BufferedReader reader=null;
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		data.clear();
 		Sight odczyt=null;
 		try {
@@ -105,8 +105,8 @@ public class LoadLevellingFile {
 						}
 			}
 		if(data.size()>0) {
-			Calculating.updateWsteczWprzod(model);
-			Calculating.updateWsteczWprzod(model);
+			Calculating.updateBackAndForeSightSequence(model);
+			Calculating.updateBackAndForeSightSequence(model);
 			data.get(0).setLock(true);
 			getLastForesight(data.size()).setLock(true);
 			return true;
@@ -127,7 +127,7 @@ public class LoadLevellingFile {
 	}
 	
 	Sight getLastForesight(int index) {
-		List<Sight> data = model.getData();
+		List<Sight> data = model.getLevellingData();
 		ListIterator<Sight> it = data.listIterator(index);
 		while(it.hasPrevious()) {
 			Sight sight = it.previous();

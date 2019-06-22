@@ -21,7 +21,7 @@ public class SaveLevellingFile {
 	static File projectsPath = new File(".");
 	
 	public SaveLevellingFile(LevellingTableModel model) {
-		for(Sight odczyt:model.getData()) {
+		for(Sight odczyt:model.getLevellingData()) {
 			sortedData.add(odczyt);
 		}
     	chooser.addChoosableFileFilter(filter);
