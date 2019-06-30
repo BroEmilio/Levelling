@@ -1,7 +1,7 @@
 package levelling;
 
 import levellingTable.*;
-import tests.InsertElevetionsAndCalculateLevelling;
+import tests.InsertElevationsAndCalculateLevelling;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -510,7 +510,7 @@ public class MainFrame extends JFrame {
             }
         });
         
-        InsertElevetionsAndCalculateLevelling test1 = new InsertElevetionsAndCalculateLevelling();
+        InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
         try {
 			test1.run();
 		} catch (Exception e) {

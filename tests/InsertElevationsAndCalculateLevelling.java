@@ -5,10 +5,10 @@ import java.awt.Robot;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 
-public class InsertElevetionsAndCalculateLevelling {
+public class InsertElevationsAndCalculateLevelling {
 	Robot bot;
 	
-	public InsertElevetionsAndCalculateLevelling() {
+	public InsertElevationsAndCalculateLevelling() {
 		try {
 			Thread.sleep(2000);
 			bot = new Robot();
