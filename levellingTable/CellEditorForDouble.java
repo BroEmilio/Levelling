@@ -55,14 +55,14 @@ public class CellEditorForDouble extends DefaultCellEditor{
 	            value = Double.parseDouble( editingValue );
 	            
 	            int indexInModel = table.convertRowIndexToModel(currentRow);
-	            Sight sight = ((LevellingTableModel)table.getModel()).getOdczytAtIndex(indexInModel);
+	            Sight sight = ((LevellingTableModel)table.getModel()).getSightAtIndex(indexInModel);
 	            if(currentRow==0)
 					sight.setAsBackSight(true);
-	            if( ! sight.isBackSight() && ! sight.isSightIntermediate()) {
+	            if( ! sight.isBackSight() && ! sight.isIntermediate()) {
 	            	table.changeSelection(currentRow+2, 7, false, false);
 	            } 
 	            if (currentRow == 0 && ! sight.isLock()) {
-	            	((LevellingTableModel)table.getModel()).setFirstAndLastPoint(currentRow);
+	            	((LevellingTableModel)table.getModel()).setAsFirstBenchmark();
 	            }
         }
         catch(NumberFormatException exception){
@@ -83,8 +83,8 @@ public class CellEditorForDouble extends DefaultCellEditor{
 
         JTextField textField = (JTextField)c;
         textField.setBorder( new LineBorder(new Color(45, 165, 255) ,1) );
-        Sight odczyt = ((LevellingTableModel)table.getModel()).getOdczytAtIndex(currentRow);
-   	 		if(odczyt.isSightIntermediate())
+        Sight odczyt = ((LevellingTableModel)table.getModel()).getSightAtIndex(currentRow);
+   	 		if(odczyt.isIntermediate())
    	 			textField.setBackground(Color.GRAY);
    	 		else textField.setBackground(null);
    	 		

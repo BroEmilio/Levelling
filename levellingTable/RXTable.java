@@ -12,7 +12,7 @@ import javax.swing.text.*;
  * 1) Select All editing - when a text related cell is placed in editing mode
  *    the text is selected. Controlled by invoking a "setSelectAll..." method.
  *
- * 2) reorderColumns - static convenience method for reodering table columns
+ * 2) reorderColumns - static convenience method for reordering table columns
  */
 public class RXTable extends JTable
 {

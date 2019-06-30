@@ -73,7 +73,7 @@ public class Sight {
 		this.elevation = elevation;
 	}
 	
-	 public Boolean isSightIntermediate() {
+	 public Boolean isIntermediate() {
 			return isSightIntermediate;
 		}
 	 public void setIntermediate(Boolean isIntermediate) {

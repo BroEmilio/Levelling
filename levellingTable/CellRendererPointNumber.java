@@ -19,7 +19,7 @@ public class CellRendererPointNumber extends DefaultTableCellRenderer {
 	
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,int row,int col) {
 		Component comp =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-		Sight odczyt = model.getOdczytAtIndex(row);
+		Sight odczyt = model.getSightAtIndex(row);
 			if(odczyt.isLock()) {
 				setBackground(new Color(90,175,240));	
 				if(odczyt.isLock() && isSelected)

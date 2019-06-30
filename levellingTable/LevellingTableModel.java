@@ -18,6 +18,16 @@ public class LevellingTableModel extends AbstractTableModel {
 			levellingData.add(new Sight());
 	}
 	
+	public Sight getSightAtIndex(int index) {
+		if(index<levellingData.size() && index>=0)
+			return levellingData.get(index);
+		else return null;
+	}
+	
+	public List<Sight> getLevellingData(){
+		return levellingData;
+	}
+	
 	String[] columnNames = {"Lp", "Numer",  "Wstecz/Wprzód I","Wstecz/Wprzód II",
 							"Poœredni I", "Poœredni II", "B³¹d w mm", "Rzêdna"};
 	
@@ -112,14 +122,14 @@ public class LevellingTableModel extends AbstractTableModel {
 		case 7 :  if(aValue != null) {
 								Double value = Calculating.round((Double) aValue, 3);
 								sight.setElevation(value);
-								if((rowIndex==0 || isShouldBeAsBackSight(rowIndex, columnIndex)) && ! sight.isSightIntermediate()) {
+								if((rowIndex==0 || isShouldBeAsBackSight(rowIndex, columnIndex)) && ! sight.isIntermediate()) {
 									sight.setAsBackSight(true);
 									if(rowIndex == 0)
 										sight.setEditable(true);
 								}
-								if( ! sight.isBackSight() && ! sight.isSightIntermediate() && rowIndex+1<levellingData.size()) {
+								if( ! sight.isBackSight() && ! sight.isIntermediate() && rowIndex+1<levellingData.size()) {
 									Sight nextSight = levellingData.get(rowIndex+1);
-									if(nextSight.getElevation() == null && ! nextSight.isSightIntermediate()) {		
+									if(nextSight.getElevation() == null && ! nextSight.isIntermediate()) {		
 										nextSight.setElevation(value);			// set elevation for next sight 
 										nextSight.setAsBackSight(true);			// and mark it as backsight
 									}  else {											// if elevation of next sight is not null
@@ -128,7 +138,7 @@ public class LevellingTableModel extends AbstractTableModel {
 									}
 								}
 						} else { sight.setElevation(null);			// if change value to the null
-								  if( ! sight.isBackSight() && ! sight.isSightIntermediate() && rowIndex+1<levellingData.size()) {
+								  if( ! sight.isBackSight() && ! sight.isIntermediate() && rowIndex+1<levellingData.size()) {
 									 Sight nextBackSight = getNextBackSightFromIndex(rowIndex+1); 
 									 nextBackSight.setElevation(null); // if setting null for elevation of foresight, set null also for elevation of next backsight
 								  }
@@ -145,11 +155,6 @@ public class LevellingTableModel extends AbstractTableModel {
 		}
 	}
 		
-	
-	public List<Sight> getLevellingData(){
-		return levellingData;
-	}
-
 	public void addRow(int rowIndex) {
 		levellingData.add(rowIndex, new Sight());
 		fireTableRowsInserted(rowIndex, rowIndex);
@@ -184,8 +189,8 @@ public class LevellingTableModel extends AbstractTableModel {
 	public int getLastNoIntermediateSightIndex(int row, int column) {
 		for(int i=row-1; i>=0; i--) {
 			Object object = getValueAt(i, column);
-			Sight sight = getOdczytAtIndex(i);
-			if(object != null && ! sight.isSightIntermediate())
+			Sight sight = getSightAtIndex(i);
+			if(object != null && ! sight.isIntermediate())
 				return i;
 		}
 		return -1;
@@ -201,62 +206,54 @@ public class LevellingTableModel extends AbstractTableModel {
 		return nextBackSight;
 	}
 	
-	public void setFirstAndLastPoint(int rowIndex) {
-		if(rowIndex<=levellingData.size()) {
-			Sight odczyt = levellingData.get(rowIndex);
-			int dispalyIndex = rowIndex+1;
-			String name = odczyt.getPointNumber();
-			if(name==null) 
-				name = "bez nazwy";
-			if(rowIndex == 0) {
-				odczyt.setLock(! odczyt.isLock());
-				if(odczyt.isLock()) {
-					odczyt.setLock(true);
-				} 
-			} else {
-					if(! odczyt.isLock()) {
-							if(odczyt.isBackSight() || odczyt.isSightIntermediate()){
-								JOptionPane.showMessageDialog(null,
-								        "Odczyt wstecz lub poœredni nie mo¿e byæ punktem koñcowym niwelacji.",
-								        "Nieprawid³owy punkt koñcowy niwelacji",
-								        JOptionPane.INFORMATION_MESSAGE);
-							} else {
-									Object[] options = {"Tak","Nie"};
-									int answer = JOptionPane.showOptionDialog(
-								            null,
-								            "         Czy oznaczyæ punkt "+name+" (wiersz "+dispalyIndex+") jako punkt koñcowy niwelacji ? \n"+
-								            "Spowoduje to usuniêcie wszystkich nastêpnych wierszy (oprócz odczytów poœrednich).",
-								            "Oznaczenie punktu koñcowego niwelacji",
-								            JOptionPane.YES_NO_OPTION,
-								            JOptionPane.WARNING_MESSAGE,
-								            null,
-								            options,
-								            options[0]);
-									if(answer == 0) {
-										odczyt.setLock(true);
-										odczyt.setIntermediate(false);
-										for(int i=levellingData.size()-1;i>rowIndex;i--)
-											if( ! getOdczytAtIndex(i).isSightIntermediate())
-											levellingData.remove(i);
-									}
-							}
-					} else  odczyt.setLock(! odczyt.isLock());	
-			}
-		}
-	}
-	
-	public void changePosredniStatus(int rowIndex) {
-		Sight odczyt = levellingData.get(rowIndex);
-		odczyt.setIntermediate(! odczyt.isSightIntermediate());
-		if(odczyt.isSightIntermediate())
-			odczyt.setIntermediate(true);
+	public void changeIntermediateSightStatus(int sightRowIndex) {
+		Sight sight = levellingData.get(sightRowIndex);
+		boolean newStatus = ! sight.isIntermediate();
+		sight.setIntermediate(newStatus);
 		Calculating.updateBackAndForeSightSequence(this);
 	}
 	
-	public Sight getOdczytAtIndex(int index) {
-		if(index<levellingData.size() && index>=0)
-			return levellingData.get(index);
-		else return null;
+	public void changeLockStatus(int rowIndex) {
+		Sight sight = levellingData.get(rowIndex);
+		boolean newStatus = ! sight.isLock();
+		if(sight.isBackSight() && rowIndex>0)
+			return;
+		if(sight != null && ! sight.isIntermediate())
+			sight.setLock(newStatus);
 	}
 	
+	public void setAsFirstBenchmark() {
+		Sight firstSight = levellingData.get(0);
+		if(firstSight != null)
+			firstSight.setLock(true);
+	}
+	
+	public void setAsLastBenchmark(int rowIndex) {
+		if(rowIndex<=levellingData.size()) {
+			Sight sight = levellingData.get(rowIndex);
+			int dispalyIndex = rowIndex+1;
+			String name = sight.getPointNumber();
+			if(name==null) 
+				name = "bez nazwy";
+			if(! sight.isBackSight() && ! sight.isIntermediate()) {
+					Object[] options = {"Tak","Nie"};
+					int answer = JOptionPane.showOptionDialog(
+							null,
+							"         Czy oznaczyæ punkt "+name+" (wiersz "+dispalyIndex+") jako punkt koñcowy niwelacji ? \n"+
+							"Spowoduje to usuniêcie wszystkich nastêpnych wierszy (oprócz odczytów poœrednich).",
+							"Oznaczenie punktu koñcowego niwelacji",
+							JOptionPane.YES_NO_OPTION,
+							JOptionPane.WARNING_MESSAGE,
+							null,
+							options,
+							options[0]);
+					if(answer == 0) {
+						sight.setLock(true);
+						for(int i=levellingData.size()-1;i>rowIndex;i--)
+							if( ! getSightAtIndex(i).isIntermediate())
+								levellingData.remove(i);
+					} else sight.setLock(false); // if denial
+			}
+		}
+	}
 }

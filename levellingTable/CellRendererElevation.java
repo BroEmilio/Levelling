@@ -27,9 +27,9 @@ public class CellRendererElevation extends DefaultTableCellRenderer {
 		}
 		Component comp =  super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 		int indexInModel = table.convertRowIndexToModel(row);
-		Sight odczyt = model.getOdczytAtIndex(indexInModel);
+		Sight odczyt = model.getSightAtIndex(indexInModel);
 		
-				 if(odczyt.isLock() || odczyt.isSightIntermediate() || value != null ) {
+				 if(odczyt.isLock() || odczyt.isIntermediate() || value != null ) {
 							 if(odczyt.isBackSight()) {
 								 comp.setBackground(Color.YELLOW);
 								 if(row>1) {
@@ -45,7 +45,7 @@ public class CellRendererElevation extends DefaultTableCellRenderer {
 											table.setSelectionBackground(new Color(90,175,240));
 					 		}
 					 		
-					 		if(odczyt.isSightIntermediate()) {
+					 		if(odczyt.isIntermediate()) {
 									comp.setBackground(Color.GRAY);	
 				 		}
 						

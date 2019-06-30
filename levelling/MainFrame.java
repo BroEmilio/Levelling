@@ -1,6 +1,8 @@
 package levelling;
 
 import levellingTable.*;
+import tests.InsertElevetionsAndCalculateLevelling;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -373,7 +375,7 @@ public class MainFrame extends JFrame {
             int col = table.getSelectedColumn();
             int indexInModel = table.convertRowIndexToModel(row);
             Object object = table.getValueAt(row, col);
-            Sight odczyt = model.getOdczytAtIndex(indexInModel);
+            Sight odczyt = model.getSightAtIndex(indexInModel);
             if(object != null) {
             	 table.getCellEditor().stopCellEditing(); // store user input
             	 if(col==7 && ! odczyt.isBackSight);
@@ -426,9 +428,9 @@ public class MainFrame extends JFrame {
 			@Override
             public void actionPerformed(ActionEvent e) {
 				int rowIndex = table.getSelectedRow();
-                 if(rowIndex!=-1)
-                	 model.setFirstAndLastPoint(rowIndex);
-                 else System.err.println("-1 rowSelected-lock");
+				model.changeLockStatus(rowIndex);
+                if(rowIndex>0)
+                	model.setAsLastBenchmark(rowIndex);
             }
         };
         return lock;
@@ -442,7 +444,7 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
 				int rowIndex = table.getSelectedRow();
                  if(rowIndex!=-1)
-                	 model.changePosredniStatus(rowIndex);
+                	 model.changeIntermediateSightStatus(rowIndex);
                  else System.err.println("-1 rowSelected - change posredni status");
             }
         };
@@ -507,5 +509,12 @@ public class MainFrame extends JFrame {
 	            ex.setVisible(true);
             }
         });
+        
+        InsertElevetionsAndCalculateLevelling test1 = new InsertElevetionsAndCalculateLevelling();
+        try {
+			test1.run();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     }
 }

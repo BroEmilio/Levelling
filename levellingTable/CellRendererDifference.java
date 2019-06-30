@@ -22,7 +22,7 @@ public class CellRendererDifference extends DefaultTableCellRenderer {
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,int row,int col) {
 		Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
 		int indexInModel = table.convertRowIndexToModel(row);
-		Sight odczyt = model.getOdczytAtIndex(indexInModel);
+		Sight odczyt = model.getSightAtIndex(indexInModel);
 		if(odczyt.getDifference() != null) {
 			if((isOverRange && odczyt.isLock() && ! odczyt.isBackSight()) || (Math.abs(odczyt.getDifference()) > 3 && ! odczyt.isLock())) 
 				 comp.setBackground(Color.RED);
