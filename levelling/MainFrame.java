@@ -1,7 +1,7 @@
 package levelling;
 
 import levellingTable.*;
-import tests.InsertElevationsAndCalculateLevelling;
+import tests.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -39,7 +39,7 @@ public class MainFrame extends JFrame {
         createMenuBar();
         createPanel();
 
-        setTitle("NIWELACJA v0.951");
+        setTitle("NIWELACJA v0.952");
         setMinimumSize(new Dimension(750, 450));
         setSize(new Dimension(750, 695));
         setLocationRelativeTo(null);
@@ -127,7 +127,7 @@ public class MainFrame extends JFrame {
         editorPane.setBorder(null);
         editorPane.setText(
         		"<body bgcolor=\"rgb(214,217,223)\">"+
-        		"<h2 align=\"center\"><u>NIWELACJA v0.95x</u></h2>"
+        		"<h2 align=\"center\"><u>NIWELACJA v0.952</u></h2>"
         		+"Film ukazuj¹cy obs³ugê programu w celu doliczenia niektórych odczytów niwelacji<br>"
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
         		+"<br>Film prezentuj¹cy jak korzystaæ z aplikacji aby wykreowaæ ca³¹ niwelacjê <br>"
@@ -510,11 +510,7 @@ public class MainFrame extends JFrame {
             }
         });
         
-        InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
-        try {
-			test1.run();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+        //InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
+        
     }
 }

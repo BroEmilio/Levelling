@@ -1,6 +1,5 @@
 package levelling;
 
-import levellingTable.*;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -8,14 +7,30 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.filechooser.FileNameExtensionFilter;
+
+import levellingTable.LevellingTableModel;
 
 public class SaveLevellingFile {
 	LevellingTableModel model;
 	JFileChooser chooser = new JFileChooser();
-	FileFilter filter = new FileNameExtensionFilter("Niwelacja C-Geo (.niw)", "niw");
+	//FileFilter filter = new FileNameExtensionFilter("Niwelacja C-Geo (.niw)", "niw");
+	FileFilter filter = new FileFilter() {
+		@Override
+		public String getDescription() {
+		  return "Niwelacja C-Geo (.niw)";
+		}
+		@Override
+		public boolean accept(File f) {
+			if (f.isDirectory()) {
+	            return true;
+	        } else {
+	            return f.getName().toLowerCase().endsWith(".niw");
+	        }
+		}
+	};
 	File file;
 	List<Sight> sortedData = new ArrayList<Sight>();
 	static File projectsPath = new File(".");
@@ -24,7 +39,7 @@ public class SaveLevellingFile {
 		for(Sight odczyt:model.getLevellingData()) {
 			sortedData.add(odczyt);
 		}
-    	chooser.addChoosableFileFilter(filter);
+    	chooser.setFileFilter(filter);
     	chooser.setSelectedFile(new File("niwelacja "));
     	chooser.setCurrentDirectory(projectsPath);
     	chooser.setDialogTitle("Zapisz niwelacjê jako");

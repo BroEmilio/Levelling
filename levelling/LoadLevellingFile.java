@@ -79,10 +79,10 @@ public class LoadLevellingFile {
 							 }
 							 case 3 : break; // nie uwzglêdnia d³ugoœci pomierzonej celowej
 							 case 4 : odczyt.setBackOrForeSight1(returnIntegerFromString(elements[1]));break;
-							 case 5 : odczyt.setBackOrForeSight2(new Integer(elements[1]));break;
-							 case 6 : odczyt.setIntermediateSight1(new Integer(elements[1]));break;
+							 case 5 : odczyt.setBackOrForeSight2(returnIntegerFromString(elements[1]));break;
+							 case 6 : odczyt.setIntermediateSight1(returnIntegerFromString(elements[1]));break;
 							 case 7 : odczyt.setElevation(new Double(elements[1]));break;
-							 case 8 : odczyt.setIntermediateSight2(new Integer(elements[1]));break;
+							 case 8 : odczyt.setIntermediateSight2(returnIntegerFromString(elements[1]));break;
 							 default : System.err.println("B³ad w metodzie loadFromNiwFile(), nierozpoznany key:"+key);return false;
 							 }
 						 }
