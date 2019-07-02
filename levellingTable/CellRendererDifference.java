@@ -1,12 +1,9 @@
 package levellingTable;
 
 import levelling.*;
-import java.awt.Color;
-import java.awt.Component;
-
-import javax.swing.JTable;
-import javax.swing.SwingConstants;
-import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
 
 public class CellRendererDifference extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
@@ -18,13 +15,12 @@ public class CellRendererDifference extends DefaultTableCellRenderer {
 		this.setHorizontalAlignment(SwingConstants.CENTER);
 	}
 	
-	
-	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,int row,int col) {
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, 
+												   boolean hasFocus,int row,int col) {
 		Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-		int indexInModel = table.convertRowIndexToModel(row);
-		Sight odczyt = model.getSightAtIndex(indexInModel);
-		if(odczyt.getDifference() != null) {
-			if((isOverRange && odczyt.isLock() && ! odczyt.isBackSight()) || (Math.abs(odczyt.getDifference()) > 3 && ! odczyt.isLock())) 
+		Sight sight = model.getSightAtIndex(row);
+		if(sight.getDifference() != null) {
+			if( Math.abs(sight.getDifference()) > 3 ) 
 				 comp.setBackground(Color.RED);
 			else comp.setBackground(null);	
 		} else comp.setBackground(null);

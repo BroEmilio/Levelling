@@ -9,7 +9,6 @@ import java.util.Random;
 
 import javax.swing.JOptionPane;
 
-import levellingTable.CellRendererDifference;
 import levellingTable.LevellingTableModel;
 
 
@@ -198,7 +197,6 @@ public class Calculating {
 			        +"<html><u>Odchy³ka uzyskana: "+formatterOnePlace.format(disparity)+" mm\n",
 			        "Odchy³ka ok",
 			        JOptionPane.INFORMATION_MESSAGE);
-			CellRendererDifference.isOverRange=false;
 		}
 		else {
 			JOptionPane.showMessageDialog(null,
@@ -208,7 +206,6 @@ public class Calculating {
 			        +"<html><u>Odchy³ka uzyskana: "+formatterOnePlace.format(disparity)+" mm\n",
 			        "Przekroczona odchy³ka",
 			        JOptionPane.ERROR_MESSAGE);
-			CellRendererDifference.isOverRange = true;
 		}
 		
 		MainFrame.secondCalcButton.setEnabled(true);

@@ -12,9 +12,12 @@ public class InsertElevationsAndCalculateLevelling {
 		try {
 			Thread.sleep(2000);
 			bot = new Robot();
+			run();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} catch (AWTException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

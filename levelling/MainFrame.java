@@ -429,7 +429,7 @@ public class MainFrame extends JFrame {
             public void actionPerformed(ActionEvent e) {
 				int rowIndex = table.getSelectedRow();
 				model.changeLockStatus(rowIndex);
-                if(rowIndex>0)
+                if(rowIndex>0 && model.getSightAtIndex(rowIndex).isLock())
                 	model.setAsLastBenchmark(rowIndex);
             }
         };
@@ -510,7 +510,8 @@ public class MainFrame extends JFrame {
             }
         });
         
-        //InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
+        @SuppressWarnings("unused")
+		InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
         
     }
 }

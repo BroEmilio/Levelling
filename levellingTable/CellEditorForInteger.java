@@ -1,32 +1,21 @@
 package levellingTable;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import javax.swing.AbstractAction;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JFormattedTextField;
-import javax.swing.JOptionPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.SwingUtilities;
-import javax.swing.border.LineBorder;
-import javax.swing.text.DefaultFormatterFactory;
-import javax.swing.text.NumberFormatter;
+
+import java.awt.*;
+import java.awt.event.*;
+import java.text.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.text.*;
 
 public class CellEditorForInteger extends DefaultCellEditor{
 	private static final long serialVersionUID = 1L;
-		
+	
+	JTable table;
 	JFormattedTextField fTextField;
     NumberFormat integerFormat;
     private Integer minimum, maximum;
     private boolean DEBUG = false;
-    int row, column;
-    JTable table;
+    int currentRow, currentColumn;
  
     public CellEditorForInteger(int min, int max) {
         super(new JFormattedTextField());
@@ -56,7 +45,7 @@ public class CellEditorForInteger extends DefaultCellEditor{
 					if(fTextField.getText().isEmpty()) {
 						fTextField.setValue(null);
 						fTextField.postActionEvent();
-						table.changeSelection(row+1, column, false, false);
+						table.changeSelection(currentRow+1, currentColumn, false, false);
 					} else  if (userSaysRevert()) { //reverted
 						fTextField.postActionEvent(); //inform the editor
 					}
@@ -70,8 +59,8 @@ public class CellEditorForInteger extends DefaultCellEditor{
  
     //Override to invoke setValue on the formatted text field.
     public Component getTableCellEditorComponent(JTable table,Object value, boolean isSelected, int row, int column) {
-    	this.row = row;
-    	this.column = column;
+    	this.currentRow = row;
+    	this.currentColumn = column;
     	this.table = table;
     	JFormattedTextField ftf = (JFormattedTextField)super.getTableCellEditorComponent(table, value, isSelected, row, column);
     	if(isSelected) {

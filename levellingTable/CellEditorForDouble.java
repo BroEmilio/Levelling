@@ -1,12 +1,10 @@
 package levellingTable;
 
 import levelling.*;
-import java.awt.Color;
-import java.awt.Component;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.*;
+
 
 public class CellEditorForDouble extends DefaultCellEditor{
 	private static final long serialVersionUID = 1L;
@@ -30,15 +28,6 @@ public class CellEditorForDouble extends DefaultCellEditor{
     public boolean stopCellEditing(){
         try {
 	            String editingValue = (String)super.getCellEditorValue();
-	
-	            /*  Don't allow user to enter "."
-	
-	            if (editingValue.contains(".")){
-	                JTextField textField = (JTextField)getComponent();
-	                textField.setBorder(new LineBorder(Color.red));
-	                return false;
-	            } */
-	
 	            // Replace local specific character
 	            if(editingValue.isEmpty()) {
 	            	value = null;
@@ -53,9 +42,7 @@ public class CellEditorForDouble extends DefaultCellEditor{
 	                editingValue = sb.toString();
 	            }
 	            value = Double.parseDouble( editingValue );
-	            
-	            int indexInModel = table.convertRowIndexToModel(currentRow);
-	            Sight sight = ((LevellingTableModel)table.getModel()).getSightAtIndex(indexInModel);
+	            Sight sight = ((LevellingTableModel)table.getModel()).getSightAtIndex(currentRow);
 	            if(currentRow==0)
 					sight.setAsBackSight(true);
 	            if( ! sight.isBackSight() && ! sight.isIntermediate()) {
@@ -75,16 +62,15 @@ public class CellEditorForDouble extends DefaultCellEditor{
     }
 
     @Override
-    public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-    	
+    public Component getTableCellEditorComponent(JTable table, Object value, 
+    											 boolean isSelected, int row, int column) {
     	currentRow=row;
-        Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
-        
+        Component comp = super.getTableCellEditorComponent(table, value, isSelected, row, column);
 
-        JTextField textField = (JTextField)c;
+        JTextField textField = (JTextField)comp;
         textField.setBorder( new LineBorder(new Color(45, 165, 255) ,1) );
-        Sight odczyt = ((LevellingTableModel)table.getModel()).getSightAtIndex(currentRow);
-   	 		if(odczyt.isIntermediate())
+        Sight sight = ((LevellingTableModel)table.getModel()).getSightAtIndex(currentRow);
+   	 		if(sight.isIntermediate())
    	 			textField.setBackground(Color.GRAY);
    	 		else textField.setBackground(null);
    	 		
@@ -98,7 +84,7 @@ public class CellEditorForDouble extends DefaultCellEditor{
             sb.setCharAt(offset, ',');
             textField.setText( sb.toString() );
         }
-        return c;
+        return comp;
     }
         
 }

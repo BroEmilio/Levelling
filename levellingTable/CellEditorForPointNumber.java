@@ -1,16 +1,14 @@
 package levellingTable;
-import java.awt.Color;
-import java.awt.Component;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
+
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.*;
 
 public class CellEditorForPointNumber extends DefaultCellEditor{
 	private static final long serialVersionUID = 1L;
-		
+	
+	JTable table;	
 	private Object value;
-	JTable table;
 	JTextField textField;
 	int currentRow;
 	
@@ -35,13 +33,11 @@ public class CellEditorForPointNumber extends DefaultCellEditor{
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-    	
     	currentRow=row;
-        Component c = super.getTableCellEditorComponent(table, value, isSelected, row, column);
-        textField = (JTextField)c;
+        Component comp = super.getTableCellEditorComponent(table, value, isSelected, row, column);
+        textField = (JTextField)comp;
         textField.setBorder( new LineBorder(new Color(45, 165, 255) ,1) );
-        
 
-        return c;
+        return comp;
     }
 }

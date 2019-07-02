@@ -1,10 +1,9 @@
 package levellingTable;
 
 import levelling.*;
-import java.awt.Color;
-import java.awt.Component;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
 
 public class CellRendererBackOrForeSight extends DefaultTableCellRenderer {
 	private static final long serialVersionUID = 1L;
@@ -17,9 +16,9 @@ public class CellRendererBackOrForeSight extends DefaultTableCellRenderer {
 	
 	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,int row,int col) {
 		Component comp = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, col);
-		Sight odczyt = model.getSightAtIndex(row);
-		 if (value != null && ! odczyt.isIntermediate() ) {
-			 if(odczyt.isBackSight()) {
+		Sight sight = model.getSightAtIndex(row);
+		 if (value != null && ! sight.isIntermediate() ) {
+			 if(sight.isBackSight()) {
 				 comp.setBackground(Color.YELLOW);
 			 }
 			 else {
