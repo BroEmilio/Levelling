@@ -209,7 +209,7 @@ public class Calculating {
 		}
 		
 		MainFrame.secondCalcButton.setEnabled(true);
-		scatterDisparity(disparity, ControlData.wprzodCount);
+		scatterDisparity(disparity, ControlData.foreSightsCount);
 	}
 	
 	//-------------------------------------------------------------------- CLASSIC CALCULATING ---------------------------------------------------------------------------------------------------
@@ -218,7 +218,7 @@ public class Calculating {
 		List<Integer> firstDeltaHigh = getDeltaHighList(1);
 		List<Integer> secondDeltaHigh = getDeltaHighList(2);
 		double disparity = calcLevelingDisparity(firstDeltaHigh, secondDeltaHigh);
-		Integer[] scatterArray = scatterDisparity(disparity, ControlData.wprzodCount);
+		Integer[] scatterArray = scatterDisparity(disparity, ControlData.foreSightsCount);
 		int wprzodIndex = 0;
 		List<Sight> data = model.getLevellingData();
 		Sight odczyt=null;
@@ -335,7 +335,7 @@ public class Calculating {
 	public void creationCalc() {																									// OBLICZENIA W TRYBIE KREOWANIA
 		double maxDisparity = 20 * Math.sqrt((ControlData.lengthLeveling/1000));
 		int disparity = randomDisparity(maxDisparity);
-		Integer[] scatterArray = scatterDisparity((double)disparity, ControlData.wprzodCount);
+		Integer[] scatterArray = scatterDisparity((double)disparity, ControlData.foreSightsCount);
 		int wprzodIndex = 0;
 		List<Sight> data = model.getLevellingData();
 		Sight odczyt=null;

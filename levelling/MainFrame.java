@@ -186,7 +186,7 @@ public class MainFrame extends JFrame {
         	@Override
         	public void actionPerformed(ActionEvent e) {
 	    		if(controlObject.controlData()) {
-	    			calc.calcLeveling(controlObject.getCalcType(), leaveCurrentValues.isSelected());
+	    			calc.calcLeveling(controlObject.getCalculatingMode(), leaveCurrentValues.isSelected());
 	    		}
         	}
     		
