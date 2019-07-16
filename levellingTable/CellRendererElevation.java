@@ -29,12 +29,6 @@ public class CellRendererElevation extends DefaultTableCellRenderer {
 			if(sight.isBackSight()) 
 				comp.setBackground(Color.YELLOW);
 			else comp.setBackground(Color.RED);
-							 
-			if(sight.isLock()) 
-				comp.setBackground(new Color(90,175,240));	
-					
-			if(isSelected)
-				table.setSelectionBackground(new Color(90,175,240));
 						
 		}  else { // if cell is empty
 					comp.setBackground(null);
@@ -43,6 +37,9 @@ public class CellRendererElevation extends DefaultTableCellRenderer {
 				
 		if(sight.isIntermediate()) 
 			comp.setBackground(Color.GRAY);
+		
+		if(sight.isLock()) 
+			comp.setBackground(new Color(90,175,240));
 		
 		 return comp;
 	}

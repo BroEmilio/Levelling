@@ -15,7 +15,7 @@ public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	LevellingTableModel model = new LevellingTableModel();
 	RXTable table = new RXTable(model);
-	ControlData controlObject = new ControlData(model);
+	ControlData levellingMetaData = new ControlData(model);
 	Calculating calc = new Calculating(model);
 	SecondCalculating secondCalc = new SecondCalculating(model);
 	public static JButton secondCalcButton;
@@ -185,8 +185,8 @@ public class MainFrame extends JFrame {
     	calcButton.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-	    		if(controlObject.controlData()) {
-	    			calc.calcLeveling(controlObject.getCalculatingMode(), leaveCurrentValues.isSelected());
+	    		if(levellingMetaData.controlData()) {
+	    			calc.calcLeveling(levellingMetaData.getCalculatingMode(), leaveCurrentValues.isSelected());
 	    		}
         	}
     		

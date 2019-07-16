@@ -16,8 +16,7 @@ public class ControlData {
 		this.model = model;
 	}
 	
-	public boolean controlData() {		// count and first check of data			
-		boolean isCorrect = false;
+	public boolean controlData() {					
 		List<Sight> data = model.getLevellingData();
 		Sight sight;
 		foreSightsCount = 0;
@@ -26,7 +25,7 @@ public class ControlData {
 		int emptyFirstSightsCount=0;
 		int emptyElevationCount=0;
 		
-		for(int i=0; i<data.size(); i++) {
+		for(int i=0; i<data.size(); i++) {	// counting sights and check is elevations in benchmarks
 			sight = data.get(i);
 			
 				if(! sight.isIntermediate() && (sight.getBackOrForeSight1()!=null || sight.getElevation()!=null)) { // count back and fore sights 
@@ -40,29 +39,23 @@ public class ControlData {
 				if(sight.getElevation()==null)
 					emptyElevationCount++;
 			
-			if(sight.isSightLock) {
+			if(sight.isLock()) {
 				lockSightsCount++;
-				if(sight.getElevation() == null) {						//SPRAWDZENIE RZÊDNYCH W PUNKCIE POCZ¥TKOWYM I KOÑCOWYM
+				if(sight.getElevation() == null) {		// check is known elevations in first and last benchmarks
 					JOptionPane.showMessageDialog(null,
 					        "Punkt pocz¹tkowy i koñcowy niwelacji musi mieæ okreœlon¹ rzêdn¹. \n"
-					        + "Odblokuj brakuj¹c¹ rzêdn¹ klawiszem F5, uzupe³nij jej wartoœæ i ponownie wciœniej F5 aby oznaczyæ j¹ jako punkt pocz¹tkowy/koñcowy niwelacji.",
+					        + "Odblokuj brakuj¹c¹ rzêdn¹ klawiszem F5, uzupe³nij jej wartoœæ i "
+					        + "ponownie wciœniej F5 aby oznaczyæ j¹ jako punkt pocz¹tkowy/koñcowy niwelacji.",
 					        "Brak rzêdnej w punkcie pocz¹tkowym lub koñcowym niwelacji",
-					        JOptionPane.INFORMATION_MESSAGE);
-					isCorrect = false;
-				}
-				if(i>0 && sight.isBackSight) {							//KOÑCOWY PUNKT NIWELACJI JEST ODCZYTEM WSTECZ
-					JOptionPane.showMessageDialog(null,
-					        "Odczyt wstecz nie mo¿e byæ koñcowym punktem niwelacji.",
-					        "B³êdny punkt koñcowy niwelacji",
 					        JOptionPane.INFORMATION_MESSAGE);
 					return false;
 				}
 			}
-		} 																				 // KONIEC PIERWSZEGO FORa
+		} 									// end of counting
 		
-		lengthLeveling = ((double)backSightsCount) * 100;
+		lengthLeveling = ((double)backSightsCount) * 100;	
 		
-		if(backSightsCount != foreSightsCount) {					// SPRAWDZENIE CZY LICZBA ODCZYTÓW WSTECZ I WPRZÓD JEST IDENTYCZNA
+		if(backSightsCount != foreSightsCount) {		// check is backSightsCount equal foreSightsCount
 			JOptionPane.showMessageDialog(null,
 			        "Liczba odczytów wstecz ("+backSightsCount+") jest "+(backSightsCount>foreSightsCount ? "wiêksza" : "mniejsza")+" ni¿ liczba odczytów wprzód ("+foreSightsCount+")." ,
 			        "Nierówna liczba odczytów wstecz i wprzód",
@@ -70,12 +63,12 @@ public class ControlData {
 			return false;
 		}
 		
-		if(emptyFirstSightsCount<=emptyElevationCount)			// USTALENIE TRYBU OBLICZEÑ
+		if(emptyFirstSightsCount<=emptyElevationCount)	// determine calculating mode
 			calculatingMode=CLASSIC_MODE;
 		else calculatingMode=CREATION_MODE;
 		
 		
-		if(lockSightsCount != 2) {												//SPRAWDZENIE CZY OZNACZONO PUNKT POCZ¥TKOWY I KOÑCOWY
+		if(lockSightsCount != 2) {			// check is exist first and last benchmark
 			JOptionPane.showMessageDialog(null,
 			        "Nie oznaczono punktu pocz¹tkowego lub koñcowego niwelacji. \n"
 			        + "Punkt pocz¹tkowy i koñcowy niwelacji podœwietlony jest na niebiesko. Naciœnij F5 aby go oznaczyæ.",
@@ -86,23 +79,23 @@ public class ControlData {
 		
 		
 		
-		for(int i=0; i<data.size(); i++) {						//DRUGA KONTROLA
+		for(int i=0; i<data.size(); i++) {		// second control
 			sight = data.get(i);
 			
-			if(sight.isBackSight() && i>0 && calculatingMode==CREATION_MODE) {						//SPRAWDZENIE CZY RZÊDNA WSTECZ JEST TAKA SAMA JAK WCZEŒNIEJSZA RZÊDNA WPRZÓD
+			if(sight.isBackSight() && i>0 && calculatingMode==CREATION_MODE) {	//check is elevation in backsight is the same as elevation in last foresight
 				boolean notFound = true;
-				int j = i-1;
-				Sight previousOdczyt = null;
-				while(j >0 && notFound) {
-					previousOdczyt = data.get(j);
-					j--;
-					if(! previousOdczyt.isSightIntermediate && previousOdczyt.getElevation() != null)
+				int previousIndex = i-1;
+				Sight previousSight = null;
+				while(previousIndex > 0 && notFound) {
+					previousSight = data.get(previousIndex);
+					previousIndex--;
+					if(! previousSight.isIntermediate() && previousSight.getElevation() != null)
 						notFound = false;
 				}
 				try {
-				if(! (sight.getElevation().equals( previousOdczyt.getElevation()))) {
+				if(! (sight.getElevation().equals( previousSight.getElevation()))) {
 					JOptionPane.showMessageDialog(null,
-					        "Rzêdna wstecz - "+sight.getElevation()+" (wiersz "+(i+1)+") powinna byæ taka sama jak rzêdna wprzód - "+previousOdczyt.getElevation()+" (wiersz " +(j+2)+").",
+					        "Rzêdna wstecz - "+sight.getElevation()+" (wiersz "+(i+1)+") powinna byæ taka sama jak rzêdna wprzód - "+previousSight.getElevation()+" (wiersz " +(previousIndex+2)+").",
 					        "Ró¿ne rzêdne w tym samym miejscu niwelacji",
 					        JOptionPane.INFORMATION_MESSAGE);
 							sight.setEditable(true);
@@ -118,7 +111,7 @@ public class ControlData {
 				}
 			}
 			
-			if(calculatingMode==CREATION_MODE && sight.getElevation()==null) {		//BRAK RZÊDNEJ W TRYBIE KREOWANIA
+			if(calculatingMode==CREATION_MODE && sight.getElevation()==null) {		//empty elevation in row (CREATION MODE)
 				JOptionPane.showMessageDialog(null,
 				        "Brak rzêdnej w wierszu "+(i+1)+"." ,
 				        "Brak rzêdnej",
@@ -126,7 +119,7 @@ public class ControlData {
 				return false;
 			}
 			
-			if(calculatingMode==CLASSIC_MODE && sight.getBackOrForeSight1()==null && sight.getIntermediateSight1()==null) { // BRAK ODCZYTU W TRYBIE KLASYCZNYM
+			if(calculatingMode==CLASSIC_MODE && sight.getBackOrForeSight1()==null && sight.getIntermediateSight1()==null) { //empty first sight in row (CLASSIC MODE)
 				JOptionPane.showMessageDialog(null,
 				        "Brak odczytu w wierszu "+(i+1)+"." ,
 				        "Brak odczytu",
@@ -134,7 +127,7 @@ public class ControlData {
 				return false;
 			}
 			
-			if(calculatingMode==CLASSIC_MODE && sight.isSightIntermediate && (sight.getIntermediateSight1()==null || sight.getBackOrForeSight1() != null)) {
+			if(calculatingMode==CLASSIC_MODE && sight.isIntermediate() && (sight.getIntermediateSight1()==null || sight.getBackOrForeSight1() != null)) {
 				JOptionPane.showMessageDialog(null,
 				        "Niew³aœciwie wype³niony punkt  poœredni wierszu "+(i+1)+"." ,
 				        "Niew³aœciwy punkt poœredni",
@@ -142,8 +135,7 @@ public class ControlData {
 			return false;
 			}
 		}
-		isCorrect = true;
-		return isCorrect;
+		return true;	
 	}
 	
 	public int getCalculatingMode() {
