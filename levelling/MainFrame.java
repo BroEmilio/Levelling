@@ -14,10 +14,11 @@ import javax.swing.LayoutStyle.*;
 public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	LevellingTableModel model = new LevellingTableModel();
+	LevellingMetaData levellingMetaData = new LevellingMetaData();
 	RXTable table = new RXTable(model);
-	ControlData levellingMetaData = new ControlData(model);
-	Calculating calc = new Calculating(model);
-	SecondCalculating secondCalc = new SecondCalculating(model);
+	ControlData controlData = new ControlData(model, levellingMetaData);
+	Calculating calc = new Calculating(model, levellingMetaData);
+	SecondCalculating secondCalc = new SecondCalculating(model, levellingMetaData);
 	public static JButton secondCalcButton;
 	JCheckBox leaveCurrentValues;
 	Font style1 = new Font("Arial", Font.ITALIC, 14);
@@ -185,7 +186,7 @@ public class MainFrame extends JFrame {
     	calcButton.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
-	    		if(levellingMetaData.controlData()) {
+	    		if(controlData.controlData()) {
 	    			calc.calcLeveling(levellingMetaData.getCalculatingMode(), leaveCurrentValues.isSelected());
 	    		}
         	}

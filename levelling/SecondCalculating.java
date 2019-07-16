@@ -8,8 +8,8 @@ public class SecondCalculating {
 	Calculating calc;
 	Random random = new Random();
 	
-	public SecondCalculating(LevellingTableModel model) {
-		calc = new Calculating(model);
+	public SecondCalculating(LevellingTableModel model, LevellingMetaData levellingMetaData) {
+		calc = new Calculating(model, levellingMetaData);
 		this.model = model;
 	}
 	

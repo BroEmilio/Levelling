@@ -14,10 +14,12 @@ import levellingTable.LevellingTableModel;
 
 public class Calculating {
 	LevellingTableModel model;
+	LevellingMetaData levellingMetaData;
 	private static final DecimalFormat formatterOnePlace = new DecimalFormat("#0.0");
 	
-	public Calculating(LevellingTableModel model) {
+	public Calculating(LevellingTableModel model, LevellingMetaData levellingMetaData) {
 		this.model = model;
+		this.levellingMetaData = levellingMetaData;
 	}
 
 	public void calcLeveling (int calcType, boolean leaveCurrentValues) {
@@ -192,7 +194,7 @@ public class Calculating {
 		if(Math.abs(disparity)<=maxDisparity) {
 			JOptionPane.showMessageDialog(null,
 					"Uzyskana odchy³ka mieœci siê w wartoœci dopuszczalnej.\n"
-			        +"D³ugoœæ niwelacji: "+formatterOnePlace.format(ControlData.lengthLeveling)+" m\n"
+			        +"D³ugoœæ niwelacji: "+formatterOnePlace.format(levellingMetaData.getLengthLeveling())+" m\n"
 			        + "Dopuszczalna odchy³ka: "+formatterOnePlace.format(maxDisparity)+" mm\n\n"
 			        +"<html><u>Odchy³ka uzyskana: "+formatterOnePlace.format(disparity)+" mm\n",
 			        "Odchy³ka ok",
@@ -201,7 +203,7 @@ public class Calculating {
 		else {
 			JOptionPane.showMessageDialog(null,
 					"Odchy³ka przekracza wartoœæ dopuszczaln¹.\n"
-			        +"D³ugoœæ niwelacji: "+formatterOnePlace.format(ControlData.lengthLeveling)+" m\n"
+			        +"D³ugoœæ niwelacji: "+formatterOnePlace.format(levellingMetaData.getLengthLeveling())+" m\n"
 			        + "Dopuszczalna odchy³ka: "+formatterOnePlace.format(maxDisparity)+" mm\n\n"
 			        +"<html><u>Odchy³ka uzyskana: "+formatterOnePlace.format(disparity)+" mm\n",
 			        "Przekroczona odchy³ka",
@@ -209,7 +211,7 @@ public class Calculating {
 		}
 		
 		MainFrame.secondCalcButton.setEnabled(true);
-		scatterDisparity(disparity, ControlData.foreSightsCount);
+		scatterDisparity(disparity, levellingMetaData.getForeSightsCount());
 	}
 	
 	//-------------------------------------------------------------------- CLASSIC CALCULATING ---------------------------------------------------------------------------------------------------
@@ -218,7 +220,7 @@ public class Calculating {
 		List<Integer> firstDeltaHigh = getDeltaHighList(1);
 		List<Integer> secondDeltaHigh = getDeltaHighList(2);
 		double disparity = calcLevelingDisparity(firstDeltaHigh, secondDeltaHigh);
-		Integer[] scatterArray = scatterDisparity(disparity, ControlData.foreSightsCount);
+		Integer[] scatterArray = scatterDisparity(disparity, levellingMetaData.getForeSightsCount());
 		int wprzodIndex = 0;
 		List<Sight> data = model.getLevellingData();
 		Sight odczyt=null;
@@ -252,7 +254,7 @@ public class Calculating {
 					
 				} else {																					//ostatni wprzód i max odchy³ka
 					calcDifferences(odczyt, i);
-					double maxDisparity = 20 * Math.sqrt((ControlData.lengthLeveling/1000));
+					double maxDisparity = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
 					showEndingWindow(round(disparity,2), round(maxDisparity,2));
 				}
 			}
@@ -333,9 +335,9 @@ public class Calculating {
 	}
 	
 	public void creationCalc() {																									// OBLICZENIA W TRYBIE KREOWANIA
-		double maxDisparity = 20 * Math.sqrt((ControlData.lengthLeveling/1000));
+		double maxDisparity = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
 		int disparity = randomDisparity(maxDisparity);
-		Integer[] scatterArray = scatterDisparity((double)disparity, ControlData.foreSightsCount);
+		Integer[] scatterArray = scatterDisparity((double)disparity, levellingMetaData.getForeSightsCount());
 		int wprzodIndex = 0;
 		List<Sight> data = model.getLevellingData();
 		Sight odczyt=null;

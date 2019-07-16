@@ -6,20 +6,18 @@ import levellingTable.LevellingTableModel;
 
 public class ControlData {
 	LevellingTableModel model;
-	public static final int CLASSIC_MODE = 0;  // calculating mode for inserted values of back and fore sights
-	public static final int CREATION_MODE = 1; // calculate values for back and fore sights leaning on inserted elevations
-	public static int calculatingMode = CLASSIC_MODE;   
-	public static double lengthLeveling;
-	public static int foreSightsCount = 0;
+	LevellingMetaData levellingMetaData;
 	
-	public ControlData(LevellingTableModel model) {
+	
+	public ControlData(LevellingTableModel model, LevellingMetaData levellingMetaData) {
 		this.model = model;
+		this.levellingMetaData = levellingMetaData;
 	}
 	
 	public boolean controlData() {					
 		List<Sight> data = model.getLevellingData();
 		Sight sight;
-		foreSightsCount = 0;
+		int foreSightsCount = 0;
 		int lockSightsCount = 0;
 		int backSightsCount=0;
 		int emptyFirstSightsCount=0;
@@ -53,7 +51,8 @@ public class ControlData {
 			}
 		} 									// end of counting
 		
-		lengthLeveling = ((double)backSightsCount) * 100;	
+		levellingMetaData.setForeSightsCount(foreSightsCount);
+		levellingMetaData.setLengthLeveling( ((double)backSightsCount) * 100);	
 		
 		if(backSightsCount != foreSightsCount) {		// check is backSightsCount equal foreSightsCount
 			JOptionPane.showMessageDialog(null,
@@ -64,8 +63,8 @@ public class ControlData {
 		}
 		
 		if(emptyFirstSightsCount<=emptyElevationCount)	// determine calculating mode
-			calculatingMode=CLASSIC_MODE;
-		else calculatingMode=CREATION_MODE;
+			levellingMetaData.setCalculatingMode(LevellingMetaData.CLASSIC_MODE);
+		else levellingMetaData.setCalculatingMode(LevellingMetaData.CREATION_MODE);
 		
 		
 		if(lockSightsCount != 2) {			// check is exist first and last benchmark
@@ -82,7 +81,7 @@ public class ControlData {
 		for(int i=0; i<data.size(); i++) {		// second control
 			sight = data.get(i);
 			
-			if(sight.isBackSight() && i>0 && calculatingMode==CREATION_MODE) {	//check is elevation in backsight is the same as elevation in last foresight
+			if(sight.isBackSight() && i>0 && levellingMetaData.getCalculatingMode()==LevellingMetaData.CREATION_MODE) {	//check is elevation in backsight is the same as elevation in last foresight
 				boolean notFound = true;
 				int previousIndex = i-1;
 				Sight previousSight = null;
@@ -111,7 +110,7 @@ public class ControlData {
 				}
 			}
 			
-			if(calculatingMode==CREATION_MODE && sight.getElevation()==null) {		//empty elevation in row (CREATION MODE)
+			if(levellingMetaData.getCalculatingMode()==LevellingMetaData.CREATION_MODE && sight.getElevation()==null) {		//empty elevation in row (CREATION MODE)
 				JOptionPane.showMessageDialog(null,
 				        "Brak rzêdnej w wierszu "+(i+1)+"." ,
 				        "Brak rzêdnej",
@@ -119,7 +118,7 @@ public class ControlData {
 				return false;
 			}
 			
-			if(calculatingMode==CLASSIC_MODE && sight.getBackOrForeSight1()==null && sight.getIntermediateSight1()==null) { //empty first sight in row (CLASSIC MODE)
+			if(levellingMetaData.getCalculatingMode()==LevellingMetaData.CLASSIC_MODE && sight.getBackOrForeSight1()==null && sight.getIntermediateSight1()==null) { //empty first sight in row (CLASSIC MODE)
 				JOptionPane.showMessageDialog(null,
 				        "Brak odczytu w wierszu "+(i+1)+"." ,
 				        "Brak odczytu",
@@ -127,7 +126,7 @@ public class ControlData {
 				return false;
 			}
 			
-			if(calculatingMode==CLASSIC_MODE && sight.isIntermediate() && (sight.getIntermediateSight1()==null || sight.getBackOrForeSight1() != null)) {
+			if(levellingMetaData.getCalculatingMode()==LevellingMetaData.CLASSIC_MODE && sight.isIntermediate() && (sight.getIntermediateSight1()==null || sight.getBackOrForeSight1() != null)) {
 				JOptionPane.showMessageDialog(null,
 				        "Niew³aœciwie wype³niony punkt  poœredni wierszu "+(i+1)+"." ,
 				        "Niew³aœciwy punkt poœredni",
@@ -137,13 +136,4 @@ public class ControlData {
 		}
 		return true;	
 	}
-	
-	public int getCalculatingMode() {
-		return calculatingMode;
-	}
-	
-	public double getLengthLeveling() {
-		return lengthLeveling;
-	}
-	
 }
