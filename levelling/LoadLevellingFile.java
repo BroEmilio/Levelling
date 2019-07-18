@@ -1,24 +1,16 @@
 package levelling;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.swing.JFileChooser;
+import java.io.*;
+import java.util.*;
+import java.util.regex.*;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
-
-import levellingTable.LevellingTableModel;
+import levellingTable.*;
 
 public class LoadLevellingFile {
 	LevellingTableModel model;
+	CommonMethods commonMethods;
 	JFileChooser chooser = new JFileChooser();
-	//FileFilter filter = new FileNameExtensionFilter("Niwelacja C-Geo (.niw)", "niw");
 	FileFilter filter = new FileFilter() {
 		@Override
 		public String getDescription() {
@@ -37,6 +29,7 @@ public class LoadLevellingFile {
 
 	public LoadLevellingFile(LevellingTableModel model) {
 		this.model = model;
+		commonMethods = new CommonMethods(model);
 		chooser.setFileFilter(filter);
 		chooser.setCurrentDirectory(SaveLevellingFile.projectsPath);
     	chooser.setDialogTitle("Wczytaj niwelacjê z pliku");
@@ -105,8 +98,8 @@ public class LoadLevellingFile {
 						}
 			}
 		if(data.size()>0) {
-			Calculating.updateBackAndForeSightSequence(model);
-			Calculating.updateBackAndForeSightSequence(model);
+			commonMethods.updateSightsSequence(model);
+			commonMethods.updateSightsSequence(model);
 			data.get(0).setLock(true);
 			getLastForesight(data.size()).setLock(true);
 			return true;
@@ -145,7 +138,7 @@ public class LoadLevellingFile {
 		} catch(NumberFormatException ex) {
 			try {
 				Double doubleValue=Double.parseDouble(string);
-				integer=Calculating.roundToInt(doubleValue);
+				integer=commonMethods.roundToInt(doubleValue);
 			} catch(Exception ex2) {
 				System.err.println(ex2);
 			}

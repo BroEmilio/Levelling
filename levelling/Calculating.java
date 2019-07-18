@@ -15,11 +15,13 @@ import levellingTable.LevellingTableModel;
 public class Calculating {
 	LevellingTableModel model;
 	LevellingMetaData levellingMetaData;
+	CommonMethods commonMethods;
 	private static final DecimalFormat formatterOnePlace = new DecimalFormat("#0.0");
 	
 	public Calculating(LevellingTableModel model, LevellingMetaData levellingMetaData) {
 		this.model = model;
 		this.levellingMetaData = levellingMetaData;
+		commonMethods = new CommonMethods(model);
 	}
 
 	public void calcLeveling (int calcType, boolean leaveCurrentValues) {
@@ -34,65 +36,10 @@ public class Calculating {
 	
 	// ---------------------------------------------------------------- COMMON METHODS ----------------------------------------------------------------------------------
 	
-	public static double round(double value, int places) {
-	    if (places < 0) throw new IllegalArgumentException();
 
-	    BigDecimal bd = new BigDecimal(value);
-	    bd = bd.setScale(places, RoundingMode.HALF_EVEN);
-	    return bd.doubleValue();
-	}
-	
-	public static int roundToInt(double value) {
-		 DecimalFormat df = new DecimalFormat("#0");
-		 df.setRoundingMode(RoundingMode.HALF_EVEN);
-		 return new Integer(df.format(value));
-		 
-	}
-	
-	Sight lastWstecz(int index) {													// ODSZUKANIE OSTATNIEGO ODCZYTU WSTECZ
-		Sight lastWstecz=null;
-		List<Sight> data = model.getLevellingData();
-		ListIterator<Sight> it = data.listIterator(index);
-		while(lastWstecz == null && it.hasPrevious()) {
-			if(it.previous().isBackSight)
-				lastWstecz=it.next();
-		}
-		return lastWstecz;
-	}
-	
-	Sight nextWstecz(int index) {												// ODSZUKANIE NASTÊPNEGO ODCZYTU WSTECZ
-		Sight nextWstecz=null;
-		List<Sight> data = model.getLevellingData();
-		ListIterator<Sight> it = data.listIterator(index);
-		while(nextWstecz == null && it.hasNext()) {
-			if(it.next().isBackSight)
-				nextWstecz=it.previous();
-		}
-		return nextWstecz;
-	}
-	
-	
-	public static void updateBackAndForeSightSequence(LevellingTableModel model) {		// update sequence of backsights and foresights in levelling data
-		List<Sight> data = model.getLevellingData();
-		Boolean isWstecz = true;
-		for(int i=0; i<data.size(); i++) {
-			Sight odczyt = data.get(i);
-			if((odczyt.getBackOrForeSight1() != null || odczyt.getElevation() != null) && ! odczyt.isSightIntermediate) {
-				odczyt.setAsBackSight(isWstecz);
-				if(isWstecz) {
-					odczyt.setEditable(false);
-					if(i==0)
-						odczyt.setEditable(true);
-				} else odczyt.setEditable(true);
-			isWstecz = ! isWstecz;
-			}
-			if(odczyt.getIntermediateSight1() != null)
-				odczyt.setIntermediate(true);
-		}
-	}
 	
 	public void calcDifferences(Sight odczyt, int index) {								// OBLICZENIE RÓ¯NICY MIÊDZY DWOMA PO£O¯ENIAMI
-		Sight lastWstecz=lastWstecz(index);
+		Sight lastWstecz=commonMethods.lastBackSight(index);
 		if(odczyt.isSightIntermediate && odczyt.getIntermediateSight1()!=null && odczyt.getIntermediateSight2()!=null) {
 			if(lastWstecz.getBackOrForeSight1()!=null && lastWstecz.getBackOrForeSight2()!=null) {
 				int firstSuperiority = lastWstecz.getBackOrForeSight1() - odczyt.getIntermediateSight1();
@@ -113,11 +60,11 @@ public class Calculating {
 		Integer[] scatterArray = new Integer[wprzodCount];
 		double averageDisparity = disparityAsDouble / wprzodCount;
 		double currentDisparity = averageDisparity;
-		scatterArray[0]=roundToInt(averageDisparity);
+		scatterArray[0]=commonMethods.roundToInt(averageDisparity);
 		int currentInt = scatterArray[0];
 		for(int i=1; i<scatterArray.length; i++) {
 			currentDisparity = currentDisparity + averageDisparity;
-			scatterArray[i] = roundToInt(currentDisparity)-currentInt;
+			scatterArray[i] = commonMethods.roundToInt(currentDisparity)-currentInt;
 			currentInt = currentInt + scatterArray[i];
 		}
 		
@@ -133,7 +80,7 @@ public class Calculating {
 				for(int i=0; i<data.size(); i++) {
 					Sight odczyt = data.get(i);
 					if(!odczyt.isBackSight && ! odczyt.isSightIntermediate) {
-						Sight lastWstecz = lastWstecz(i);
+						Sight lastWstecz = commonMethods.lastBackSight(i);
 						int delta = lastWstecz.getBackOrForeSight1() - odczyt.getBackOrForeSight1();
 						deltaHighList.add(delta);
 					}
@@ -144,7 +91,7 @@ public class Calculating {
 			for(int i=0; i<data.size(); i++) {
 				Sight odczyt = data.get(i);
 				if(!odczyt.isBackSight && ! odczyt.isSightIntermediate) {
-					Sight lastWstecz = lastWstecz(i);
+					Sight lastWstecz = commonMethods.lastBackSight(i);
 					if(lastWstecz.getBackOrForeSight2() != null && odczyt.getBackOrForeSight2() != null) {
 						int delta = lastWstecz.getBackOrForeSight2() - odczyt.getBackOrForeSight2();
 						deltaHighList.add(delta);
@@ -228,7 +175,7 @@ public class Calculating {
 			odczyt = data.get(i);
 			odczyt.setDifference(null);
 			if(! odczyt.isBackSight) {																	//odczyty wprzód i poœrednie
-				Sight lastWstecz = lastWstecz(i);
+				Sight lastWstecz = commonMethods.lastBackSight(i);
 				if(! odczyt.isSightLock) {	
 					double wprzodRzedna;
 					if(! odczyt.isSightIntermediate) {														// odczyty wprzod
@@ -247,15 +194,15 @@ public class Calculating {
 							wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
 						}
 					}
-					odczyt.setElevation(round(wprzodRzedna,3));
-					Sight nextWstecz = nextWstecz(i);
+					odczyt.setElevation(commonMethods.round(wprzodRzedna,3));
+					Sight nextWstecz = commonMethods.nextBackSight(i);
 					if(nextWstecz != null && ! odczyt.isSightIntermediate)
-						nextWstecz.setElevation(round(wprzodRzedna,3));									// przepisuje rzêdn¹ do nastêpnego wstecz
+						nextWstecz.setElevation(commonMethods.round(wprzodRzedna,3));									// przepisuje rzêdn¹ do nastêpnego wstecz
 					
 				} else {																					//ostatni wprzód i max odchy³ka
 					calcDifferences(odczyt, i);
 					double maxDisparity = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
-					showEndingWindow(round(disparity,2), round(maxDisparity,2));
+					showEndingWindow(commonMethods.round(disparity,2), commonMethods.round(maxDisparity,2));
 				}
 			}
 		}		// koniec for-a
@@ -303,7 +250,7 @@ public class Calculating {
 	public int randomWsteczForPosredni(int index,  double minRzedna, double maxRzedna) {			// LOSOWANIE WARTOŒCI ODCZYTU WSTECZ WED£UG PUNKTÓW POŒREDNICH
 		Random random = new Random();
 		int randomOdczyt =-1;
-		Sight lastWstecz= lastWstecz(index+1);
+		Sight lastWstecz= commonMethods.lastBackSight(index+1);
 		int min = (int)(Math.abs((maxRzedna - lastWstecz.getElevation())*1000));
 		int max = 4999 - (int)(Math.abs((lastWstecz.getElevation()-minRzedna)*1000));
 			if((max-min)>1500) {													// CHECK 
@@ -326,7 +273,7 @@ public class Calculating {
 	public int randomDisparity(double maxDisparity) {																// LOSOWANIE WARTOŒCI ODCHY£KI NIWELACJI
 		Random random = new Random();
 		int randomDisparity= 0;
-		double averageDisparity = round((maxDisparity*0.40), 3);
+		double averageDisparity = commonMethods.round((maxDisparity*0.40), 3);
 		int max = (int)(averageDisparity);
 		
 		randomDisparity = (random.nextInt(max)+1) * ( random.nextBoolean() ? 1 : -1 );
@@ -370,10 +317,10 @@ public class Calculating {
 						
 						it.next();
 					}
-					double maxSuperiority = round((maxRzedna - minRzedna), 3);
+					double maxSuperiority = commonMethods.round((maxRzedna - minRzedna), 3);
 					if(maxSuperiority >= 5) {
 						JOptionPane.showMessageDialog(null,
-						        "Za du¿a ró¿nica wysokoœci("+round((maxRzedna-minRzedna),3)+"m) pomiêdzy rzêdn¹ "+minRzedna+"m(wiersz "+(minIndex+1)+") a rzêdn¹ "+maxRzedna+"m(wiersz "+(maxIndex+1)+").\n"+
+						        "Za du¿a ró¿nica wysokoœci("+commonMethods.round((maxRzedna-minRzedna),3)+"m) pomiêdzy rzêdn¹ "+minRzedna+"m(wiersz "+(minIndex+1)+") a rzêdn¹ "+maxRzedna+"m(wiersz "+(maxIndex+1)+").\n"+
 						        "Maksmymalna ró¿nica mo¿e wynosiæ do 5.000 m ( mo¿e dodaj jakieœ przejœcie ).",
 						        "Za du¿e przewy¿szenie",
 						        JOptionPane.INFORMATION_MESSAGE);
@@ -391,10 +338,10 @@ public class Calculating {
 			}
 			
 			if(odczyt.isBackSight==false) {		// odczyty wprzód i poœrednie
-				Sight lastWstecz = lastWstecz(i);
+				Sight lastWstecz = commonMethods.lastBackSight(i);
 				
 				double odczytDouble =  ((double)lastWstecz.getBackOrForeSight1()/1000)+lastWstecz.getElevation()-odczyt.getElevation();
-				odczytDouble = round(odczytDouble, 3);
+				odczytDouble = commonMethods.round(odczytDouble, 3);
 				int odczytInt = (int)(odczytDouble*1000);
 				if(odczyt.isSightIntermediate) {			// poœrednie
 					odczyt.setIntermediateSight1(odczytInt);
@@ -407,7 +354,7 @@ public class Calculating {
 				
 			}
 		} // koniec for-a
-	showEndingWindow(round(disparity,1), round(maxDisparity,1));
+	showEndingWindow(commonMethods.round(disparity,1), commonMethods.round(maxDisparity,1));
 	}
 	
 	//--------------------------------------------------------------------- COMPLEMENT CALCULATING -------------------------------------------------------------------------
@@ -448,13 +395,13 @@ public class Calculating {
 					if(nextOdczyt.isSightIntermediate ) {
 						if(nextOdczyt.getIntermediateSight1()!=null && nextOdczyt.getElevation()!=null) {
 							count++;
-							int wsteczOdczyt = (int)round((nextOdczyt.getElevation()*1000), 3) + nextOdczyt.getIntermediateSight1() - (int)round((odczyt.getElevation()*1000), 3);
+							int wsteczOdczyt = (int)commonMethods.round((nextOdczyt.getElevation()*1000), 3) + nextOdczyt.getIntermediateSight1() - (int)commonMethods.round((odczyt.getElevation()*1000), 3);
 							sum += wsteczOdczyt;
 						}
 					} else {
 						if(nextOdczyt.getBackOrForeSight1()!=null && nextOdczyt.getElevation()!=null) {
 							count++;
-							int wsteczOdczyt = (int)round((nextOdczyt.getElevation()*1000), 3) + nextOdczyt.getBackOrForeSight1() - (int)round((odczyt.getElevation()*1000), 3);
+							int wsteczOdczyt = (int)commonMethods.round((nextOdczyt.getElevation()*1000), 3) + nextOdczyt.getBackOrForeSight1() - (int)commonMethods.round((odczyt.getElevation()*1000), 3);
 							sum += wsteczOdczyt;
 						}
 					}
@@ -470,8 +417,8 @@ public class Calculating {
 			}
 			
 			if(!odczyt.isBackSight && odczyt.getElevation()!=null && ((odczyt.isSightIntermediate && odczyt.getIntermediateSight1()==null) || (!odczyt.isSightIntermediate && odczyt.getBackOrForeSight1()==null))) {
-				Sight lastWstecz = lastWstecz(i);
-				int value = lastWstecz.getBackOrForeSight1() +  (int)round((lastWstecz.getElevation()*1000), 3) - (int)round((odczyt.getElevation()*1000), 3);
+				Sight lastWstecz = commonMethods.lastBackSight(i);
+				int value = lastWstecz.getBackOrForeSight1() +  (int)commonMethods.round((lastWstecz.getElevation()*1000), 3) - (int)commonMethods.round((odczyt.getElevation()*1000), 3);
 				if(odczyt.isSightIntermediate) 
 					odczyt.setIntermediateSight1(value);
 				 else
