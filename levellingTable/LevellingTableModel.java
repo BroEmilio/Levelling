@@ -12,10 +12,12 @@ public class LevellingTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	
 	List<Sight> levellingData = new ArrayList<Sight>();
+	CommonMethods commonMethods;
 
 	public LevellingTableModel() {
 		for(int i=0; i<500; i++)
 			levellingData.add(new Sight());
+		commonMethods = new CommonMethods(this);
 	}
 	
 	public Sight getSightAtIndex(int index) {
@@ -120,7 +122,7 @@ public class LevellingTableModel extends AbstractTableModel {
 		case 5 : sight.setIntermediateSight2( (Integer) aValue);break;
 		case 6 : sight.setDifference( (Integer) aValue);break;
 		case 7 :  if(aValue != null) {
-								Double value = Calculating.round((Double) aValue, 3);
+								Double value = commonMethods.round((Double) aValue, 3);
 								sight.setElevation(value);
 								if((rowIndex==0 || isShouldBeAsBackSight(rowIndex, columnIndex)) && ! sight.isIntermediate()) {
 									sight.setAsBackSight(true);
@@ -145,7 +147,7 @@ public class LevellingTableModel extends AbstractTableModel {
 								};
 		
 						if(rowIndex<getLastNoNullIndexAtColumn(levellingData.size(), 7))
-							Calculating.updateBackAndForeSightSequence(this);
+							commonMethods.updateSightsSequence(this);
 						
 						MainFrame.secondCalcButton.setEnabled(false);
 						break;
@@ -163,7 +165,7 @@ public class LevellingTableModel extends AbstractTableModel {
 	public void deleteRow(int rowIndex) {
 		levellingData.remove(rowIndex);
 		fireTableRowsDeleted(rowIndex,rowIndex);
-		Calculating.updateBackAndForeSightSequence(this);
+		commonMethods.updateSightsSequence(this);
 	}
 	
 	public int getLastNoNullIndexAtColumn(int row, int column) {
@@ -210,7 +212,7 @@ public class LevellingTableModel extends AbstractTableModel {
 		Sight sight = levellingData.get(sightRowIndex);
 		boolean newStatus = ! sight.isIntermediate();
 		sight.setIntermediate(newStatus);
-		Calculating.updateBackAndForeSightSequence(this);
+		commonMethods.updateSightsSequence(this);
 	}
 	
 	public void changeLockStatus(int rowIndex) {
