@@ -1,22 +1,16 @@
 package levelling;
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Random;
 
-import javax.swing.JOptionPane;
-
-import levellingTable.LevellingTableModel;
-
+import java.math.*;
+import java.text.*;
+import java.util.*;
+import javax.swing.*;
+import levellingTable.*;
 
 public class Calculating {
 	LevellingTableModel model;
 	LevellingMetaData levellingMetaData;
 	CommonMethods commonMethods;
-	private static final DecimalFormat formatterOnePlace = new DecimalFormat("#0.0");
+	
 	
 	public Calculating(LevellingTableModel model, LevellingMetaData levellingMetaData) {
 		this.model = model;
@@ -24,11 +18,11 @@ public class Calculating {
 		commonMethods = new CommonMethods(model);
 	}
 
-	public void calcLeveling (int calcType, boolean leaveCurrentValues) {
+	public void calcLeveling (int calculationMode, boolean leaveCurrentValues) {
 		if(leaveCurrentValues)
 			complementCalc();
 		else {
-			if(calcType==0)
+			if(calculationMode==LevellingMetaData.CLASSIC_MODE)
 				classicCalc();
 			else creationCalc();
 		}
@@ -38,23 +32,8 @@ public class Calculating {
 	
 
 	
-	public void calcDifferences(Sight odczyt, int index) {								// OBLICZENIE RÓ¯NICY MIÊDZY DWOMA PO£O¯ENIAMI
-		Sight lastWstecz=commonMethods.lastBackSight(index);
-		if(odczyt.isSightIntermediate && odczyt.getIntermediateSight1()!=null && odczyt.getIntermediateSight2()!=null) {
-			if(lastWstecz.getBackOrForeSight1()!=null && lastWstecz.getBackOrForeSight2()!=null) {
-				int firstSuperiority = lastWstecz.getBackOrForeSight1() - odczyt.getIntermediateSight1();
-				int secondSuperiority = lastWstecz.getBackOrForeSight2() - odczyt.getIntermediateSight2();
-				odczyt.setDifference(secondSuperiority - firstSuperiority);
-			}
-		}
-		if(! odczyt.isSightIntermediate && odczyt.getBackOrForeSight1()!=null && odczyt.getBackOrForeSight2()!=null) {
-			if(lastWstecz.getBackOrForeSight1()!=null && lastWstecz.getBackOrForeSight2()!=null) {
-				int firstSuperiority = lastWstecz.getBackOrForeSight1() - odczyt.getBackOrForeSight1();
-				int secondSuperiority = lastWstecz.getBackOrForeSight2() - odczyt.getBackOrForeSight2();
-				odczyt.setDifference(secondSuperiority - firstSuperiority);
-			}
-		}
-	}
+	
+		
 	
 	public Integer[] scatterDisparity(double disparityAsDouble,int wprzodCount) {			// OBLICZENIE TABLICY ROZPROSZENIA ODCHY£KI NIWELACJI
 		Integer[] scatterArray = new Integer[wprzodCount];
@@ -138,6 +117,7 @@ public class Calculating {
 	}
 	
 	public void showEndingWindow(double disparity, double maxDisparity) {								// WYŒWIETLENIE OKNA PODSUMOWANIA NIWELACJI
+		final DecimalFormat formatterOnePlace = new DecimalFormat("#0.0");
 		if(Math.abs(disparity)<=maxDisparity) {
 			JOptionPane.showMessageDialog(null,
 					"Uzyskana odchy³ka mieœci siê w wartoœci dopuszczalnej.\n"
@@ -185,7 +165,7 @@ public class Calculating {
 					else {																						// odczyty poœrednie
 						wprzodRzedna = lastWstecz.getElevation() + ((double)lastWstecz.getBackOrForeSight1()/1000) - ((double)odczyt.getIntermediateSight1()/1000);
 					}
-					calcDifferences(odczyt, i);
+					commonMethods.calcDifferences(odczyt, i);
 					if(odczyt.getDifference() != null) {												// dodanie b³edu pomiêdzy dwoma po³o¿eniami
 						BigDecimal halfBlad = BigDecimal.valueOf(((double)odczyt.getDifference()/1000)/2).setScale(4,RoundingMode.HALF_EVEN);
 						halfBlad = halfBlad.setScale(3, RoundingMode.HALF_EVEN);
@@ -200,7 +180,7 @@ public class Calculating {
 						nextWstecz.setElevation(commonMethods.round(wprzodRzedna,3));									// przepisuje rzêdn¹ do nastêpnego wstecz
 					
 				} else {																					//ostatni wprzód i max odchy³ka
-					calcDifferences(odczyt, i);
+					commonMethods.calcDifferences(odczyt, i);
 					double maxDisparity = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
 					showEndingWindow(commonMethods.round(disparity,2), commonMethods.round(maxDisparity,2));
 				}

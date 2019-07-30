@@ -47,6 +47,25 @@ public class CommonMethods {
 		return nextBackSight;
 	}
 	
+	public void calcDifferences(Sight odczyt, int index) {								// OBLICZENIE RÓ¯NICY MIÊDZY DWOMA PO£O¯ENIAMI
+		Sight lastWstecz=lastBackSight(index);
+		if(odczyt.isSightIntermediate && odczyt.getIntermediateSight1()!=null && odczyt.getIntermediateSight2()!=null) {
+			if(lastWstecz.getBackOrForeSight1()!=null && lastWstecz.getBackOrForeSight2()!=null) {
+				int firstSuperiority = lastWstecz.getBackOrForeSight1() - odczyt.getIntermediateSight1();
+				int secondSuperiority = lastWstecz.getBackOrForeSight2() - odczyt.getIntermediateSight2();
+				odczyt.setDifference(secondSuperiority - firstSuperiority);
+			}
+		}
+		if(! odczyt.isSightIntermediate && odczyt.getBackOrForeSight1()!=null && odczyt.getBackOrForeSight2()!=null) {
+			if(lastWstecz.getBackOrForeSight1()!=null && lastWstecz.getBackOrForeSight2()!=null) {
+				int firstSuperiority = lastWstecz.getBackOrForeSight1() - odczyt.getBackOrForeSight1();
+				int secondSuperiority = lastWstecz.getBackOrForeSight2() - odczyt.getBackOrForeSight2();
+				odczyt.setDifference(secondSuperiority - firstSuperiority);
+			}
+		}
+	}
+		
+		
 	
 	public void updateSightsSequence(LevellingTableModel model) {		// update sequence of backsights and foresights in levelling data
 		List<Sight> data = model.getLevellingData();

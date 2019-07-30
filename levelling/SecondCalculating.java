@@ -6,10 +6,12 @@ import levellingTable.*;
 public class SecondCalculating {
 	LevellingTableModel model;
 	Calculating calc;
+	CommonMethods commonMethods;
 	Random random = new Random();
 	
 	public SecondCalculating(LevellingTableModel model, LevellingMetaData levellingMetaData) {
 		calc = new Calculating(model, levellingMetaData);
+		commonMethods = new CommonMethods(model);
 		this.model = model;
 	}
 	
@@ -95,7 +97,7 @@ public class SecondCalculating {
 				}
 			}
 		} else {  // obliczenie roznic dla odczytow wprzod i posrednich
-			calc.calcDifferences(odczyt, index);
+			commonMethods.calcDifferences(odczyt, index);
 		}
 	} 
 	

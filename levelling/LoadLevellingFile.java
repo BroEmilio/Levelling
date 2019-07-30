@@ -76,7 +76,7 @@ public class LoadLevellingFile {
 							 case 6 : odczyt.setIntermediateSight1(returnIntegerFromString(elements[1]));break;
 							 case 7 : odczyt.setElevation(new Double(elements[1]));break;
 							 case 8 : odczyt.setIntermediateSight2(returnIntegerFromString(elements[1]));break;
-							 default : System.err.println("B³ad w metodzie loadFromNiwFile(), nierozpoznany key:"+key);break;
+							 default : System.err.println("Unrecognized key:"+key+" in method loadFromNiwFile()");break;
 							 }
 						 }
 					 }

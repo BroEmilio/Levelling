@@ -111,6 +111,7 @@ public class LevellingTableModel extends AbstractTableModel {
 							sight.setEditable(true);
 					}
 					MainFrame.secondCalcButton.setEnabled(false);
+					commonMethods.updateSightsSequence(this);
 					break;
 		case 3 :sight.setBackOrForeSight2( (Integer) aValue);break;
 		case 4 : if(sight.getBackOrForeSight1()==null && sight.getBackOrForeSight2()==null) {
