@@ -28,33 +28,57 @@ public class Calculating {
 		}
 	}
 	
-	// ---------------------------------------------------------------- COMMON METHODS ----------------------------------------------------------------------------------
+	//-------------------------------------------------- CLASSIC CALCULATING ---------------------------------------------------------------------------------------------------
 	
-
-	
-	
-		
-	
-	public Integer[] scatterDisparity(double disparityAsDouble,int wprzodCount) {			// OBLICZENIE TABLICY ROZPROSZENIA ODCHY£KI NIWELACJI
-		Integer[] scatterArray = new Integer[wprzodCount];
-		double averageDisparity = disparityAsDouble / wprzodCount;
-		double currentDisparity = averageDisparity;
-		scatterArray[0]=commonMethods.roundToInt(averageDisparity);
-		int currentInt = scatterArray[0];
-		for(int i=1; i<scatterArray.length; i++) {
-			currentDisparity = currentDisparity + averageDisparity;
-			scatterArray[i] = commonMethods.roundToInt(currentDisparity)-currentInt;
-			currentInt = currentInt + scatterArray[i];
-		}
-		
-		return scatterArray;
-		
+	public void classicCalc() {																																						// OBLICZENIA W TRYBIE KLASYCZNYM
+		List<Integer> firstDeltaHigh = getDeltaHighList(1);
+		List<Integer> secondDeltaHigh = getDeltaHighList(2);
+		double disparity = calcLevelingDisparity(firstDeltaHigh, secondDeltaHigh);
+		Integer[] scatterArray = commonMethods.scatterDisparity(disparity, levellingMetaData.getForeSightsCount());
+		int wprzodIndex = 0;
+		List<Sight> data = model.getLevellingData();
+		Sight odczyt=null;
+		for(int i=0; i<data.size(); i++) {
+			odczyt = data.get(i);
+			odczyt.setDifference(null);
+			if(! odczyt.isBackSight) {																	//odczyty wprzód i poœrednie
+				Sight lastWstecz = commonMethods.lastBackSight(i);
+				if(! odczyt.isSightLock) {	
+					double wprzodRzedna;
+					if(! odczyt.isSightIntermediate) {														// odczyty wprzod
+						wprzodRzedna = lastWstecz.getElevation() + ((double)lastWstecz.getBackOrForeSight1()/1000) - ((double)odczyt.getBackOrForeSight1()/1000) - ((double)scatterArray[wprzodIndex]/1000);
+						wprzodIndex++;
+					}
+					else {																						// odczyty poœrednie
+						wprzodRzedna = lastWstecz.getElevation() + ((double)lastWstecz.getBackOrForeSight1()/1000) - ((double)odczyt.getIntermediateSight1()/1000);
+					}
+					commonMethods.calcDifferences(odczyt, i);
+					if(odczyt.getDifference() != null) {												// dodanie b³edu pomiêdzy dwoma po³o¿eniami
+						BigDecimal halfBlad = BigDecimal.valueOf(((double)odczyt.getDifference()/1000)/2).setScale(4,RoundingMode.HALF_EVEN);
+						halfBlad = halfBlad.setScale(3, RoundingMode.HALF_EVEN);
+						wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
+						if(! odczyt.isSightIntermediate && (firstDeltaHigh.get(wprzodIndex-1)==0 || secondDeltaHigh.get(wprzodIndex-1)==0)) {
+							wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
+						}
+					}
+					odczyt.setElevation(commonMethods.round(wprzodRzedna,3));
+					Sight nextWstecz = commonMethods.nextBackSight(i);
+					if(nextWstecz != null && ! odczyt.isSightIntermediate)
+						nextWstecz.setElevation(commonMethods.round(wprzodRzedna,3));									// przepisuje rzêdn¹ do nastêpnego wstecz
+					
+				} else {																					//ostatni wprzód i max odchy³ka
+					commonMethods.calcDifferences(odczyt, i);
+					double maxDisparity = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
+					showEndingWindow(commonMethods.round(disparity,2), commonMethods.round(maxDisparity,2));
+				}
+			}
+		}		// koniec for-a
 	}
 	
-	public List<Integer> getDeltaHighList(int firstOrSecond) {								// WYGENEROWANIE LISTY PRZEWY¯SZEÑ DLA PIERWSZYCH LUB DRUGICH ODCZYTÓW
+	public List<Integer> getDeltaHighList(int firstOrSecondSight) {								// WYGENEROWANIE LISTY PRZEWY¯SZEÑ DLA PIERWSZYCH LUB DRUGICH ODCZYTÓW
 		List<Sight> data = model.getLevellingData();
 		List<Integer> deltaHighList = new ArrayList<Integer>();
-		switch(firstOrSecond) {
+		switch(firstOrSecondSight) {
 		case 1 : {
 				for(int i=0; i<data.size(); i++) {
 					Sight odczyt = data.get(i);
@@ -116,155 +140,12 @@ public class Calculating {
 		return ((double)(firstSum+secondSum)/2) - theoreticalSuperiority;
 	}
 	
-	public void showEndingWindow(double disparity, double maxDisparity) {								// WYŒWIETLENIE OKNA PODSUMOWANIA NIWELACJI
-		final DecimalFormat formatterOnePlace = new DecimalFormat("#0.0");
-		if(Math.abs(disparity)<=maxDisparity) {
-			JOptionPane.showMessageDialog(null,
-					"Uzyskana odchy³ka mieœci siê w wartoœci dopuszczalnej.\n"
-			        +"D³ugoœæ niwelacji: "+formatterOnePlace.format(levellingMetaData.getLengthLeveling())+" m\n"
-			        + "Dopuszczalna odchy³ka: "+formatterOnePlace.format(maxDisparity)+" mm\n\n"
-			        +"<html><u>Odchy³ka uzyskana: "+formatterOnePlace.format(disparity)+" mm\n",
-			        "Odchy³ka ok",
-			        JOptionPane.INFORMATION_MESSAGE);
-		}
-		else {
-			JOptionPane.showMessageDialog(null,
-					"Odchy³ka przekracza wartoœæ dopuszczaln¹.\n"
-			        +"D³ugoœæ niwelacji: "+formatterOnePlace.format(levellingMetaData.getLengthLeveling())+" m\n"
-			        + "Dopuszczalna odchy³ka: "+formatterOnePlace.format(maxDisparity)+" mm\n\n"
-			        +"<html><u>Odchy³ka uzyskana: "+formatterOnePlace.format(disparity)+" mm\n",
-			        "Przekroczona odchy³ka",
-			        JOptionPane.ERROR_MESSAGE);
-		}
-		
-		MainFrame.secondCalcButton.setEnabled(true);
-		scatterDisparity(disparity, levellingMetaData.getForeSightsCount());
-	}
-	
-	//-------------------------------------------------------------------- CLASSIC CALCULATING ---------------------------------------------------------------------------------------------------
-	
-	public void classicCalc() {																																						// OBLICZENIA W TRYBIE KLASYCZNYM
-		List<Integer> firstDeltaHigh = getDeltaHighList(1);
-		List<Integer> secondDeltaHigh = getDeltaHighList(2);
-		double disparity = calcLevelingDisparity(firstDeltaHigh, secondDeltaHigh);
-		Integer[] scatterArray = scatterDisparity(disparity, levellingMetaData.getForeSightsCount());
-		int wprzodIndex = 0;
-		List<Sight> data = model.getLevellingData();
-		Sight odczyt=null;
-		for(int i=0; i<data.size(); i++) {
-			odczyt = data.get(i);
-			odczyt.setDifference(null);
-			if(! odczyt.isBackSight) {																	//odczyty wprzód i poœrednie
-				Sight lastWstecz = commonMethods.lastBackSight(i);
-				if(! odczyt.isSightLock) {	
-					double wprzodRzedna;
-					if(! odczyt.isSightIntermediate) {														// odczyty wprzod
-						wprzodRzedna = lastWstecz.getElevation() + ((double)lastWstecz.getBackOrForeSight1()/1000) - ((double)odczyt.getBackOrForeSight1()/1000) - ((double)scatterArray[wprzodIndex]/1000);
-						wprzodIndex++;
-					}
-					else {																						// odczyty poœrednie
-						wprzodRzedna = lastWstecz.getElevation() + ((double)lastWstecz.getBackOrForeSight1()/1000) - ((double)odczyt.getIntermediateSight1()/1000);
-					}
-					commonMethods.calcDifferences(odczyt, i);
-					if(odczyt.getDifference() != null) {												// dodanie b³edu pomiêdzy dwoma po³o¿eniami
-						BigDecimal halfBlad = BigDecimal.valueOf(((double)odczyt.getDifference()/1000)/2).setScale(4,RoundingMode.HALF_EVEN);
-						halfBlad = halfBlad.setScale(3, RoundingMode.HALF_EVEN);
-						wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
-						if(! odczyt.isSightIntermediate && (firstDeltaHigh.get(wprzodIndex-1)==0 || secondDeltaHigh.get(wprzodIndex-1)==0)) {
-							wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
-						}
-					}
-					odczyt.setElevation(commonMethods.round(wprzodRzedna,3));
-					Sight nextWstecz = commonMethods.nextBackSight(i);
-					if(nextWstecz != null && ! odczyt.isSightIntermediate)
-						nextWstecz.setElevation(commonMethods.round(wprzodRzedna,3));									// przepisuje rzêdn¹ do nastêpnego wstecz
-					
-				} else {																					//ostatni wprzód i max odchy³ka
-					commonMethods.calcDifferences(odczyt, i);
-					double maxDisparity = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
-					showEndingWindow(commonMethods.round(disparity,2), commonMethods.round(maxDisparity,2));
-				}
-			}
-		}		// koniec for-a
-	}
-	
-	//------------------------------------------------------------------------- CREATION CALCULATING ----------------------------------------------------------------------------
-	
-	public int randomOdczyt(double maxSuperiority) {									// LOSOWANIE WARTOŒCI ODCZYTU WSTECZ  WED£UG PRZEWY¯SZENIA
-		Random random = new Random();
-		int randomOdczyt= -1;
-		int intSuperiority = (int)(maxSuperiority*1000);
-		
-		if(intSuperiority>=5000 || intSuperiority<=-5000)
-			return randomOdczyt;
-		
-		if(intSuperiority>=-1000 && intSuperiority<=1000) {
-			int rand = random.nextInt(400);
-			if(intSuperiority>0) {
-				randomOdczyt=1500 - rand;
-			} else randomOdczyt = 1500 + rand;
-		}
-		
-		if(intSuperiority>1000 && intSuperiority<3000) {
-			int min = 1501-(int)(Math.abs(intSuperiority)/2);
-			randomOdczyt = random.nextInt(((1501-min)+1))+min;
-		}
-		
-		if(-3000<intSuperiority && intSuperiority<-1000) {
-			int max = Math.abs(intSuperiority)+(int)(Math.abs(intSuperiority)/2);
-			randomOdczyt = random.nextInt((max-Math.abs(intSuperiority))+1)+Math.abs(intSuperiority);
-		}
-		
-		if(3000<=intSuperiority && intSuperiority<5000) {
-			int max = 4990 - intSuperiority;
-			randomOdczyt =  random.nextInt((max-10)+1)+10;
-		}
-		
-		if(-5000<intSuperiority && intSuperiority<=-3000) {
-			int min = Math.abs(intSuperiority);
-			randomOdczyt = random.nextInt((4997-min)+1)+min;
-		}
-		return randomOdczyt;
-	}
-	
-	public int randomWsteczForPosredni(int index,  double minRzedna, double maxRzedna) {			// LOSOWANIE WARTOŒCI ODCZYTU WSTECZ WED£UG PUNKTÓW POŒREDNICH
-		Random random = new Random();
-		int randomOdczyt =-1;
-		Sight lastWstecz= commonMethods.lastBackSight(index+1);
-		int min = (int)(Math.abs((maxRzedna - lastWstecz.getElevation())*1000));
-		int max = 4999 - (int)(Math.abs((lastWstecz.getElevation()-minRzedna)*1000));
-			if((max-min)>1500) {													// CHECK 
-				if(min>=0 && min<=1000) {
-					min = min+800;
-					max = min+700;
-				}
-				if(min>1000 && min <=2000) {
-					max = min + 1000;
-				}
-				if(min>2000 && min <=3000) {
-					max = min + 500;
-				}
-			}
-		
-		randomOdczyt = random.nextInt((max-min)+1) + min;
-		return randomOdczyt;
-	}
-	
-	public int randomDisparity(double maxDisparity) {																// LOSOWANIE WARTOŒCI ODCHY£KI NIWELACJI
-		Random random = new Random();
-		int randomDisparity= 0;
-		double averageDisparity = commonMethods.round((maxDisparity*0.40), 3);
-		int max = (int)(averageDisparity);
-		
-		randomDisparity = (random.nextInt(max)+1) * ( random.nextBoolean() ? 1 : -1 );
-		
-		return randomDisparity;
-	}
+	//-------------------------------------------------- CREATION CALCULATING ----------------------------------------------------------------------------
 	
 	public void creationCalc() {																									// OBLICZENIA W TRYBIE KREOWANIA
 		double maxDisparity = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
 		int disparity = randomDisparity(maxDisparity);
-		Integer[] scatterArray = scatterDisparity((double)disparity, levellingMetaData.getForeSightsCount());
+		Integer[] scatterArray = commonMethods.scatterDisparity((double)disparity, levellingMetaData.getForeSightsCount());
 		int wprzodIndex = 0;
 		List<Sight> data = model.getLevellingData();
 		Sight odczyt=null;
@@ -337,22 +218,78 @@ public class Calculating {
 	showEndingWindow(commonMethods.round(disparity,1), commonMethods.round(maxDisparity,1));
 	}
 	
-	//--------------------------------------------------------------------- COMPLEMENT CALCULATING -------------------------------------------------------------------------
-	public int randomShift() {
+	public int randomDisparity(double maxDisparity) {																// LOSOWANIE WARTOŒCI ODCHY£KI NIWELACJI
 		Random random = new Random();
-		int randomShift = 0;
-		int temp;
-		temp=random.nextInt(100);
-		if(temp<=20)
-			randomShift=0;
-		if(temp>20 && temp<=70)
-			randomShift=1;
-		if(temp>70 && temp<=100)
-			randomShift=2;
+		int randomDisparity= 0;
+		double averageDisparity = commonMethods.round((maxDisparity*0.40), 3);
+		int max = (int)(averageDisparity);
 		
-		randomShift = randomShift  * ( random.nextBoolean() ? 1 : -1 );
-		return randomShift;
+		randomDisparity = (random.nextInt(max)+1) * ( random.nextBoolean() ? 1 : -1 );
+		
+		return randomDisparity;
 	}
+	
+	public int randomWsteczForPosredni(int index,  double minRzedna, double maxRzedna) {			// LOSOWANIE WARTOŒCI ODCZYTU WSTECZ WED£UG PUNKTÓW POŒREDNICH
+		Random random = new Random();
+		int randomOdczyt =-1;
+		Sight lastWstecz= commonMethods.lastBackSight(index+1);
+		int min = (int)(Math.abs((maxRzedna - lastWstecz.getElevation())*1000));
+		int max = 4999 - (int)(Math.abs((lastWstecz.getElevation()-minRzedna)*1000));
+			if((max-min)>1500) {													// CHECK 
+				if(min>=0 && min<=1000) {
+					min = min+800;
+					max = min+700;
+				}
+				if(min>1000 && min <=2000) {
+					max = min + 1000;
+				}
+				if(min>2000 && min <=3000) {
+					max = min + 500;
+				}
+			}
+		
+		randomOdczyt = random.nextInt((max-min)+1) + min;
+		return randomOdczyt;
+	}
+	
+	public int randomOdczyt(double maxSuperiority) {									// LOSOWANIE WARTOŒCI ODCZYTU WSTECZ  WED£UG PRZEWY¯SZENIA
+		Random random = new Random();
+		int randomOdczyt= -1;
+		int intSuperiority = (int)(maxSuperiority*1000);
+		
+		if(intSuperiority>=5000 || intSuperiority<=-5000)
+			return randomOdczyt;
+		
+		if(intSuperiority>=-1000 && intSuperiority<=1000) {
+			int rand = random.nextInt(400);
+			if(intSuperiority>0) {
+				randomOdczyt=1500 - rand;
+			} else randomOdczyt = 1500 + rand;
+		}
+		
+		if(intSuperiority>1000 && intSuperiority<3000) {
+			int min = 1501-(int)(Math.abs(intSuperiority)/2);
+			randomOdczyt = random.nextInt(((1501-min)+1))+min;
+		}
+		
+		if(-3000<intSuperiority && intSuperiority<-1000) {
+			int max = Math.abs(intSuperiority)+(int)(Math.abs(intSuperiority)/2);
+			randomOdczyt = random.nextInt((max-Math.abs(intSuperiority))+1)+Math.abs(intSuperiority);
+		}
+		
+		if(3000<=intSuperiority && intSuperiority<5000) {
+			int max = 4990 - intSuperiority;
+			randomOdczyt =  random.nextInt((max-10)+1)+10;
+		}
+		
+		if(-5000<intSuperiority && intSuperiority<=-3000) {
+			int min = Math.abs(intSuperiority);
+			randomOdczyt = random.nextInt((4997-min)+1)+min;
+		}
+		return randomOdczyt;
+	}
+	
+	//----------------------------------------------- COMPLEMENT CALCULATING -------------------------------------------------------------------------
 	
 	public void complementCalc() {
 		List<Sight> data = model.getLevellingData();
@@ -458,5 +395,48 @@ public class Calculating {
 			}
 			
 		}//end of for
+	}
+	
+	public int randomShift() {
+		Random random = new Random();
+		int randomShift = 0;
+		int temp;
+		temp=random.nextInt(100);
+		if(temp<=20)
+			randomShift=0;
+		if(temp>20 && temp<=70)
+			randomShift=1;
+		if(temp>70 && temp<=100)
+			randomShift=2;
+		
+		randomShift = randomShift  * ( random.nextBoolean() ? 1 : -1 );
+		return randomShift;
+	}
+	
+	//------------------------------------------------ SHOW ENDING WINDOW-------------------------------------------------------
+	
+	public void showEndingWindow(double disparity, double maxDisparity) {								// WYŒWIETLENIE OKNA PODSUMOWANIA NIWELACJI
+		final DecimalFormat formatterOnePlace = new DecimalFormat("#0.0");
+		if(Math.abs(disparity)<=maxDisparity) {
+			JOptionPane.showMessageDialog(null,
+					"Uzyskana odchy³ka mieœci siê w wartoœci dopuszczalnej.\n"
+			        +"D³ugoœæ niwelacji: "+formatterOnePlace.format(levellingMetaData.getLengthLeveling())+" m\n"
+			        + "Dopuszczalna odchy³ka: "+formatterOnePlace.format(maxDisparity)+" mm\n\n"
+			        +"<html><u>Odchy³ka uzyskana: "+formatterOnePlace.format(disparity)+" mm\n",
+			        "Odchy³ka ok",
+			        JOptionPane.INFORMATION_MESSAGE);
+		}
+		else {
+			JOptionPane.showMessageDialog(null,
+					"Odchy³ka przekracza wartoœæ dopuszczaln¹.\n"
+			        +"D³ugoœæ niwelacji: "+formatterOnePlace.format(levellingMetaData.getLengthLeveling())+" m\n"
+			        + "Dopuszczalna odchy³ka: "+formatterOnePlace.format(maxDisparity)+" mm\n\n"
+			        +"<html><u>Odchy³ka uzyskana: "+formatterOnePlace.format(disparity)+" mm\n",
+			        "Przekroczona odchy³ka",
+			        JOptionPane.ERROR_MESSAGE);
+		}
+		
+		MainFrame.secondCalcButton.setEnabled(true);
+		commonMethods.scatterDisparity(disparity, levellingMetaData.getForeSightsCount());
 	}
 }

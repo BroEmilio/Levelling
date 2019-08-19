@@ -64,6 +64,20 @@ public class CommonMethods {
 			}
 		}
 	}
+	
+	public Integer[] scatterDisparity(double disparityAsDouble,int wprzodCount) {			// OBLICZENIE TABLICY ROZPROSZENIA ODCHY£KI NIWELACJI
+		Integer[] scatterArray = new Integer[wprzodCount];
+		double averageDisparity = disparityAsDouble / wprzodCount;
+		double currentDisparity = averageDisparity;
+		scatterArray[0]=roundToInt(averageDisparity);
+		int currentInt = scatterArray[0];
+		for(int i=1; i<scatterArray.length; i++) {
+			currentDisparity = currentDisparity + averageDisparity;
+			scatterArray[i] = roundToInt(currentDisparity)-currentInt;
+			currentInt = currentInt + scatterArray[i];
+		}
+		return scatterArray;
+	}
 		
 		
 	
