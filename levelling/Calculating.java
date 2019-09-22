@@ -31,8 +31,8 @@ public class Calculating {
 	//-------------------------------------------------- CLASSIC CALCULATING ---------------------------------------------------------------------------------------------------
 	
 	public void classicCalc() {																																						// OBLICZENIA W TRYBIE KLASYCZNYM
-		List<Integer> firstDeltaHigh = getDeltaHighList(1);
-		List<Integer> secondDeltaHigh = getDeltaHighList(2);
+		List<Integer> firstDeltaHigh = getDeltaHeightList(1);
+		List<Integer> secondDeltaHigh = getDeltaHeightList(2);
 		double disparity = calcLevelingDisparity(firstDeltaHigh, secondDeltaHigh);
 		Integer[] scatterArray = commonMethods.scatterDisparity(disparity, levellingMetaData.getForeSightsCount());
 		int wprzodIndex = 0;
@@ -75,37 +75,30 @@ public class Calculating {
 		}		// koniec for-a
 	}
 	
-	public List<Integer> getDeltaHighList(int firstOrSecondSight) {								// WYGENEROWANIE LISTY PRZEWY¯SZEÑ DLA PIERWSZYCH LUB DRUGICH ODCZYTÓW
+	public List<Integer> getDeltaHeightList(int firstOrSecondSight) {	// Generate list of height differences for first or second sights
 		List<Sight> data = model.getLevellingData();
 		List<Integer> deltaHighList = new ArrayList<Integer>();
-		switch(firstOrSecondSight) {
-		case 1 : {
-				for(int i=0; i<data.size(); i++) {
-					Sight odczyt = data.get(i);
-					if(!odczyt.isBackSight && ! odczyt.isSightIntermediate) {
-						Sight lastWstecz = commonMethods.lastBackSight(i);
-						int delta = lastWstecz.getBackOrForeSight1() - odczyt.getBackOrForeSight1();
+		for(int i=0; i<data.size(); i++) {
+			Sight sight = data.get(i);
+			if(! sight.isBackSight() && ! sight.isIntermediate()) {
+				Sight lastBackSight = commonMethods.lastBackSight(i);
+				switch(firstOrSecondSight) {
+					case 1 : {
+						int delta = lastBackSight.getBackOrForeSight1() - sight.getBackOrForeSight1();
 						deltaHighList.add(delta);
+						break;
 					}
-				}
-				break;
-			}
-		case 2 : {
-			for(int i=0; i<data.size(); i++) {
-				Sight odczyt = data.get(i);
-				if(!odczyt.isBackSight && ! odczyt.isSightIntermediate) {
-					Sight lastWstecz = commonMethods.lastBackSight(i);
-					if(lastWstecz.getBackOrForeSight2() != null && odczyt.getBackOrForeSight2() != null) {
-						int delta = lastWstecz.getBackOrForeSight2() - odczyt.getBackOrForeSight2();
-						deltaHighList.add(delta);
-					} else deltaHighList.add(null);
+					case 2 : {
+						if(lastBackSight.getBackOrForeSight2() != null && sight.getBackOrForeSight2() != null) {
+							int delta = lastBackSight.getBackOrForeSight2() - sight.getBackOrForeSight2();
+							deltaHighList.add(delta);
+						} else deltaHighList.add(null);	
+						break;
+					}
+					default : deltaHighList = null;
 				}
 			}
-			break;
 		}
-		default : deltaHighList = null;
-		}
-		
 		return deltaHighList;
 	}
 	
