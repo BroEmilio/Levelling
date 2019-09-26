@@ -65,9 +65,9 @@ public class CommonMethods {
 		}
 	}
 	
-	public Integer[] scatterDisparity(double disparityAsDouble,int wprzodCount) {			// OBLICZENIE TABLICY ROZPROSZENIA ODCHY£KI NIWELACJI
-		Integer[] scatterArray = new Integer[wprzodCount];
-		double averageDisparity = disparityAsDouble / wprzodCount;
+	public Integer[] scatterDisparity(double disparityAsDouble,int foreSightsCount) {	// calculate array for scatter disparity among all sights
+		Integer[] scatterArray = new Integer[foreSightsCount];
+		double averageDisparity = disparityAsDouble / foreSightsCount;
 		double currentDisparity = averageDisparity;
 		scatterArray[0]=roundToInt(averageDisparity);
 		int currentInt = scatterArray[0];

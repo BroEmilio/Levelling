@@ -31,10 +31,10 @@ public class Calculating {
 	//-------------------------------------------------- CLASSIC CALCULATING ---------------------------------------------------------------------------------------------------
 	
 	public void classicCalc() {																																						// OBLICZENIA W TRYBIE KLASYCZNYM
-		List<Integer> firstDeltaHigh = getDeltaHeightList(1);
-		List<Integer> secondDeltaHigh = getDeltaHeightList(2);
-		double disparity = calcLevelingDisparity(firstDeltaHigh, secondDeltaHigh);
-		Integer[] scatterArray = commonMethods.scatterDisparity(disparity, levellingMetaData.getForeSightsCount());
+		List<Integer> firstDeltaHeightList = getHeightDifferencesList(1);
+		List<Integer> secondDeltaHeightList = getHeightDifferencesList(2);
+		double levellingDisparity = calculateLevellingDisparity(firstDeltaHeightList, secondDeltaHeightList);
+		Integer[] scatterArray = commonMethods.scatterDisparity(levellingDisparity, levellingMetaData.getForeSightsCount());
 		int wprzodIndex = 0;
 		List<Sight> data = model.getLevellingData();
 		Sight odczyt=null;
@@ -57,7 +57,7 @@ public class Calculating {
 						BigDecimal halfBlad = BigDecimal.valueOf(((double)odczyt.getDifference()/1000)/2).setScale(4,RoundingMode.HALF_EVEN);
 						halfBlad = halfBlad.setScale(3, RoundingMode.HALF_EVEN);
 						wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
-						if(! odczyt.isSightIntermediate && (firstDeltaHigh.get(wprzodIndex-1)==0 || secondDeltaHigh.get(wprzodIndex-1)==0)) {
+						if(! odczyt.isSightIntermediate && (firstDeltaHeightList.get(wprzodIndex-1)==0 || secondDeltaHeightList.get(wprzodIndex-1)==0)) {
 							wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
 						}
 					}
@@ -69,13 +69,13 @@ public class Calculating {
 				} else {																					//ostatni wprzód i max odchy³ka
 					commonMethods.calcDifferences(odczyt, i);
 					double maxDisparity = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
-					showEndingWindow(commonMethods.round(disparity,2), commonMethods.round(maxDisparity,2));
+					showEndingWindow(commonMethods.round(levellingDisparity,2), commonMethods.round(maxDisparity,2));
 				}
 			}
 		}		// koniec for-a
 	}
 	
-	public List<Integer> getDeltaHeightList(int firstOrSecondSight) {	// Generate list of height differences for first or second sights
+	public List<Integer> getHeightDifferencesList(int firstOrSecondSight) {	// Generate list of height differences for first or second sights
 		List<Sight> data = model.getLevellingData();
 		List<Integer> deltaHighList = new ArrayList<Integer>();
 		for(int i=0; i<data.size(); i++) {
@@ -102,11 +102,11 @@ public class Calculating {
 		return deltaHighList;
 	}
 	
-	double calcLevelingDisparity(List<Integer> firstDeltaHighList, List<Integer> secondDeltaHighList) {			// OBLICZENIE ODCHY£KI NIWELACJI
+	double calculateLevellingDisparity(List<Integer> firstDeltaHeightList, List<Integer> secondDeltaHighList) {			// OBLICZENIE ODCHY£KI NIWELACJI
 		int firstSum = 0;
 		int secondSum = 0;
-		for(int i=0; i<firstDeltaHighList.size(); i++) {
-			Integer temp = firstDeltaHighList.get(i);
+		for(int i=0; i<firstDeltaHeightList.size(); i++) {
+			Integer temp = firstDeltaHeightList.get(i);
 			if(temp==0 && secondDeltaHighList.get(i) != null)
 				temp = secondDeltaHighList.get(i);
 			
@@ -114,23 +114,23 @@ public class Calculating {
 		}
 		for(int i=0; i<secondDeltaHighList.size(); i++) {
 			Integer temp = secondDeltaHighList.get(i);
-			if(temp != null && temp==0)
-				temp = firstDeltaHighList.get(i);
+			if(temp==0 && temp != null)
+				temp = firstDeltaHeightList.get(i);
 			if(temp != null)
 			secondSum+=temp;
-			else secondSum+=firstDeltaHighList.get(i);
+			else secondSum+=firstDeltaHeightList.get(i);
 		}
 		double startPoint =0;
 		double endPoint = 0;
-		for(Sight odczyt:model.getLevellingData()) {
-			if(odczyt.isSightLock) {
-				if(odczyt.isBackSight)
-					startPoint = odczyt.getElevation();
-				else endPoint = odczyt.getElevation();
+		for(Sight sight:model.getLevellingData()) {
+			if(sight.isLock()) {
+				if(sight.isBackSight())
+					startPoint = sight.getElevation();
+				else endPoint = sight.getElevation();
 			}
 		}
-		double theoreticalSuperiority = (double)(endPoint-startPoint)*1000;
-		return ((double)(firstSum+secondSum)/2) - theoreticalSuperiority;
+		double theoreticalDisparity = (double)(endPoint-startPoint)*1000;
+		return ((double)(firstSum+secondSum)/2) - theoreticalDisparity;
 	}
 	
 	//-------------------------------------------------- CREATION CALCULATING ----------------------------------------------------------------------------
