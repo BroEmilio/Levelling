@@ -41,11 +41,11 @@ public class Calculating {
 		for(int i=0; i<data.size(); i++) {
 			odczyt = data.get(i);
 			odczyt.setDifference(null);
-			if(! odczyt.isBackSight) {																	//odczyty wprzód i poœrednie
+			if(! odczyt.isBackSight()) {																	//odczyty wprzód i poœrednie
 				Sight lastWstecz = commonMethods.lastBackSight(i);
-				if(! odczyt.isSightLock) {	
+				if(! odczyt.isLock()) {	
 					double wprzodRzedna;
-					if(! odczyt.isSightIntermediate) {														// odczyty wprzod
+					if(! odczyt.isIntermediate()) {														// odczyty wprzod
 						wprzodRzedna = lastWstecz.getElevation() + ((double)lastWstecz.getBackOrForeSight1()/1000) - ((double)odczyt.getBackOrForeSight1()/1000) - ((double)scatterArray[wprzodIndex]/1000);
 						wprzodIndex++;
 					}
@@ -57,13 +57,13 @@ public class Calculating {
 						BigDecimal halfBlad = BigDecimal.valueOf(((double)odczyt.getDifference()/1000)/2).setScale(4,RoundingMode.HALF_EVEN);
 						halfBlad = halfBlad.setScale(3, RoundingMode.HALF_EVEN);
 						wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
-						if(! odczyt.isSightIntermediate && (firstDeltaHeightList.get(wprzodIndex-1)==0 || secondDeltaHeightList.get(wprzodIndex-1)==0)) {
+						if(! odczyt.isIntermediate() && (firstDeltaHeightList.get(wprzodIndex-1)==0 || secondDeltaHeightList.get(wprzodIndex-1)==0)) {
 							wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
 						}
 					}
 					odczyt.setElevation(commonMethods.round(wprzodRzedna,3));
 					Sight nextWstecz = commonMethods.nextBackSight(i);
-					if(nextWstecz != null && ! odczyt.isSightIntermediate)
+					if(nextWstecz != null && ! odczyt.isIntermediate())
 						nextWstecz.setElevation(commonMethods.round(wprzodRzedna,3));									// przepisuje rzêdn¹ do nastêpnego wstecz
 					
 				} else {																					//ostatni wprzód i max odchy³ka
@@ -114,22 +114,22 @@ public class Calculating {
 		}
 		for(int i=0; i<secondDeltaHighList.size(); i++) {
 			Integer temp = secondDeltaHighList.get(i);
-			if(temp==0 && temp != null)
+			if(temp != null && temp==0)
 				temp = firstDeltaHeightList.get(i);
 			if(temp != null)
 			secondSum+=temp;
 			else secondSum+=firstDeltaHeightList.get(i);
 		}
-		double startPoint =0;
-		double endPoint = 0;
+		double startPointElevation = 0;
+		double endPointElevation = 0;
 		for(Sight sight:model.getLevellingData()) {
 			if(sight.isLock()) {
 				if(sight.isBackSight())
-					startPoint = sight.getElevation();
-				else endPoint = sight.getElevation();
+					startPointElevation = sight.getElevation();
+				else endPointElevation = sight.getElevation();
 			}
 		}
-		double theoreticalDisparity = (double)(endPoint-startPoint)*1000;
+		double theoreticalDisparity = (double)(endPointElevation-startPointElevation)*1000;
 		return ((double)(firstSum+secondSum)/2) - theoreticalDisparity;
 	}
 	
@@ -145,7 +145,7 @@ public class Calculating {
 		for(int i=0; i<data.size(); i++) {
 			odczyt=data.get(i);
 			
-			if(odczyt.isBackSight) {																		// odczyty wstecz
+			if(odczyt.isBackSight()) {																		// odczyty wstecz
 					double wsteczRzedna = odczyt.getElevation();
 					double maxRzedna = wsteczRzedna;
 					double minRzedna = wsteczRzedna;
@@ -154,10 +154,10 @@ public class Calculating {
 					int count = i;
 					boolean hasPosrednie = false;
 					ListIterator<Sight> it = data.listIterator(i+1);
-					while(it.hasNext() && it.next().isBackSight==false) {
+					while(it.hasNext() && it.next().isBackSight()==false) {
 						count++;
 						Sight nextOdczyt = it.previous();
-						if(nextOdczyt.isSightIntermediate) {
+						if(nextOdczyt.isIntermediate()) {
 							hasPosrednie = true;
 						}
 						if(nextOdczyt.getElevation() < minRzedna) {
@@ -191,13 +191,13 @@ public class Calculating {
 					odczyt.setBackOrForeSight1(new Integer(readed));
 			}
 			
-			if(odczyt.isBackSight==false) {		// odczyty wprzód i poœrednie
+			if(odczyt.isBackSight()==false) {		// odczyty wprzód i poœrednie
 				Sight lastWstecz = commonMethods.lastBackSight(i);
 				
 				double odczytDouble =  ((double)lastWstecz.getBackOrForeSight1()/1000)+lastWstecz.getElevation()-odczyt.getElevation();
 				odczytDouble = commonMethods.round(odczytDouble, 3);
 				int odczytInt = (int)(odczytDouble*1000);
-				if(odczyt.isSightIntermediate) {			// poœrednie
+				if(odczyt.isIntermediate()) {			// poœrednie
 					odczyt.setIntermediateSight1(odczytInt);
 				} else {									// wprzod
 						if(wprzodIndex<scatterArray.length)
@@ -290,19 +290,19 @@ public class Calculating {
 		for(int i=0; i<data.size(); i++) {
 			odczyt=data.get(i);
 			
-			if(odczyt.isBackSight && odczyt.getBackOrForeSight1()==null && odczyt.getElevation()!=null) {	// ustalenie odczytu wstecz na podstawie œredniej z poœrednich i wprzód
+			if(odczyt.isBackSight() && odczyt.getBackOrForeSight1()==null && odczyt.getElevation()!=null) {	// ustalenie odczytu wstecz na podstawie œredniej z poœrednich i wprzód
 				ListIterator<Sight> it = data.listIterator(i+1);
 				int count = 0;
 				int sum = 0;
 				double minRzedna = odczyt.getElevation();
 				double maxRzedna = odczyt.getElevation();
-				while(it.hasNext() && it.next().isBackSight==false) {
+				while(it.hasNext() && it.next().isBackSight()==false) {
 					Sight nextOdczyt = it.previous();
 					if(nextOdczyt.getElevation()<minRzedna)
 						minRzedna = nextOdczyt.getElevation();
 					if(nextOdczyt.getElevation()>maxRzedna)
 						maxRzedna = nextOdczyt.getElevation();
-					if(nextOdczyt.isSightIntermediate ) {
+					if(nextOdczyt.isIntermediate() ) {
 						if(nextOdczyt.getIntermediateSight1()!=null && nextOdczyt.getElevation()!=null) {
 							count++;
 							int wsteczOdczyt = (int)commonMethods.round((nextOdczyt.getElevation()*1000), 3) + nextOdczyt.getIntermediateSight1() - (int)commonMethods.round((odczyt.getElevation()*1000), 3);
@@ -326,10 +326,10 @@ public class Calculating {
 				}
 			}
 			
-			if(!odczyt.isBackSight && odczyt.getElevation()!=null && ((odczyt.isSightIntermediate && odczyt.getIntermediateSight1()==null) || (!odczyt.isSightIntermediate && odczyt.getBackOrForeSight1()==null))) {
+			if(!odczyt.isBackSight() && odczyt.getElevation()!=null && ((odczyt.isIntermediate() && odczyt.getIntermediateSight1()==null) || (!odczyt.isIntermediate() && odczyt.getBackOrForeSight1()==null))) {
 				Sight lastWstecz = commonMethods.lastBackSight(i);
 				int value = lastWstecz.getBackOrForeSight1() +  (int)commonMethods.round((lastWstecz.getElevation()*1000), 3) - (int)commonMethods.round((odczyt.getElevation()*1000), 3);
-				if(odczyt.isSightIntermediate) 
+				if(odczyt.isIntermediate()) 
 					odczyt.setIntermediateSight1(value);
 				 else
 					 odczyt.setBackOrForeSight1(value);
@@ -346,7 +346,7 @@ public class Calculating {
 		int shift = 0;
 		for(int i=0; i<data.size(); i++) {
 			odczyt=data.get(i);
-			if(odczyt.isBackSight) {
+			if(odczyt.isBackSight()) {
 				int count = 0;
 				int sum = 0;
 				if(odczyt.getBackOrForeSight1() != null && odczyt.getBackOrForeSight2() != null) {
@@ -355,9 +355,9 @@ public class Calculating {
 					sum+=shiftWs;
 				}
 				ListIterator<Sight> it = data.listIterator(i+1);
-				while(it.hasNext() && it.next().isBackSight==false) {
+				while(it.hasNext() && it.next().isBackSight()==false) {
 					Sight nextOdczyt = it.previous();
-					if(nextOdczyt.isSightIntermediate) {
+					if(nextOdczyt.isIntermediate()) {
 						if(nextOdczyt.getIntermediateSight1()!=null && nextOdczyt.getIntermediateSight2()!=null) {
 							int shiftP = nextOdczyt.getIntermediateSight1() - nextOdczyt.getIntermediateSight2();
 							count++;
@@ -380,10 +380,10 @@ public class Calculating {
 					}
 				} else shift= 0;
 			}
-			if(!odczyt.isBackSight && shift!=0) {
-				if(odczyt.isSightIntermediate && odczyt.getIntermediateSight2()==null)
+			if(!odczyt.isBackSight() && shift!=0) {
+				if(odczyt.isIntermediate() && odczyt.getIntermediateSight2()==null)
 					odczyt.setIntermediateSight2(odczyt.getIntermediateSight1()-shift+randomShift());
-				if(!odczyt.isSightIntermediate && odczyt.getBackOrForeSight2()==null)
+				if(!odczyt.isIntermediate() && odczyt.getBackOrForeSight2()==null)
 					odczyt.setBackOrForeSight2(odczyt.getBackOrForeSight1()-shift+randomShift());
 			}
 			

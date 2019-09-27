@@ -43,18 +43,18 @@ public class SecondCalculating {
 		int shift;
 		List<Sight> data = model.getLevellingData();
 		Sight odczyt=data.get(index);
-		if(odczyt.isBackSight) {
+		if(odczyt.isBackSight()) {
 			int wsteczOdczyt = odczyt.getBackOrForeSight1();
 			int maxOdczyt =  wsteczOdczyt;
 			int minOdczyt =  wsteczOdczyt;
 			int deltaMax = 0;
 			int deltaMin = 0;
 			ListIterator<Sight> it = data.listIterator(index+1);
-			while(it.hasNext() && it.next().isBackSight==false) {
+			while(it.hasNext() && it.next().isBackSight()==false) {
 				Sight nextOdczyt = it.previous();
 				it.next();
 				int switchValue;
-				if(nextOdczyt.isSightIntermediate)
+				if(nextOdczyt.isIntermediate())
 					switchValue = nextOdczyt.getIntermediateSight1();
 				else switchValue = nextOdczyt.getBackOrForeSight1();
 				
@@ -85,10 +85,10 @@ public class SecondCalculating {
 			int secondWstecz =odczyt.getBackOrForeSight1()+shift+(randomBetween(0, 1) * (random.nextBoolean() ? 1:-1));
 			odczyt.setBackOrForeSight2(secondWstecz);
 			 it = data.listIterator(index+1);
-			while(it.hasNext() && it.next().isBackSight==false) {
+			while(it.hasNext() && ! it.next().isBackSight()) {
 				Sight nextOdczyt = it.previous();
 				it.next();
-				if(nextOdczyt.isSightIntermediate) {
+				if(nextOdczyt.isIntermediate()) {
 					int secondValue = nextOdczyt.getIntermediateSight1() + shift+randomShift();
 					nextOdczyt.setIntermediateSight2(secondValue);
 				} else {
@@ -112,11 +112,11 @@ public class SecondCalculating {
 		List<Sight> data = model.getLevellingData();
 		for(int i=0; i<data.size(); i++) {
 			Sight odczyt = data.get(i);
-			if(odczyt.isBackSight) {
+			if(odczyt.isBackSight()) {
 				if(odczyt.getBackOrForeSight2()==null)
 					calcSecondValue(i);
 			} else {
-				if(odczyt.isSightIntermediate) {
+				if(odczyt.isIntermediate()) {
 					if(odczyt.getIntermediateSight2()==null)
 						calcSecondValue(i);
 				} else {

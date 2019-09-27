@@ -30,7 +30,7 @@ public class CommonMethods {
 		List<Sight> data = model.getLevellingData();
 		ListIterator<Sight> it = data.listIterator(index);
 		while(lastBackSight == null && it.hasPrevious()) {
-			if(it.previous().isBackSight)
+			if(it.previous().isBackSight())
 				lastBackSight=it.next();
 		}
 		return lastBackSight;
@@ -41,26 +41,26 @@ public class CommonMethods {
 		List<Sight> data = model.getLevellingData();
 		ListIterator<Sight> it = data.listIterator(index);
 		while(nextBackSight == null && it.hasNext()) {
-			if(it.next().isBackSight)
+			if(it.next().isBackSight())
 				nextBackSight=it.previous();
 		}
 		return nextBackSight;
 	}
 	
-	public void calcDifferences(Sight odczyt, int index) {								// OBLICZENIE RÓ¯NICY MIÊDZY DWOMA PO£O¯ENIAMI
-		Sight lastWstecz=lastBackSight(index);
-		if(odczyt.isSightIntermediate && odczyt.getIntermediateSight1()!=null && odczyt.getIntermediateSight2()!=null) {
-			if(lastWstecz.getBackOrForeSight1()!=null && lastWstecz.getBackOrForeSight2()!=null) {
-				int firstSuperiority = lastWstecz.getBackOrForeSight1() - odczyt.getIntermediateSight1();
-				int secondSuperiority = lastWstecz.getBackOrForeSight2() - odczyt.getIntermediateSight2();
-				odczyt.setDifference(secondSuperiority - firstSuperiority);
+	public void calcDifferences(Sight sight, int index) {	// calculate differences between first and second survey for chosen sight
+		Sight lastBackSight=lastBackSight(index);
+		if(sight.isIntermediate() && sight.getIntermediateSight1()!=null && sight.getIntermediateSight2()!=null) {
+			if(lastBackSight.getBackOrForeSight1()!=null && lastBackSight.getBackOrForeSight2()!=null) {
+				int firstSurvey = lastBackSight.getBackOrForeSight1() - sight.getIntermediateSight1();
+				int secondSurvey = lastBackSight.getBackOrForeSight2() - sight.getIntermediateSight2();
+				sight.setDifference(secondSurvey - firstSurvey);
 			}
 		}
-		if(! odczyt.isSightIntermediate && odczyt.getBackOrForeSight1()!=null && odczyt.getBackOrForeSight2()!=null) {
-			if(lastWstecz.getBackOrForeSight1()!=null && lastWstecz.getBackOrForeSight2()!=null) {
-				int firstSuperiority = lastWstecz.getBackOrForeSight1() - odczyt.getBackOrForeSight1();
-				int secondSuperiority = lastWstecz.getBackOrForeSight2() - odczyt.getBackOrForeSight2();
-				odczyt.setDifference(secondSuperiority - firstSuperiority);
+		if(! sight.isIntermediate() && sight.getBackOrForeSight1()!=null && sight.getBackOrForeSight2()!=null) {
+			if(lastBackSight.getBackOrForeSight1()!=null && lastBackSight.getBackOrForeSight2()!=null) {
+				int firstSurvey = lastBackSight.getBackOrForeSight1() - sight.getBackOrForeSight1();
+				int secondSurvey = lastBackSight.getBackOrForeSight2() - sight.getBackOrForeSight2();
+				sight.setDifference(secondSurvey - firstSurvey);
 			}
 		}
 	}

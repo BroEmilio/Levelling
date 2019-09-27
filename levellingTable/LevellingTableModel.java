@@ -221,7 +221,7 @@ public class LevellingTableModel extends AbstractTableModel {
 		boolean newStatus = ! sight.isLock();
 		if(sight.isBackSight() && rowIndex>0)
 			return;
-		if(sight != null && ! sight.isIntermediate())
+		if( ! sight.isIntermediate())
 			sight.setLock(newStatus);
 	}
 	

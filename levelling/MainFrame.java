@@ -379,7 +379,7 @@ public class MainFrame extends JFrame {
             Sight odczyt = model.getSightAtIndex(indexInModel);
             if(object != null) {
             	 table.getCellEditor().stopCellEditing(); // store user input
-            	 if(col==7 && ! odczyt.isBackSight);
+            	 if(col==7 && ! odczyt.isBackSight());
             	 table.setValueAt((Double)object, ++row, col);
             	 row++;
             }

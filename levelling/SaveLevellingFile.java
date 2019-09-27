@@ -116,11 +116,11 @@ public class SaveLevellingFile {
 			if(i+1<sortedData.size())
 				nextOdczyt=sortedData.get(i+1);
 			else break;
-			if(odczyt.isBackSight && nextOdczyt.isSightIntermediate) {
+			if(odczyt.isBackSight() && nextOdczyt.isIntermediate()) {
 				Sight nextWprzod=null;
 				int j = i+1;
 				while(nextWprzod==null && j<sortedData.size()) {
-					if(sortedData.get(j).isBackSight == false && sortedData.get(j).isSightIntermediate == false) {
+					if(sortedData.get(j).isBackSight() == false && sortedData.get(j).isIntermediate() == false) {
 						nextWprzod = sortedData.get(j);
 					} else j++;
 				}

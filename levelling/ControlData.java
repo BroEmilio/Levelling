@@ -27,7 +27,7 @@ public class ControlData {
 			sight = data.get(i);
 			
 				if(! sight.isIntermediate() && (sight.getBackOrForeSight1()!=null || sight.getElevation()!=null)) { // count back and fore sights 
-					if(sight.isBackSight)
+					if(sight.isBackSight())
 						backSightsCount++;
 					else foreSightsCount++;
 				}

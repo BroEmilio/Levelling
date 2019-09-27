@@ -124,7 +124,7 @@ public class LoadLevellingFile {
 		ListIterator<Sight> it = data.listIterator(index);
 		while(it.hasPrevious()) {
 			Sight sight = it.previous();
-			if(sight.isBackSight==false &&  sight.isSightIntermediate==false) {
+			if(! sight.isBackSight() && ! sight.isIntermediate()) {
 				return sight;
 			}
 		}

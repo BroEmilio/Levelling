@@ -1,13 +1,13 @@
 package levelling;
 
 public class Sight {
-	String pointNumber;
-	Integer backOrForeSight1,backOrForeSight2, intermediateSight1, intermediateSight2, difference;
-	Double elevation;
-	Boolean isSightLock;
-	Boolean isSightIntermediate;
-	Boolean isSightEditable;
-	Boolean isBackSight;
+	private String pointNumber;
+	private Integer backOrForeSight1,backOrForeSight2, intermediateSight1, intermediateSight2, difference;
+	private Double elevation;
+	private Boolean isSightLock;
+	private Boolean isSightIntermediate;
+	private Boolean isSightEditable;
+	private Boolean isBackSight;
 
 	public Sight(){
 		 isSightLock = false;
