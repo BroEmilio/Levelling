@@ -47,7 +47,7 @@ public class CommonMethods {
 		return nextBackSight;
 	}
 	
-	public void calcDifferences(Sight sight, int index) {	// calculate differences between first and second survey for chosen sight
+	public void calculateAndSetDifferenceBetweenFirstAndSecondSurvey(Sight sight, int index) {	// calculate difference between first and second survey for chosen sight
 		Sight lastBackSight=lastBackSight(index);
 		if(sight.isIntermediate() && sight.getIntermediateSight1()!=null && sight.getIntermediateSight2()!=null) {
 			if(lastBackSight.getBackOrForeSight1()!=null && lastBackSight.getBackOrForeSight2()!=null) {

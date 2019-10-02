@@ -30,49 +30,46 @@ public class Calculating {
 	
 	//-------------------------------------------------- CLASSIC CALCULATING ---------------------------------------------------------------------------------------------------
 	
-	public void classicCalc() {																																						// OBLICZENIA W TRYBIE KLASYCZNYM
+	public void classicCalc() {		// calculate leveling in classic mode
 		List<Integer> firstDeltaHeightList = getHeightDifferencesList(1);
 		List<Integer> secondDeltaHeightList = getHeightDifferencesList(2);
 		double levellingDisparity = calculateLevellingDisparity(firstDeltaHeightList, secondDeltaHeightList);
 		Integer[] scatterArray = commonMethods.scatterDisparity(levellingDisparity, levellingMetaData.getForeSightsCount());
-		int wprzodIndex = 0;
+		int foreSightIndex = 0;
 		List<Sight> data = model.getLevellingData();
-		Sight odczyt=null;
+		Sight sight=null;
 		for(int i=0; i<data.size(); i++) {
-			odczyt = data.get(i);
-			odczyt.setDifference(null);
-			if(! odczyt.isBackSight()) {																	//odczyty wprzód i poœrednie
-				Sight lastWstecz = commonMethods.lastBackSight(i);
-				if(! odczyt.isLock()) {	
-					double wprzodRzedna;
-					if(! odczyt.isIntermediate()) {														// odczyty wprzod
-						wprzodRzedna = lastWstecz.getElevation() + ((double)lastWstecz.getBackOrForeSight1()/1000) - ((double)odczyt.getBackOrForeSight1()/1000) - ((double)scatterArray[wprzodIndex]/1000);
-						wprzodIndex++;
+			sight = data.get(i);
+			sight.setDifference(null);
+			if(! sight.isBackSight()) {		// calculate elevations for fore sights and intermediate sights
+				Sight lastBackSight = commonMethods.lastBackSight(i);
+				if(! sight.isLock()) {	
+					double calculatedElevation;
+					if(! sight.isIntermediate()) {		// fore sights
+						calculatedElevation = lastBackSight.getElevation() + ((double)lastBackSight.getBackOrForeSight1()/1000) - ((double)sight.getBackOrForeSight1()/1000) - ((double)scatterArray[foreSightIndex]/1000);
+						foreSightIndex++;
 					}
-					else {																						// odczyty poœrednie
-						wprzodRzedna = lastWstecz.getElevation() + ((double)lastWstecz.getBackOrForeSight1()/1000) - ((double)odczyt.getIntermediateSight1()/1000);
+					else {								// intermediate sights
+						calculatedElevation = lastBackSight.getElevation() + ((double)lastBackSight.getBackOrForeSight1()/1000) - ((double)sight.getIntermediateSight1()/1000);
 					}
-					commonMethods.calcDifferences(odczyt, i);
-					if(odczyt.getDifference() != null) {												// dodanie b³edu pomiêdzy dwoma po³o¿eniami
-						BigDecimal halfBlad = BigDecimal.valueOf(((double)odczyt.getDifference()/1000)/2).setScale(4,RoundingMode.HALF_EVEN);
-						halfBlad = halfBlad.setScale(3, RoundingMode.HALF_EVEN);
-						wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
-						if(! odczyt.isIntermediate() && (firstDeltaHeightList.get(wprzodIndex-1)==0 || secondDeltaHeightList.get(wprzodIndex-1)==0)) {
-							wprzodRzedna = wprzodRzedna + halfBlad.doubleValue();
-						}
+					commonMethods.calculateAndSetDifferenceBetweenFirstAndSecondSurvey(sight, i);
+					if(sight.getDifference() != null) {		// add half value of difference between first and second surveys
+						BigDecimal halfDifference = BigDecimal.valueOf(((double)sight.getDifference()/1000)/2).setScale(4,RoundingMode.HALF_EVEN);
+						halfDifference = halfDifference.setScale(3, RoundingMode.HALF_EVEN);
+						calculatedElevation = calculatedElevation + halfDifference.doubleValue();
 					}
-					odczyt.setElevation(commonMethods.round(wprzodRzedna,3));
-					Sight nextWstecz = commonMethods.nextBackSight(i);
-					if(nextWstecz != null && ! odczyt.isIntermediate())
-						nextWstecz.setElevation(commonMethods.round(wprzodRzedna,3));									// przepisuje rzêdn¹ do nastêpnego wstecz
+					sight.setElevation(commonMethods.round(calculatedElevation,3));
+					Sight nextBackSight = commonMethods.nextBackSight(i);
+					if(nextBackSight != null && ! sight.isIntermediate())
+						nextBackSight.setElevation(commonMethods.round(calculatedElevation,3)); // sets the same elevation for next back sight as last calculated fore sight
 					
-				} else {																					//ostatni wprzód i max odchy³ka
-					commonMethods.calcDifferences(odczyt, i);
+				} else { // set difference for last sight(lock) and display ending window
+					commonMethods.calculateAndSetDifferenceBetweenFirstAndSecondSurvey(sight, i);
 					double maxDisparity = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
 					showEndingWindow(commonMethods.round(levellingDisparity,2), commonMethods.round(maxDisparity,2));
 				}
 			}
-		}		// koniec for-a
+		}
 	}
 	
 	public List<Integer> getHeightDifferencesList(int firstOrSecondSight) {	// Generate list of height differences for first or second sights

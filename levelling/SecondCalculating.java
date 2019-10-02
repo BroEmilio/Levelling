@@ -97,7 +97,7 @@ public class SecondCalculating {
 				}
 			}
 		} else {  // obliczenie roznic dla odczytow wprzod i posrednich
-			commonMethods.calcDifferences(odczyt, index);
+			commonMethods.calculateAndSetDifferenceBetweenFirstAndSecondSurvey(odczyt, index);
 		}
 	} 
 	
