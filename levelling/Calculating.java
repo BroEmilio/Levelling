@@ -23,14 +23,14 @@ public class Calculating {
 			complementCalc();
 		else {
 			if(calculationMode==LevellingMetaData.CLASSIC_MODE)
-				classicCalc();
-			else creationCalc();
+				classicCalculating();
+			else creationCalculating();
 		}
 	}
 	
 	//-------------------------------------------------- CLASSIC CALCULATING ---------------------------------------------------------------------------------------------------
 	
-	public void classicCalc() {		// calculate leveling in classic mode
+	public void classicCalculating() {		// calculate leveling in classic mode
 		List<Integer> firstDeltaHeightList = getHeightDifferencesList(1);
 		List<Integer> secondDeltaHeightList = getHeightDifferencesList(2);
 		double levellingDisparity = calculateLevellingDisparity(firstDeltaHeightList, secondDeltaHeightList);
@@ -61,7 +61,7 @@ public class Calculating {
 					sight.setElevation(commonMethods.round(calculatedElevation,3));
 					Sight nextBackSight = commonMethods.nextBackSight(i);
 					if(nextBackSight != null && ! sight.isIntermediate())
-						nextBackSight.setElevation(commonMethods.round(calculatedElevation,3)); // sets the same elevation for next back sight as last calculated fore sight
+						nextBackSight.setElevation(commonMethods.round(calculatedElevation,3)); // set the same elevation for next back sight as last calculated fore sight
 					
 				} else { // set difference for last sight(lock) and display ending window
 					commonMethods.calculateAndSetDifferenceBetweenFirstAndSecondSurvey(sight, i);
@@ -99,7 +99,7 @@ public class Calculating {
 		return deltaHighList;
 	}
 	
-	double calculateLevellingDisparity(List<Integer> firstDeltaHeightList, List<Integer> secondDeltaHighList) {			// OBLICZENIE ODCHY£KI NIWELACJI
+	double calculateLevellingDisparity(List<Integer> firstDeltaHeightList, List<Integer> secondDeltaHighList) {
 		int firstSum = 0;
 		int secondSum = 0;
 		for(int i=0; i<firstDeltaHeightList.size(); i++) {
@@ -132,100 +132,100 @@ public class Calculating {
 	
 	//-------------------------------------------------- CREATION CALCULATING ----------------------------------------------------------------------------
 	
-	public void creationCalc() {																									// OBLICZENIA W TRYBIE KREOWANIA
-		double maxDisparity = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
-		int disparity = randomDisparity(maxDisparity);
-		Integer[] scatterArray = commonMethods.scatterDisparity((double)disparity, levellingMetaData.getForeSightsCount());
-		int wprzodIndex = 0;
+	public void creationCalculating() {																									// OBLICZENIA W TRYBIE KREOWANIA
+		double maxClosingErrorOfLevelling = 20 * Math.sqrt((levellingMetaData.getLengthLeveling()/1000));
+		int closingErrorOfLevelling = randomClosingErrorValue(maxClosingErrorOfLevelling);
+		Integer[] scatterArray = commonMethods.scatterDisparity((double)closingErrorOfLevelling, levellingMetaData.getForeSightsCount());
+		int foreSightIndex = 0;
 		List<Sight> data = model.getLevellingData();
-		Sight odczyt=null;
+		Sight sight=null;
 		for(int i=0; i<data.size(); i++) {
-			odczyt=data.get(i);
+			sight=data.get(i);
 			
-			if(odczyt.isBackSight()) {																		// odczyty wstecz
-					double wsteczRzedna = odczyt.getElevation();
-					double maxRzedna = wsteczRzedna;
-					double minRzedna = wsteczRzedna;
+			if(sight.isBackSight()) {											// estimating value for BACKSIGHTS
+					double backSightElevation = sight.getElevation();
+					double maxElevation = backSightElevation;
+					double minElevation = backSightElevation;
 					int minIndex = i;
 					int maxIndex = i;
 					int count = i;
-					boolean hasPosrednie = false;
+					boolean hasIntermediateSights = false;
 					ListIterator<Sight> it = data.listIterator(i+1);
-					while(it.hasNext() && it.next().isBackSight()==false) {
+					while(it.hasNext() && it.next().isBackSight()==false) { //check for min and max elevation and them index
 						count++;
-						Sight nextOdczyt = it.previous();
-						if(nextOdczyt.isIntermediate()) {
-							hasPosrednie = true;
+						Sight nextSight = it.previous();
+						if(nextSight.isIntermediate()) {
+							hasIntermediateSights = true;
 						}
-						if(nextOdczyt.getElevation() < minRzedna) {
-							minRzedna = nextOdczyt.getElevation();
+						if(nextSight.getElevation() < minElevation) {
+							minElevation = nextSight.getElevation();
 							minIndex = count;
 						}
-						if(nextOdczyt.getElevation() > maxRzedna) {
-							maxRzedna = nextOdczyt.getElevation();
+						if(nextSight.getElevation() > maxElevation) {
+							maxElevation = nextSight.getElevation();
 							maxIndex = count;
 						}
 						
 						it.next();
 					}
-					double maxSuperiority = commonMethods.round((maxRzedna - minRzedna), 3);
+					double maxSuperiority = commonMethods.round((maxElevation - minElevation), 3);
 					if(maxSuperiority >= 5) {
 						JOptionPane.showMessageDialog(null,
-						        "Za du¿a ró¿nica wysokoœci("+commonMethods.round((maxRzedna-minRzedna),3)+"m) pomiêdzy rzêdn¹ "+minRzedna+"m(wiersz "+(minIndex+1)+") a rzêdn¹ "+maxRzedna+"m(wiersz "+(maxIndex+1)+").\n"+
+						        "Za du¿a ró¿nica wysokoœci("+commonMethods.round((maxElevation-minElevation),3)+"m) pomiêdzy rzêdn¹ "+minElevation+"m(wiersz "+(minIndex+1)+") a rzêdn¹ "+maxElevation+"m(wiersz "+(maxIndex+1)+").\n"+
 						        "Maksmymalna ró¿nica mo¿e wynosiæ do 5.000 m ( mo¿e dodaj jakieœ przejœcie ).",
 						        "Za du¿e przewy¿szenie",
 						        JOptionPane.INFORMATION_MESSAGE);
 						break;
 					}
 					
-					int readed;
-					if(hasPosrednie) {
-						readed = randomWsteczForPosredni(i, minRzedna, maxRzedna);
+					int estimatedValue;
+					if(hasIntermediateSights) {
+						estimatedValue = randomBacksightValueBasingOnIntermediets(i, minElevation, maxElevation);
 					} else 	{
-						double superiority = wsteczRzedna - data.get(i+1).getElevation();
-						readed = randomOdczyt(superiority);
+						double elevationsDisparity = backSightElevation - data.get(i+1).getElevation();
+						estimatedValue = randomBacksightValueBasingOnElevationsDisparity(elevationsDisparity);
 					}
-					odczyt.setBackOrForeSight1(new Integer(readed));
+					sight.setBackOrForeSight1(new Integer(estimatedValue));
 			}
 			
-			if(odczyt.isBackSight()==false) {		// odczyty wprzód i poœrednie
-				Sight lastWstecz = commonMethods.lastBackSight(i);
+			if(sight.isBackSight()==false) {		// 	calculating values for FORESIGHTS and INTERMEDIATE SIGHTS
+				Sight lastBackSight = commonMethods.lastBackSight(i);
 				
-				double odczytDouble =  ((double)lastWstecz.getBackOrForeSight1()/1000)+lastWstecz.getElevation()-odczyt.getElevation();
-				odczytDouble = commonMethods.round(odczytDouble, 3);
-				int odczytInt = (int)(odczytDouble*1000);
-				if(odczyt.isIntermediate()) {			// poœrednie
-					odczyt.setIntermediateSight1(odczytInt);
-				} else {									// wprzod
-						if(wprzodIndex<scatterArray.length)
-							odczytInt -= scatterArray[wprzodIndex];
-						odczyt.setBackOrForeSight1(odczytInt);
-						wprzodIndex++;
+				double sightValueAsDouble =  ((double)lastBackSight.getBackOrForeSight1()/1000)+lastBackSight.getElevation()-sight.getElevation();
+				sightValueAsDouble = commonMethods.round(sightValueAsDouble, 3);
+				int sightValueAsInteger = (int)(sightValueAsDouble*1000);
+				if(sight.isIntermediate()) {			// set for intermediate sights
+					sight.setIntermediateSight1(sightValueAsInteger);
+				} else {								// set for foresights
+						if(foreSightIndex<scatterArray.length)
+							sightValueAsInteger -= scatterArray[foreSightIndex];
+						sight.setBackOrForeSight1(sightValueAsInteger);
+						foreSightIndex++;
 				}
 				
 			}
-		} // koniec for-a
-	showEndingWindow(commonMethods.round(disparity,1), commonMethods.round(maxDisparity,1));
+		}
+	showEndingWindow(commonMethods.round(closingErrorOfLevelling,1), commonMethods.round(maxClosingErrorOfLevelling,1));
 	}
 	
-	public int randomDisparity(double maxDisparity) {																// LOSOWANIE WARTOŒCI ODCHY£KI NIWELACJI
+	public int randomClosingErrorValue(double maxClosingError) {	// random closing error of levelling (disparity between sum of backsights and sum of foresights)
 		Random random = new Random();
-		int randomDisparity= 0;
-		double averageDisparity = commonMethods.round((maxDisparity*0.40), 3);
-		int max = (int)(averageDisparity);
+		int randomClosingError= 0;
+		double maxErrorAsDouble = commonMethods.round((maxClosingError*0.40), 3);
+		int maxErrorAsInteger = (int)(maxErrorAsDouble);
 		
-		randomDisparity = (random.nextInt(max)+1) * ( random.nextBoolean() ? 1 : -1 );
+		randomClosingError = (random.nextInt(maxErrorAsInteger)+1) * ( random.nextBoolean() ? 1 : -1 );
 		
-		return randomDisparity;
+		return randomClosingError;
 	}
 	
-	public int randomWsteczForPosredni(int index,  double minRzedna, double maxRzedna) {			// LOSOWANIE WARTOŒCI ODCZYTU WSTECZ WED£UG PUNKTÓW POŒREDNICH
+	public int randomBacksightValueBasingOnIntermediets(int index,  double minElevation, double maxElevation) {
 		Random random = new Random();
-		int randomOdczyt =-1;
-		Sight lastWstecz= commonMethods.lastBackSight(index+1);
-		int min = (int)(Math.abs((maxRzedna - lastWstecz.getElevation())*1000));
-		int max = 4999 - (int)(Math.abs((lastWstecz.getElevation()-minRzedna)*1000));
-			if((max-min)>1500) {													// CHECK 
+		int randomSight =-1;
+		Sight lastBackSight= commonMethods.lastBackSight(index+1);
+		int min = (int)(Math.abs((maxElevation - lastBackSight.getElevation())*1000)); // minimum value of sight for inserted elevations
+		int max = 4999 - (int)(Math.abs((lastBackSight.getElevation()-minElevation)*1000)); // // maximum value of sight for inserted elevations
+			if((max-min)>1500) {	// ensuring the most natural random value
 				if(min>=0 && min<=1000) {
 					min = min+800;
 					max = min+700;
@@ -238,45 +238,45 @@ public class Calculating {
 				}
 			}
 		
-		randomOdczyt = random.nextInt((max-min)+1) + min;
-		return randomOdczyt;
+		randomSight = random.nextInt((max-min)+1) + min;
+		return randomSight;
 	}
 	
-	public int randomOdczyt(double maxSuperiority) {									// LOSOWANIE WARTOŒCI ODCZYTU WSTECZ  WED£UG PRZEWY¯SZENIA
+	public int randomBacksightValueBasingOnElevationsDisparity(double elevationsDisparity) {
 		Random random = new Random();
-		int randomOdczyt= -1;
-		int intSuperiority = (int)(maxSuperiority*1000);
+		int randomValue = -1;
+		int disparity = (int)(elevationsDisparity*1000);
 		
-		if(intSuperiority>=5000 || intSuperiority<=-5000)
-			return randomOdczyt;
+		if(disparity>=5000 || disparity<=-5000)	// disparity out of range
+			return -1;
 		
-		if(intSuperiority>=-1000 && intSuperiority<=1000) {
+		if(disparity>=-1000 && disparity<=1000) {
 			int rand = random.nextInt(400);
-			if(intSuperiority>0) {
-				randomOdczyt=1500 - rand;
-			} else randomOdczyt = 1500 + rand;
+			if(disparity>0) {
+				randomValue=1500 - rand;
+			} else randomValue = 1500 + rand;
 		}
 		
-		if(intSuperiority>1000 && intSuperiority<3000) {
-			int min = 1501-(int)(Math.abs(intSuperiority)/2);
-			randomOdczyt = random.nextInt(((1501-min)+1))+min;
+		if(disparity>1000 && disparity<3000) {
+			int min = 1501-(int)(Math.abs(disparity)/2);
+			randomValue = random.nextInt(((1501-min)+1))+min;
 		}
 		
-		if(-3000<intSuperiority && intSuperiority<-1000) {
-			int max = Math.abs(intSuperiority)+(int)(Math.abs(intSuperiority)/2);
-			randomOdczyt = random.nextInt((max-Math.abs(intSuperiority))+1)+Math.abs(intSuperiority);
+		if(-3000<disparity && disparity<-1000) {
+			int max = Math.abs(disparity)+(int)(Math.abs(disparity)/2);
+			randomValue = random.nextInt((max-Math.abs(disparity))+1)+Math.abs(disparity);
 		}
 		
-		if(3000<=intSuperiority && intSuperiority<5000) {
-			int max = 4990 - intSuperiority;
-			randomOdczyt =  random.nextInt((max-10)+1)+10;
+		if(3000<=disparity && disparity<5000) {
+			int max = 4990 - disparity;
+			randomValue =  random.nextInt((max-10)+1)+10;
 		}
 		
-		if(-5000<intSuperiority && intSuperiority<=-3000) {
-			int min = Math.abs(intSuperiority);
-			randomOdczyt = random.nextInt((4997-min)+1)+min;
+		if(-5000<disparity && disparity<=-3000) {
+			int min = Math.abs(disparity);
+			randomValue = random.nextInt((4997-min)+1)+min;
 		}
-		return randomOdczyt;
+		return randomValue;
 	}
 	
 	//----------------------------------------------- COMPLEMENT CALCULATING -------------------------------------------------------------------------
@@ -318,7 +318,7 @@ public class Calculating {
 					int wsteczAverage = (int)sum/count;
 					odczyt.setBackOrForeSight1(wsteczAverage);
 				} else {
-					int wsteczRandom = randomWsteczForPosredni(i, minRzedna, maxRzedna);
+					int wsteczRandom = randomBacksightValueBasingOnIntermediets(i, minRzedna, maxRzedna);
 					odczyt.setBackOrForeSight1(wsteczRandom);
 				}
 			}
@@ -333,7 +333,7 @@ public class Calculating {
 			}
 		} // end of for
 		complementSecondValues();
-		classicCalc();
+		classicCalculating();
 	}
 	
 	public void complementSecondValues() {

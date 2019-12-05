@@ -104,7 +104,7 @@ public class SecondCalculating {
 	public void secondCalc() {
 		for(int i=0; i<model.getLevellingData().size(); i++)
 			calcSecondValue(i);
-		calc.classicCalc();
+		calc.classicCalculating();
 	}
 	
 	public void complementSecondCalc() {
@@ -125,7 +125,7 @@ public class SecondCalculating {
 				}
 			}
 		} //end of for
-		calc.classicCalc();
+		calc.classicCalculating();
 	}
 	
 }
