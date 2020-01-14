@@ -200,7 +200,7 @@ public class MainFrame extends JFrame {
         		if(leaveCurrentValues.isSelected())
         			secondCalc.complementSecondCalc();
         		else
-        			secondCalc.secondCalc();
+        			secondCalc.setSecondValues();
         	}
     	});
     	JLabel F5Label = new JLabel("F5");
@@ -513,8 +513,8 @@ public class MainFrame extends JFrame {
             }
         });
         
-        //@SuppressWarnings("unused")
-		//InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
+        @SuppressWarnings("unused")
+		InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
         
     }
 }

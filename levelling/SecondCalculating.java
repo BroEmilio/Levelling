@@ -5,41 +5,23 @@ import levellingTable.*;
 
 public class SecondCalculating {
 	LevellingTableModel model;
-	Calculating calc;
+	Calculating mainCalculating;
 	CommonMethods commonMethods;
 	Random random = new Random();
 	
 	public SecondCalculating(LevellingTableModel model, LevellingMetaData levellingMetaData) {
-		calc = new Calculating(model, levellingMetaData);
+		mainCalculating = new Calculating(model, levellingMetaData);
 		commonMethods = new CommonMethods(model);
 		this.model = model;
 	}
 	
-	public int randomBetween(int min, int max) {
-		int randomInt;
-		if (min > max) {
-			throw new IllegalArgumentException("max must be greater than min");
-		}
-		randomInt = random.nextInt((max - min) + 1) + min;
-		
-		return randomInt;
+	public void setSecondValues() {
+		for(int i=0; i<model.getLevellingData().size(); i++)
+			calculateSecondValues(i);
+		mainCalculating.classicCalculating();
 	}
 	
-	public int randomShift() {
-		int randomShift = 0;
-		int temp;
-		temp=random.nextInt(100);
-		if(temp<=30)
-			randomShift=0;
-		if(temp>30 && temp<=85)
-			randomShift=1;
-		if(temp>85 && temp<=100)
-			randomShift=2;
-		
-		randomShift = randomShift  * ( random.nextBoolean() ? 1 : -1 );
-		return randomShift;
-	}
-	public void calcSecondValue(int index){
+	public void calculateSecondValues(int index){
 		int shift;
 		List<Sight> data = model.getLevellingData();
 		Sight odczyt=data.get(index);
@@ -89,10 +71,10 @@ public class SecondCalculating {
 				Sight nextOdczyt = it.previous();
 				it.next();
 				if(nextOdczyt.isIntermediate()) {
-					int secondValue = nextOdczyt.getIntermediateSight1() + shift+randomShift();
+					int secondValue = nextOdczyt.getIntermediateSight1() + shift+commonMethods.randomShift();
 					nextOdczyt.setIntermediateSight2(secondValue);
 				} else {
-					int secondValue = nextOdczyt.getBackOrForeSight1() + shift+randomShift();
+					int secondValue = nextOdczyt.getBackOrForeSight1() + shift+commonMethods.randomShift();
 					nextOdczyt.setBackOrForeSight2(secondValue);
 				}
 			}
@@ -101,31 +83,35 @@ public class SecondCalculating {
 		}
 	} 
 	
-	public void secondCalc() {
-		for(int i=0; i<model.getLevellingData().size(); i++)
-			calcSecondValue(i);
-		calc.classicCalculating();
+	public int randomBetween(int min, int max) {
+		int randomInt;
+		if (min > max) {
+			throw new IllegalArgumentException("max must be greater than min");
+		}
+		randomInt = random.nextInt((max - min) + 1) + min;
+		
+		return randomInt;
 	}
 	
 	public void complementSecondCalc() {
-		calc.complementSecondValues();
+		mainCalculating.complementSecondValues();
 		List<Sight> data = model.getLevellingData();
 		for(int i=0; i<data.size(); i++) {
 			Sight odczyt = data.get(i);
 			if(odczyt.isBackSight()) {
 				if(odczyt.getBackOrForeSight2()==null)
-					calcSecondValue(i);
+					calculateSecondValues(i);
 			} else {
 				if(odczyt.isIntermediate()) {
 					if(odczyt.getIntermediateSight2()==null)
-						calcSecondValue(i);
+						calculateSecondValues(i);
 				} else {
 					if(odczyt.getBackOrForeSight2()==null)
-						calcSecondValue(i);
+						calculateSecondValues(i);
 				}
 			}
 		} //end of for
-		calc.classicCalculating();
+		mainCalculating.classicCalculating();
 	}
 	
 }

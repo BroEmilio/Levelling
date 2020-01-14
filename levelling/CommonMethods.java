@@ -47,6 +47,22 @@ public class CommonMethods {
 		return nextBackSight;
 	}
 	
+	public int randomShift() {
+		Random random = new Random();
+		int randomShift = 0;
+		int temp;
+		temp=random.nextInt(100);
+		if(temp<=30)
+			randomShift=0;
+		if(temp>30 && temp<=85)
+			randomShift=1;
+		if(temp>85 && temp<=100)
+			randomShift=2;
+		
+		randomShift = randomShift  * ( random.nextBoolean() ? 1 : -1 );
+		return randomShift;
+	}
+	
 	public void calculateAndSetDifferenceBetweenFirstAndSecondSurvey(Sight sight, int index) {	// calculate difference between first and second survey for chosen sight
 		Sight lastBackSight=lastBackSight(index);
 		if(sight.isIntermediate() && sight.getIntermediateSight1()!=null && sight.getIntermediateSight2()!=null) {

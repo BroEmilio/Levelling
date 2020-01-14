@@ -283,53 +283,54 @@ public class Calculating {
 	
 	public void complementCalc() {
 		List<Sight> data = model.getLevellingData();
-		Sight odczyt=null;
+		Sight sight=null;
 		for(int i=0; i<data.size(); i++) {
-			odczyt=data.get(i);
+			sight=data.get(i);
 			
-			if(odczyt.isBackSight() && odczyt.getBackOrForeSight1()==null && odczyt.getElevation()!=null) {	// ustalenie odczytu wstecz na podstawie œredniej z poœrednich i wprzód
+			if(sight.isBackSight() && sight.getBackOrForeSight1()==null && sight.getElevation()!=null) {	// set value of backsight basing on average of intermediate sights and foresight
 				ListIterator<Sight> it = data.listIterator(i+1);
 				int count = 0;
 				int sum = 0;
-				double minRzedna = odczyt.getElevation();
-				double maxRzedna = odczyt.getElevation();
-				while(it.hasNext() && it.next().isBackSight()==false) {
-					Sight nextOdczyt = it.previous();
-					if(nextOdczyt.getElevation()<minRzedna)
-						minRzedna = nextOdczyt.getElevation();
-					if(nextOdczyt.getElevation()>maxRzedna)
-						maxRzedna = nextOdczyt.getElevation();
-					if(nextOdczyt.isIntermediate() ) {
-						if(nextOdczyt.getIntermediateSight1()!=null && nextOdczyt.getElevation()!=null) {
+				double minElevation = sight.getElevation();
+				double maxElevation = sight.getElevation();
+				while(it.hasNext() && ! it.next().isBackSight()) {
+					Sight nextSight = it.previous();
+					if(nextSight.getElevation()<minElevation)
+						minElevation = nextSight.getElevation();
+					if(nextSight.getElevation()>maxElevation)
+						maxElevation = nextSight.getElevation();
+					if(nextSight.isIntermediate() ) {
+						if(nextSight.getIntermediateSight1()!=null && nextSight.getElevation()!=null) {
 							count++;
-							int wsteczOdczyt = (int)commonMethods.round((nextOdczyt.getElevation()*1000), 3) + nextOdczyt.getIntermediateSight1() - (int)commonMethods.round((odczyt.getElevation()*1000), 3);
-							sum += wsteczOdczyt;
+							int backSightValue = (int)commonMethods.round((nextSight.getElevation()*1000), 3) + nextSight.getIntermediateSight1() - (int)commonMethods.round((sight.getElevation()*1000), 3);
+							sum += backSightValue;
 						}
 					} else {
-						if(nextOdczyt.getBackOrForeSight1()!=null && nextOdczyt.getElevation()!=null) {
+						if(nextSight.getBackOrForeSight1()!=null && nextSight.getElevation()!=null) {
 							count++;
-							int wsteczOdczyt = (int)commonMethods.round((nextOdczyt.getElevation()*1000), 3) + nextOdczyt.getBackOrForeSight1() - (int)commonMethods.round((odczyt.getElevation()*1000), 3);
-							sum += wsteczOdczyt;
+							int backSightValue = (int)commonMethods.round((nextSight.getElevation()*1000), 3) + nextSight.getBackOrForeSight1() - (int)commonMethods.round((sight.getElevation()*1000), 3);
+							sum += backSightValue;
 						}
 					}
 					it.next();
 				}
 				if(count>0) {
-					int wsteczAverage = (int)sum/count;
-					odczyt.setBackOrForeSight1(wsteczAverage);
+					int backSightFromAverage = (int)sum/count;
+					sight.setBackOrForeSight1(backSightFromAverage);
 				} else {
-					int wsteczRandom = randomBacksightValueBasingOnIntermediets(i, minRzedna, maxRzedna);
-					odczyt.setBackOrForeSight1(wsteczRandom);
+					int backSightRandoming = randomBacksightValueBasingOnIntermediets(i, minElevation, maxElevation);
+					sight.setBackOrForeSight1(backSightRandoming);
 				}
 			}
 			
-			if(!odczyt.isBackSight() && odczyt.getElevation()!=null && ((odczyt.isIntermediate() && odczyt.getIntermediateSight1()==null) || (!odczyt.isIntermediate() && odczyt.getBackOrForeSight1()==null))) {
-				Sight lastWstecz = commonMethods.lastBackSight(i);
-				int value = lastWstecz.getBackOrForeSight1() +  (int)commonMethods.round((lastWstecz.getElevation()*1000), 3) - (int)commonMethods.round((odczyt.getElevation()*1000), 3);
-				if(odczyt.isIntermediate()) 
-					odczyt.setIntermediateSight1(value);
+			if(!sight.isBackSight() && sight.getElevation()!=null && 
+			  ((sight.isIntermediate() && sight.getIntermediateSight1()==null) || (!sight.isIntermediate() && sight.getBackOrForeSight1()==null))) {
+				Sight lastBackSight = commonMethods.lastBackSight(i);
+				int value = lastBackSight.getBackOrForeSight1() +  (int)commonMethods.round((lastBackSight.getElevation()*1000), 3) - (int)commonMethods.round((sight.getElevation()*1000), 3);
+				if(sight.isIntermediate()) 
+					sight.setIntermediateSight1(value);
 				 else
-					 odczyt.setBackOrForeSight1(value);
+					 sight.setBackOrForeSight1(value);
 			}
 		} // end of for
 		complementSecondValues();
@@ -339,32 +340,32 @@ public class Calculating {
 	public void complementSecondValues() {
 		Random random = new Random();
 		List<Sight> data = model.getLevellingData();
-		Sight odczyt=null;
+		Sight sight=null;
 		int shift = 0;
 		for(int i=0; i<data.size(); i++) {
-			odczyt=data.get(i);
-			if(odczyt.isBackSight()) {
+			sight=data.get(i);
+			if(sight.isBackSight()) {
 				int count = 0;
 				int sum = 0;
-				if(odczyt.getBackOrForeSight1() != null && odczyt.getBackOrForeSight2() != null) {
-					int shiftWs = odczyt.getBackOrForeSight1() - odczyt.getBackOrForeSight2();
+				if(sight.getBackOrForeSight1() != null && sight.getBackOrForeSight2() != null) {
+					int shiftFromBackSights = sight.getBackOrForeSight1() - sight.getBackOrForeSight2();
 					count++;
-					sum+=shiftWs;
+					sum+=shiftFromBackSights;
 				}
 				ListIterator<Sight> it = data.listIterator(i+1);
-				while(it.hasNext() && it.next().isBackSight()==false) {
-					Sight nextOdczyt = it.previous();
-					if(nextOdczyt.isIntermediate()) {
-						if(nextOdczyt.getIntermediateSight1()!=null && nextOdczyt.getIntermediateSight2()!=null) {
-							int shiftP = nextOdczyt.getIntermediateSight1() - nextOdczyt.getIntermediateSight2();
+				while(it.hasNext() && ! it.next().isBackSight()) {
+					Sight nextSight = it.previous();
+					if(nextSight.isIntermediate()) {	// intermediates Sights
+						if(nextSight.getIntermediateSight1()!=null && nextSight.getIntermediateSight2()!=null) {
+							int shiftFromIntermediateSights = nextSight.getIntermediateSight1() - nextSight.getIntermediateSight2();
 							count++;
-							sum+=shiftP;
+							sum+=shiftFromIntermediateSights;
 						}
-					} else {
-						if(nextOdczyt.getBackOrForeSight1()!=null && nextOdczyt.getBackOrForeSight2()!=null) {
-							int shiftWp = nextOdczyt.getBackOrForeSight1() - nextOdczyt.getBackOrForeSight2();
+					} else {	 // foreSight
+						if(nextSight.getBackOrForeSight1()!=null && nextSight.getBackOrForeSight2()!=null) {
+							int shiftFromForeSights = nextSight.getBackOrForeSight1() - nextSight.getBackOrForeSight2();
 							count++;
-							sum+=shiftWp;
+							sum+=shiftFromForeSights;
 						}
 					}
 					it.next();
@@ -372,40 +373,24 @@ public class Calculating {
 				if(count>0) {
 					int averageShift = (int)sum/count;
 					shift = averageShift;
-					if(odczyt.getBackOrForeSight2()==null) {
-						odczyt.setBackOrForeSight2(odczyt.getBackOrForeSight1()-averageShift+((random.nextBoolean() ? 0:1) * (random.nextBoolean() ? 1:-1)));
+					if(sight.getBackOrForeSight2()==null) {
+						sight.setBackOrForeSight2(sight.getBackOrForeSight1()-averageShift+((random.nextBoolean() ? 0:1) * (random.nextBoolean() ? 1:-1)));
 					}
-				} else shift= 0;
+				} else shift = 0;
 			}
-			if(!odczyt.isBackSight() && shift!=0) {
-				if(odczyt.isIntermediate() && odczyt.getIntermediateSight2()==null)
-					odczyt.setIntermediateSight2(odczyt.getIntermediateSight1()-shift+randomShift());
-				if(!odczyt.isIntermediate() && odczyt.getBackOrForeSight2()==null)
-					odczyt.setBackOrForeSight2(odczyt.getBackOrForeSight1()-shift+randomShift());
+			if(!sight.isBackSight() && shift!=0) {
+				if(sight.isIntermediate() && sight.getIntermediateSight2()==null)
+					sight.setIntermediateSight2(sight.getIntermediateSight1()-shift+commonMethods.randomShift());
+				if(!sight.isIntermediate() && sight.getBackOrForeSight2()==null)
+					sight.setBackOrForeSight2(sight.getBackOrForeSight1()-shift+commonMethods.randomShift());
 			}
 			
-		}//end of for
-	}
-	
-	public int randomShift() {
-		Random random = new Random();
-		int randomShift = 0;
-		int temp;
-		temp=random.nextInt(100);
-		if(temp<=20)
-			randomShift=0;
-		if(temp>20 && temp<=70)
-			randomShift=1;
-		if(temp>70 && temp<=100)
-			randomShift=2;
-		
-		randomShift = randomShift  * ( random.nextBoolean() ? 1 : -1 );
-		return randomShift;
+		}	// end of for
 	}
 	
 	//------------------------------------------------ SHOW ENDING WINDOW-------------------------------------------------------
 	
-	public void showEndingWindow(double disparity, double maxDisparity) {								// WYŒWIETLENIE OKNA PODSUMOWANIA NIWELACJI
+	public void showEndingWindow(double disparity, double maxDisparity) {
 		final DecimalFormat formatterOnePlace = new DecimalFormat("#0.0");
 		if(Math.abs(disparity)<=maxDisparity) {
 			JOptionPane.showMessageDialog(null,
@@ -426,7 +411,6 @@ public class Calculating {
 			        JOptionPane.ERROR_MESSAGE);
 		}
 		
-		MainFrame.secondCalcButton.setEnabled(true);
-		commonMethods.scatterDisparity(disparity, levellingMetaData.getForeSightsCount());
+		MainFrame.secondCalcButton.setEnabled(true);	// activate button for calculating second values
 	}
 }
