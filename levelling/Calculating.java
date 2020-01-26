@@ -175,7 +175,7 @@ public class Calculating {
 						        "Maksmymalna ró¿nica mo¿e wynosiæ do 5.000 m ( mo¿e dodaj jakieœ przejœcie ).",
 						        "Za du¿e przewy¿szenie",
 						        JOptionPane.INFORMATION_MESSAGE);
-						break;
+						return;
 					}
 					
 					int estimatedValue;

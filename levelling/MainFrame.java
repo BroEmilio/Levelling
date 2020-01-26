@@ -40,7 +40,7 @@ public class MainFrame extends JFrame {
         createMenuBar();
         createPanel();
 
-        setTitle("NIWELACJA v0.9531");
+        setTitle("NIWELACJA v0.954");
         setMinimumSize(new Dimension(750, 450));
         setSize(new Dimension(750, 695));
         setLocationRelativeTo(null);
@@ -128,7 +128,7 @@ public class MainFrame extends JFrame {
         editorPane.setBorder(null);
         editorPane.setText(
         		"<body bgcolor=\"rgb(214,217,223)\" align=\"center\">"+
-        		"<h2 ><u>NIWELACJA v0.9531</u></h2>"
+        		"<h2 ><u>NIWELACJA v0.954</u></h2>"
         		+"Film ukazuj¹cy obs³ugê programu w celu doliczenia niektórych odczytów niwelacji<br>"
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
         		+"<br>Film prezentuj¹cy jak korzystaæ z aplikacji aby wykreowaæ ca³¹ niwelacjê <br>"

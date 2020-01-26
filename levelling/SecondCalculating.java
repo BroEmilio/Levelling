@@ -35,33 +35,33 @@ public class SecondCalculating {
 			while(it.hasNext() && it.next().isBackSight()==false) {
 				Sight nextOdczyt = it.previous();
 				it.next();
-				int switchValue;
+				int value;
 				if(nextOdczyt.isIntermediate())
-					switchValue = nextOdczyt.getIntermediateSight1();
-				else switchValue = nextOdczyt.getBackOrForeSight1();
+					value = nextOdczyt.getIntermediateSight1();
+				else value = nextOdczyt.getBackOrForeSight1();
 				
-				if(switchValue>maxOdczyt) 
-					maxOdczyt = switchValue;
-				if(switchValue<minOdczyt) 
-					minOdczyt = switchValue;
+				if(value>maxOdczyt) 
+					maxOdczyt = value;
+				if(value<minOdczyt) 
+					minOdczyt = value;
 			} // end of while
 			
 			deltaMax = 5000 - maxOdczyt;
 			deltaMin = minOdczyt;
-			if(deltaMax>400 && deltaMin>400) {
-				shift = randomBetween(50, 400)  * ( random.nextBoolean() ? 1 : -1 );
+			if(deltaMax>150 && deltaMin>150) {
+				shift = randomBetween(30, 150)  * ( random.nextBoolean() ? 1 : -1 );
 			} else {
 				if(deltaMax>=deltaMin) {
-					if(deltaMax>400)
-						shift = randomBetween(50, 400);
-					else if(deltaMax>50)
-								shift = randomBetween(50, deltaMax);
+					if(deltaMax>150)
+						shift = randomBetween(30, 150);
+					else if(deltaMax>30)
+								shift = randomBetween(30, deltaMax);
 							else shift = randomBetween(0,deltaMax);
 				} else 
-					if(deltaMin>400)
-						shift = randomBetween(50, 400) * -1;
-					else if(deltaMin>50)
-								shift = randomBetween(50, deltaMin) * -1;
+					if(deltaMin>150)
+						shift = randomBetween(30, 150) * -1;
+					else if(deltaMin>30)
+								shift = randomBetween(30, deltaMin) * -1;
 							else shift = randomBetween(0,deltaMin) * -1;
 			}
 			int secondWstecz =odczyt.getBackOrForeSight1()+shift+(randomBetween(0, 1) * (random.nextBoolean() ? 1:-1));
