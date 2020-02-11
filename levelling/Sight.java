@@ -101,6 +101,8 @@ public class Sight {
 			if(isBackSight) {
 				this.isSightIntermediate=false;
 				this.isSightEditable=false;
+			} else {
+				this.isSightEditable=true;
 			}
 			this.isBackSight = isBackSight;
 		} 

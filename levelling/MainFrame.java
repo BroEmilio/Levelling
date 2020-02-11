@@ -1,7 +1,7 @@
 package levelling;
 
 import levellingTable.*;
-import tests.*;
+//import tests.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -133,9 +133,9 @@ public class MainFrame extends JFrame {
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
         		+"<br>Film prezentuj¹cy jak korzystaæ z aplikacji aby wykreowaæ ca³¹ niwelacjê <br>"
         		+"https://youtu.be/ReyWcnZMvvc          (<a href='https://youtu.be/ReyWcnZMvvc'>link</a>)<br><br>"
-        		+"Je¿eli aplikacja jest dla ciebie przydatna - zostaw ³apkê w górê pod filmem na YouTube<br>"
+        		+/*"Je¿eli aplikacja jest dla ciebie przydatna - zostaw ³apkê w górê pod filmem na YouTube<br>"
         		+"(bez obaw, na YouTube nie wyœwietla kto konkretnie polubi³ dany film ;)<br><br>"
-        		+"Ewentualne uwagi proszê kierowaæ na adres: bro.emilio.1.1@gmail.com</body>");
+        		+*/"Ewentualne uwagi proszê kierowaæ na adres: bro.emilio.1.1@gmail.com</body>");
         editorPane.addHyperlinkListener(new HyperlinkListener() {
             @Override
             public void hyperlinkUpdate(HyperlinkEvent hle) {
@@ -348,7 +348,7 @@ public class MainFrame extends JFrame {
     	table.getColumnModel().getColumn(3).setCellEditor(new CellEditorForInteger(0,5000));
     	table.getColumnModel().getColumn(4).setCellEditor(new CellEditorForInteger(0,5000));
     	table.getColumnModel().getColumn(5).setCellEditor(new CellEditorForInteger(0,5000));
-    	table.getColumnModel().getColumn(7).setCellEditor(new CellEditorForDouble(table));
+    	table.getColumnModel().getColumn(7).setCellEditor(new CellEditorForDouble(table, model));
     	
     }
     
@@ -513,8 +513,8 @@ public class MainFrame extends JFrame {
             }
         });
         
-        @SuppressWarnings("unused")
-		InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
+        //@SuppressWarnings("unused")
+		//InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
         
     }
 }
