@@ -62,7 +62,7 @@ public class CellEditorForDouble extends DefaultCellEditor{
         	((LevellingTableModel)table.getModel()).setAsFirstBenchmark();
         }
         
-        if(model.shuoldBeAsBackSight2(currentRow) && ! sight.isIntermediate()) {
+        if(model.shouldBeAsBackSight(currentRow) && ! sight.isIntermediate()) {
         	table.changeSelection(table.getEditingRow()+2, 7, false, false);
         }
         

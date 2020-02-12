@@ -21,6 +21,7 @@ public class MainFrame extends JFrame {
 	SecondCalculating secondCalc = new SecondCalculating(model, levellingMetaData);
 	public static JButton secondCalcButton;
 	JCheckBox leaveCurrentValues;
+	JCheckBox complementElevationsBox;
 	Font style1 = new Font("Arial", Font.ITALIC, 14);
 	Font style2 = new Font("Arial", Font.ITALIC, 12);
 
@@ -40,7 +41,7 @@ public class MainFrame extends JFrame {
         createMenuBar();
         createPanel();
 
-        setTitle("NIWELACJA v0.954");
+        setTitle("NIWELACJA v0.96Beta");
         setMinimumSize(new Dimension(750, 450));
         setSize(new Dimension(750, 695));
         setLocationRelativeTo(null);
@@ -128,7 +129,7 @@ public class MainFrame extends JFrame {
         editorPane.setBorder(null);
         editorPane.setText(
         		"<body bgcolor=\"rgb(214,217,223)\" align=\"center\">"+
-        		"<h2 ><u>NIWELACJA v0.954</u></h2>"
+        		"<h2 ><u>NIWELACJA v0.96Beta</u></h2>"
         		+"Film ukazuj¹cy obs³ugê programu w celu doliczenia niektórych odczytów niwelacji<br>"
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
         		+"<br>Film prezentuj¹cy jak korzystaæ z aplikacji aby wykreowaæ ca³¹ niwelacjê <br>"
@@ -240,6 +241,10 @@ public class MainFrame extends JFrame {
     	leaveCurrentValues = new JCheckBox(" nie zmieniaj istniej¹cych odczytów", false);
     	leaveCurrentValues.setHorizontalAlignment(SwingConstants.LEFT);
     	leaveCurrentValues.setFont(style1);
+    	
+    	complementElevationsBox = new JCheckBox(" automatycznie uzupe³niaj rzêdne", true);
+    	complementElevationsBox.setHorizontalAlignment(SwingConstants.RIGHT);
+    	complementElevationsBox.setFont(style1);
     	
     	setTableView();
     	addKeyBindings();

@@ -2,6 +2,7 @@ package levellingTable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Random;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.AbstractTableModel;
@@ -13,6 +14,7 @@ public class LevellingTableModel extends AbstractTableModel {
 	
 	List<Sight> levellingData = new ArrayList<Sight>();
 	CommonMethods commonMethods;
+	Random random = new Random();
 
 	public LevellingTableModel() {
 		for(int i=0; i<500; i++)
@@ -104,8 +106,8 @@ public class LevellingTableModel extends AbstractTableModel {
 		Sight sight = levellingData.get(rowIndex);
 		switch(columnIndex) {
 		case 1 : sight.setPointNumber((String) aValue);break;									
-		case 2 : sight.setBackOrForeSight1((Integer) aValue);									
-					if(rowIndex==0 || isShouldBeAsBackSight(rowIndex, columnIndex)) {
+		case 2 : sight.setBackOrForeSight1((Integer) aValue);
+					if(rowIndex==0 || shouldBeAsBackSight(rowIndex)) {
 						sight.setAsBackSight(true);
 						if(rowIndex==0) 
 							sight.setEditable(true);
@@ -126,7 +128,7 @@ public class LevellingTableModel extends AbstractTableModel {
 					Double value = commonMethods.round((Double) aValue, 3);
 					sight.setElevation(value);
 					complementNeighborElevation(rowIndex);
-					//complementElevations(rowIndex);
+					complementElevations(rowIndex);
 					MainFrame.secondCalcButton.setEnabled(false);
 					break;
 				  }
@@ -134,46 +136,6 @@ public class LevellingTableModel extends AbstractTableModel {
 		}
 		fireTableCellUpdated(rowIndex, columnIndex);
 		commonMethods.updateSightsSequence(this);
-		}
-	}
-	
-	void complementNeighborElevation(int currentRow) {
-		Sight currentSight = levellingData.get(currentRow);
-		if(currentRow==0) {
-			currentSight.setAsBackSight(true);
-			currentSight.setEditable(true);
-			return;
-		}
-		
-		if(currentSight.isIntermediate())
-			return;
-		
-		if(shuoldBeAsBackSight2(currentRow)) {	// instructions for inserted back sight
-			currentSight.setAsBackSight(true);
-			Sight previousSight = null;
-			for(int i=currentRow-1 ; i>0; i--) {
-				Sight tempSight = levellingData.get(i);
-				if( ! tempSight.isIntermediate()) {
-					previousSight=tempSight;
-					break;
-				}
-			}
-			if(previousSight!=null) {
-				previousSight.setAsBackSight(false);
-				previousSight.setElevation(currentSight.getElevation());
-			}
-		} else {								// instructions for inserted fore sight
-			currentSight.setAsBackSight(false);
-			if( ! currentSight.isIntermediate() && currentRow+1<levellingData.size()) {
-				Sight nextSight = levellingData.get(currentRow+1);
-				if(nextSight.getElevation() == null && ! nextSight.isIntermediate()) {		
-					nextSight.setElevation(currentSight.getElevation());
-					nextSight.setAsBackSight(true);
-				}  else {		// if elevation of next sight is not null
-					Sight nextBackSight = getNextBackSightFromIndex(currentRow+1); 
-					nextBackSight.setElevation(currentSight.getElevation());		
-				}
-			}
 		}
 	}
 		
@@ -188,53 +150,6 @@ public class LevellingTableModel extends AbstractTableModel {
 		commonMethods.updateSightsSequence(this);
 	}
 	
-	public int getLastNoNullIndexAtColumn(int row, int column) {
-		int index=-1;
-			for(int i=row-1; i>=0; i--) {
-				Object object = getValueAt(i, column);
-				if(object != null)
-					return i;
-			}
-		return index;
-	}
-	
-	public boolean isShouldBeAsBackSight(int row, int column) {
-		int lastBackOrForeSightIndex = getLastNoIntermediateSightIndex(row, column);
-		if(lastBackOrForeSightIndex > -1) {
-			Sight sight = levellingData.get(lastBackOrForeSightIndex);
-			if(sight.isBackSight())
-				return false;
-			else return true;
-		} return false;
-	}
-	
-	public int getLastNoIntermediateSightIndex(int row, int column) {
-		for(int i=row-1; i>=0; i--) {
-			Object object = getValueAt(i, column);
-			Sight sight = getSightAtIndex(i);
-			if(object != null && ! sight.isIntermediate())
-				return i;
-		}
-		return -1;
-	}
-	
-	Sight getNextBackSightFromIndex(int index) {
-		Sight nextBackSight=null;
-		ListIterator<Sight> it = levellingData.listIterator(index);
-		while(nextBackSight == null && it.hasNext()) {
-			if(it.next().isBackSight())
-				nextBackSight=it.previous();
-		}
-		return nextBackSight;
-	}
-	
-	public void changeIntermediateSightStatus(int sightRowIndex) {
-		Sight sight = levellingData.get(sightRowIndex);
-		boolean newStatus = ! sight.isIntermediate();
-		sight.setIntermediate(newStatus);
-		commonMethods.updateSightsSequence(this);
-	}
-	
 	public void changeLockStatus(int rowIndex) {
 		Sight sight = levellingData.get(rowIndex);
 		boolean newStatus = ! sight.isLock();
@@ -242,6 +157,13 @@ public class LevellingTableModel extends AbstractTableModel {
 			return;
 		if( ! sight.isIntermediate())
 			sight.setLock(newStatus);
+	}
+	
+	public void changeIntermediateSightStatus(int sightRowIndex) {
+		Sight sight = levellingData.get(sightRowIndex);
+		boolean newStatus = ! sight.isIntermediate();
+		sight.setIntermediate(newStatus);
+		commonMethods.updateSightsSequence(this);
 	}
 	
 	public void setAsFirstBenchmark() {
@@ -279,28 +201,141 @@ public class LevellingTableModel extends AbstractTableModel {
 		}
 	}
 	
-	void complementElevations(int currentRow) { // complement empty elevations between last inserted value and last no null elevation
-		
-		/*Sight lastBackSight = commonMethods.lastBackSight(currentRow);
+	boolean shouldBeAsBackSight(int currentRow) {
 		int lastBackSightIndex = commonMethods.getIndexOfLastBackSight(currentRow-1);
-		Sight currentSight = levellingData.get(currentRow);
 		int nullElevationsCounter = -1;
-		if(lastBackSightIndex >-1)
+		if(lastBackSightIndex >-1) {
 			nullElevationsCounter = countNullElevationsBetween(lastBackSightIndex, currentRow);
-		if(nullElevationsCounter==0)
+			if(nullElevationsCounter%2 != 0) {
+				return true;
+			}
+			else return false;
+		} else return false;
+	}
+
+	void complementNeighborElevation(int currentRow) {
+		Sight currentSight = levellingData.get(currentRow);
+		if(currentRow==0) {
+			currentSight.setAsBackSight(true);
+			currentSight.setEditable(true);
 			return;
-		if(nullElevationsCounter>-1 && (nullElevationsCounter%2 != 0)) {
-			//currentSight.setAsBackSight(true);
-			Double currentElevation = currentSight.getElevation();
-			//currentSight = null;
-			Sight previousSight = levellingData.get(currentRow-1);
-			previousSight.setElevation(currentElevation);
 		}
 		
-    	System.out.println("LAST_BACK_SIGHT:Index:"+lastBackSightIndex+" "+lastBackSight);
-    	System.out.println("CURRENT:Index:"+currentRow+" "+currentSight);
-    	System.out.println("NullCounter:"+nullElevationsCounter);*/
+		if(currentSight.isIntermediate())
+			return;
+		
+		if(shouldBeAsBackSight(currentRow)) {	// instructions for inserted back sight
+			currentSight.setAsBackSight(true);
+			Sight previousSight = null;
+			for(int i=currentRow-1 ; i>0; i--) {
+				Sight tempSight = levellingData.get(i);
+				if( ! tempSight.isIntermediate()) {
+					previousSight=tempSight;
+					break;
+				}
+			}
+			if(previousSight!=null) {
+				previousSight.setAsBackSight(false);
+				previousSight.setElevation(currentSight.getElevation());
+			}
+		} else {								// instructions for inserted fore sight
+			currentSight.setAsBackSight(false);
+			if( ! currentSight.isIntermediate() && currentRow+1<levellingData.size()) {
+				Sight nextSight = levellingData.get(currentRow+1);
+				if(nextSight.getElevation() == null && ! nextSight.isIntermediate()) {		
+					nextSight.setElevation(currentSight.getElevation());
+					nextSight.setAsBackSight(true);
+				}  else {		// if elevation of next sight is not null
+					Sight firstEmptyElevation = null;
+					int firstEmptyElevationIndex = -1;
+					for(int i=currentRow+1; i<currentRow+30; i++ ) {
+						Sight tempSight = levellingData.get(i);
+						if(tempSight.getElevation()==null && ! tempSight.isIntermediate()) {
+							firstEmptyElevation = tempSight;
+							firstEmptyElevationIndex = i;
+							break;
+						}
+					}
+					Sight nextBackSight = getNextBackSightFromIndex(currentRow+1);
+					int nextBackSightIndex = commonMethods.getIndexOfSight(nextBackSight);
+					if(nextBackSightIndex > firstEmptyElevationIndex || nextBackSight==null) 
+						firstEmptyElevation.setElevation(currentSight.getElevation());
+					else
+						nextBackSight.setElevation(currentSight.getElevation());
+				}
+			}
+		}
+	}
+	
+	void complementElevations(int currentRow) { // complement empty elevations between last inserted value and last no null elevation
+		if(currentRow<2)
+			return;
+		Sight firstBackSight = commonMethods.lastBackSight(currentRow);
+		Sight lastBackSight = commonMethods.lastBackSight(currentRow+2);
+		int firstBackSightIndex = commonMethods.getIndexOfSight(firstBackSight);
+		int lastBackSightIndex = commonMethods.getIndexOfSight(lastBackSight);
+		if(firstBackSight==lastBackSight)
+			return;
+		int nullElevationsCounter = countNullElevationsBetween(firstBackSightIndex, lastBackSightIndex);
+		int helper=0;
+		Double estimatedElevation = firstBackSight.getElevation();
+		for(int i=firstBackSightIndex; i<firstBackSightIndex+nullElevationsCounter; i+=2) {
+			helper++;
+			Sight firstEmptySight = getFirstEmptyElevationSightFromIndex(firstBackSightIndex);
+			int firstEmptySightIndex = commonMethods.getIndexOfSight(firstEmptySight);
+			while(firstEmptySight.isIntermediate()) {
+				firstEmptySight = getFirstEmptyElevationSightFromIndex(firstEmptySightIndex+1);
+				firstEmptySightIndex = commonMethods.getIndexOfSight(firstEmptySight);
+			}
+			Double averageDisparity = calculateAverageElevationsDisparity(firstBackSight, lastBackSight, nullElevationsCounter);
+			Double randomShift = averageDisparity + (random.nextInt(Math.abs((int)(averageDisparity*1000)))*0.0004 * ( random.nextBoolean() ? 1 : -1 ));
+			randomShift = commonMethods.round(randomShift, 3);
+			estimatedElevation += randomShift;
+			System.out.println(helper+": "+averageDisparity+" "+randomShift+" "+estimatedElevation);
+			firstEmptySight.setElevation(estimatedElevation);
+			complementNeighborElevation(firstEmptySightIndex);
+		}
     }
+	
+	/*public int getLastNoNullIndexAtColumn(int row, int column) {
+		int index=-1;
+			for(int i=row-1; i>=0; i--) {
+				Object object = getValueAt(i, column);
+				if(object != null)
+					return i;
+			}
+		return index;
+	}*/
+	
+	/*public int getLastNoIntermediateSightIndex(int row, int column) {
+		for(int i=row-1; i>=0; i--) {
+			Object object = getValueAt(i, column);
+			Sight sight = getSightAtIndex(i);
+			if(object != null && ! sight.isIntermediate())
+				return i;
+		}
+		return -1;
+	}*/
+	
+	Sight getNextBackSightFromIndex(int index) {
+		Sight nextBackSight=null;
+		ListIterator<Sight> it = levellingData.listIterator(index);
+		while(nextBackSight == null && it.hasNext()) {
+			if(it.next().isBackSight())
+				nextBackSight=it.previous();
+		}
+		return nextBackSight;
+	}
+	
+	Sight getFirstEmptyElevationSightFromIndex(int index) {
+		Sight emptyElevationSight = null;
+		ListIterator<Sight> it = levellingData.listIterator(index);
+		while(emptyElevationSight == null && it.hasNext()) {
+			if(it.next().getElevation()==null)
+				emptyElevationSight=it.previous();
+		}
+		return emptyElevationSight;
+	}
 	
 	int countNullElevationsBetween(int startIndex, int endIndex) {
 		int count = 0;
@@ -312,16 +347,10 @@ public class LevellingTableModel extends AbstractTableModel {
 		return count;
 	}
 	
-	boolean shuoldBeAsBackSight2(int currentRow) {
-		int lastBackSightIndex = commonMethods.getIndexOfLastBackSight(currentRow-1);
-		int nullElevationsCounter = -1;
-		if(lastBackSightIndex >-1) {
-			nullElevationsCounter = countNullElevationsBetween(lastBackSightIndex, currentRow);
-			if(nullElevationsCounter%2 != 0) {
-				System.out.println("Row:"+currentRow+" should be as BACKSIGHT (nullCounter="+nullElevationsCounter+")");
-				return true;
-			}
-			else return false;
-		} else return false;
+	Double calculateAverageElevationsDisparity(Sight firstBackSight, Sight lastBackSight, int nullElevationsCounter) {
+		Double averageDisparity = lastBackSight.getElevation()-firstBackSight.getElevation();
+		averageDisparity = averageDisparity / ((nullElevationsCounter/2)+1);
+		return averageDisparity;
 	}
+	
 }

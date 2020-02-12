@@ -27,6 +27,16 @@ public class CommonMethods {
 		 return new Integer(df.format(value));
 	}
 	
+	public int getIndexOfSight(Sight sight) {
+		for(int i=0; i<data.size(); i++) {
+			Sight tempSight = data.get(i);
+			if(tempSight == sight) 
+				return i;
+		}
+		
+		return -1; // if not found
+	}
+	
 	public Sight lastBackSight(int index) {
 		Sight lastBackSight=null;
 		ListIterator<Sight> it = data.listIterator(index);
