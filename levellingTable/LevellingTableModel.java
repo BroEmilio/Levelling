@@ -128,10 +128,20 @@ public class LevellingTableModel extends AbstractTableModel {
 					Double value = commonMethods.round((Double) aValue, 3);
 					sight.setElevation(value);
 					complementNeighborElevation(rowIndex);
-					complementElevations(rowIndex);
+					if(MainFrame.complementElevationsChoosed.isSelected())
+						complementElevations(rowIndex);
 					MainFrame.secondCalcButton.setEnabled(false);
 					break;
-				  }
+				  } else { // if change value to the null
+					  sight.setElevation(null);	
+					  sight.setEditable(true);
+					  if( ! sight.isBackSight() && ! sight.isIntermediate() && rowIndex+1<levellingData.size()) {
+						 Sight nextBackSight = getNextBackSightFromIndex(rowIndex+1); 
+						 nextBackSight.setElevation(null); // if setting null for elevation of foresight, set null also for elevation of next backsight
+						 nextBackSight.setEditable(true);
+					  }
+				  	}
+				break;
 		default: System.err.println("Error in method setValueAt()");
 		}
 		fireTableCellUpdated(rowIndex, columnIndex);
@@ -248,7 +258,7 @@ public class LevellingTableModel extends AbstractTableModel {
 				}  else {		// if elevation of next sight is not null
 					Sight firstEmptyElevation = null;
 					int firstEmptyElevationIndex = -1;
-					for(int i=currentRow+1; i<currentRow+30; i++ ) {
+					for(int i=currentRow+1; i<levellingData.size(); i++ ) {
 						Sight tempSight = levellingData.get(i);
 						if(tempSight.getElevation()==null && ! tempSight.isIntermediate()) {
 							firstEmptyElevation = tempSight;
@@ -258,10 +268,11 @@ public class LevellingTableModel extends AbstractTableModel {
 					}
 					Sight nextBackSight = getNextBackSightFromIndex(currentRow+1);
 					int nextBackSightIndex = commonMethods.getIndexOfSight(nextBackSight);
-					if(nextBackSightIndex > firstEmptyElevationIndex || nextBackSight==null) 
+					if((nextBackSightIndex > firstEmptyElevationIndex || nextBackSight==null) && firstEmptyElevationIndex>-1) 
 						firstEmptyElevation.setElevation(currentSight.getElevation());
 					else
-						nextBackSight.setElevation(currentSight.getElevation());
+						if(nextBackSight!=null)
+							nextBackSight.setElevation(currentSight.getElevation());
 				}
 			}
 		}
@@ -277,10 +288,8 @@ public class LevellingTableModel extends AbstractTableModel {
 		if(firstBackSight==lastBackSight)
 			return;
 		int nullElevationsCounter = countNullElevationsBetween(firstBackSightIndex, lastBackSightIndex);
-		int helper=0;
 		Double estimatedElevation = firstBackSight.getElevation();
 		for(int i=firstBackSightIndex; i<firstBackSightIndex+nullElevationsCounter; i+=2) {
-			helper++;
 			Sight firstEmptySight = getFirstEmptyElevationSightFromIndex(firstBackSightIndex);
 			int firstEmptySightIndex = commonMethods.getIndexOfSight(firstEmptySight);
 			while(firstEmptySight.isIntermediate()) {
@@ -291,31 +300,10 @@ public class LevellingTableModel extends AbstractTableModel {
 			Double randomShift = averageDisparity + (random.nextInt(Math.abs((int)(averageDisparity*1000)))*0.0004 * ( random.nextBoolean() ? 1 : -1 ));
 			randomShift = commonMethods.round(randomShift, 3);
 			estimatedElevation += randomShift;
-			System.out.println(helper+": "+averageDisparity+" "+randomShift+" "+estimatedElevation);
 			firstEmptySight.setElevation(estimatedElevation);
 			complementNeighborElevation(firstEmptySightIndex);
 		}
     }
-	
-	/*public int getLastNoNullIndexAtColumn(int row, int column) {
-		int index=-1;
-			for(int i=row-1; i>=0; i--) {
-				Object object = getValueAt(i, column);
-				if(object != null)
-					return i;
-			}
-		return index;
-	}*/
-	
-	/*public int getLastNoIntermediateSightIndex(int row, int column) {
-		for(int i=row-1; i>=0; i--) {
-			Object object = getValueAt(i, column);
-			Sight sight = getSightAtIndex(i);
-			if(object != null && ! sight.isIntermediate())
-				return i;
-		}
-		return -1;
-	}*/
 	
 	Sight getNextBackSightFromIndex(int index) {
 		Sight nextBackSight=null;

@@ -21,7 +21,7 @@ public class MainFrame extends JFrame {
 	SecondCalculating secondCalc = new SecondCalculating(model, levellingMetaData);
 	public static JButton secondCalcButton;
 	JCheckBox leaveCurrentValues;
-	JCheckBox complementElevationsBox;
+	public static JCheckBox complementElevationsChoosed;
 	Font style1 = new Font("Arial", Font.ITALIC, 14);
 	Font style2 = new Font("Arial", Font.ITALIC, 12);
 
@@ -242,9 +242,9 @@ public class MainFrame extends JFrame {
     	leaveCurrentValues.setHorizontalAlignment(SwingConstants.LEFT);
     	leaveCurrentValues.setFont(style1);
     	
-    	complementElevationsBox = new JCheckBox(" automatycznie uzupe³niaj rzêdne", true);
-    	complementElevationsBox.setHorizontalAlignment(SwingConstants.RIGHT);
-    	complementElevationsBox.setFont(style1);
+    	complementElevationsChoosed = new JCheckBox(" automatycznie uzupe\u0142niaj puste rz\u0119dne", true);
+    	complementElevationsChoosed.setHorizontalAlignment(SwingConstants.RIGHT);
+    	complementElevationsChoosed.setFont(style1);
     	
     	setTableView();
     	addKeyBindings();
@@ -258,40 +258,38 @@ public class MainFrame extends JFrame {
     		groupLayout.createParallelGroup(Alignment.LEADING)
     			.addGroup(groupLayout.createSequentialGroup()
     				.addGap(10)
-    				.addGroup(groupLayout.createParallelGroup(Alignment.CENTER)
-    					.addGroup(groupLayout.createSequentialGroup()
-    						.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
-    						.addContainerGap())
+    				.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
     					.addGroup(groupLayout.createSequentialGroup()
     						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
     							.addGroup(groupLayout.createSequentialGroup()
-    								.addGap(5)
     								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    									.addGroup(groupLayout.createSequentialGroup()
-    										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    											.addComponent(F1Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-    											.addComponent(F5Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-    										.addPreferredGap(ComponentPlacement.RELATED)
-    										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    											.addComponent(constFieldsLabel, GroupLayout.PREFERRED_SIZE, 386, GroupLayout.PREFERRED_SIZE)
-    											.addComponent(posredniInstructionLabel, GroupLayout.PREFERRED_SIZE, 394, GroupLayout.PREFERRED_SIZE)))
-    									.addGroup(groupLayout.createSequentialGroup()
-    										.addPreferredGap(ComponentPlacement.RELATED)
-    										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    											.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE)
-    											.addComponent(newRowLabel, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE))))
-    								.addGap(38)
-    								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-    									.addComponent(wprzodLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
-    									.addComponent(posredniLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
-    									.addComponent(wsteczLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE))
-    								.addGap(12))
-    							.addGroup(groupLayout.createSequentialGroup()
-    								.addGap(109)
-    								.addComponent(calcButton, GroupLayout.PREFERRED_SIZE, 0, 200)
-    								.addGap(88)
-    								.addComponent(secondCalcButton, GroupLayout.PREFERRED_SIZE, 0, 200)))
-    						.addGap(132))))
+    									.addComponent(F1Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+    									.addComponent(F5Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+    								.addPreferredGap(ComponentPlacement.RELATED)
+    								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+    									.addComponent(constFieldsLabel, GroupLayout.PREFERRED_SIZE, 386, GroupLayout.PREFERRED_SIZE)
+    									.addComponent(posredniInstructionLabel, GroupLayout.PREFERRED_SIZE, 394, GroupLayout.PREFERRED_SIZE)))
+    							.addComponent(newRowLabel, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE))
+    						.addPreferredGap(ComponentPlacement.RELATED)
+    						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+    							.addComponent(wprzodLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
+    							.addComponent(posredniLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
+    							.addComponent(wsteczLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE))
+    						.addGap(100))
+    					.addGroup(groupLayout.createSequentialGroup()
+    						.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE)
+    						.addPreferredGap(ComponentPlacement.UNRELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+    						.addComponent(complementElevationsChoosed, GroupLayout.PREFERRED_SIZE, 298, GroupLayout.PREFERRED_SIZE)))
+    				.addGap(68))
+    			.addGroup(groupLayout.createSequentialGroup()
+    				.addComponent(tablePanel, GroupLayout.PREFERRED_SIZE, 734, GroupLayout.PREFERRED_SIZE)
+    				.addContainerGap(64, Short.MAX_VALUE))
+    			.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+    				.addGap(125)
+    				.addComponent(calcButton, GroupLayout.PREFERRED_SIZE, 0, 200)
+    				.addGap(88)
+    				.addComponent(secondCalcButton, GroupLayout.PREFERRED_SIZE, 0, 200)
+    				.addGap(121))
     	);
     	groupLayout.setVerticalGroup(
     		groupLayout.createParallelGroup(Alignment.CENTER)
@@ -313,11 +311,13 @@ public class MainFrame extends JFrame {
     							.addComponent(posredniInstructionLabel)
     							.addComponent(wprzodLabel, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
     						.addPreferredGap(ComponentPlacement.RELATED)
-    							.addComponent(newRowLabel))
-    							.addComponent(posredniLabel, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
-    						.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-    						.addPreferredGap(ComponentPlacement.UNRELATED)
-    				.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
+    						.addComponent(newRowLabel))
+    					.addComponent(posredniLabel, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
+    				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+    					.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+    					.addComponent(complementElevationsChoosed, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
+    				.addGap(25)
+    				.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
     				.addGap(16))
     	);
     	getContentPane().setLayout(groupLayout);
