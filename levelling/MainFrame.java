@@ -251,45 +251,75 @@ public class MainFrame extends JFrame {
     	
     	JScrollPane tablePanel = new JScrollPane(table);
     	
+    	JLabel labalFileInstrution = new JLabel("Za\u0142\u0105czony plik z rz\u0119dnymi (<NR> <X> <Y> <H>) :");
+    	labalFileInstrution.setFont(new Font("Arial", Font.ITALIC, 14));
+    	
+    	JLabel labelFileName = new JLabel("brak");
+    	labelFileName.setFont(new Font("Arial", Font.ITALIC, 14));
+    	
+    	JButton buttonChooseFile = new JButton("Wybierz");
+    	buttonChooseFile.setFont(new Font("Arial", Font.ITALIC, 14));
+    	
+    	JButton buttonUnlink = new JButton("Odepnij");
+    	buttonUnlink.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    		}
+    	});
+    	buttonUnlink.setFont(new Font("Arial", Font.ITALIC, 14));
+    	
     	
     	
     	GroupLayout groupLayout = new GroupLayout(getContentPane());
     	groupLayout.setHorizontalGroup(
     		groupLayout.createParallelGroup(Alignment.LEADING)
     			.addGroup(groupLayout.createSequentialGroup()
-    				.addGap(10)
-    				.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-    					.addGroup(groupLayout.createSequentialGroup()
-    						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    							.addGroup(groupLayout.createSequentialGroup()
-    								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    									.addComponent(F1Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-    									.addComponent(F5Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-    								.addPreferredGap(ComponentPlacement.RELATED)
-    								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    									.addComponent(constFieldsLabel, GroupLayout.PREFERRED_SIZE, 386, GroupLayout.PREFERRED_SIZE)
-    									.addComponent(posredniInstructionLabel, GroupLayout.PREFERRED_SIZE, 394, GroupLayout.PREFERRED_SIZE)))
-    							.addComponent(newRowLabel, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE))
-    						.addPreferredGap(ComponentPlacement.RELATED)
+    				.addGap(8)
+    				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+    					.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+    						.addGap(19)
     						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-    							.addComponent(wprzodLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
-    							.addComponent(posredniLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
-    							.addComponent(wsteczLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE))
-    						.addGap(100))
+    							.addGroup(groupLayout.createSequentialGroup()
+    								.addGap(18)
+    								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+    									.addGroup(groupLayout.createSequentialGroup()
+    										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+    											.addComponent(F1Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+    											.addComponent(F5Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+    										.addPreferredGap(ComponentPlacement.RELATED)
+    										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+    											.addComponent(constFieldsLabel, GroupLayout.PREFERRED_SIZE, 386, GroupLayout.PREFERRED_SIZE)
+    											.addComponent(posredniInstructionLabel, GroupLayout.PREFERRED_SIZE, 394, GroupLayout.PREFERRED_SIZE)))
+    									.addComponent(newRowLabel, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE))
+    								.addPreferredGap(ComponentPlacement.RELATED)
+    								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+    									.addComponent(wprzodLabel, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+    									.addComponent(posredniLabel, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+    									.addComponent(wsteczLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+    							.addGroup(groupLayout.createSequentialGroup()
+    								.addPreferredGap(ComponentPlacement.RELATED, 581, Short.MAX_VALUE)
+    								.addComponent(buttonUnlink, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE))
+    							.addGroup(groupLayout.createSequentialGroup()
+    								.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE)
+    								.addPreferredGap(ComponentPlacement.RELATED)
+    								.addComponent(complementElevationsChoosed, GroupLayout.PREFERRED_SIZE, 298, GroupLayout.PREFERRED_SIZE))))
     					.addGroup(groupLayout.createSequentialGroup()
-    						.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE)
-    						.addPreferredGap(ComponentPlacement.UNRELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-    						.addComponent(complementElevationsChoosed, GroupLayout.PREFERRED_SIZE, 298, GroupLayout.PREFERRED_SIZE)))
-    				.addGap(68))
+    						.addComponent(buttonChooseFile, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+    						.addPreferredGap(ComponentPlacement.RELATED)
+    						.addComponent(labelFileName, GroupLayout.PREFERRED_SIZE, 502, GroupLayout.PREFERRED_SIZE))
+    					.addGroup(groupLayout.createSequentialGroup()
+    						.addPreferredGap(ComponentPlacement.RELATED, 0, Short.MAX_VALUE)
+    						.addComponent(labalFileInstrution, GroupLayout.PREFERRED_SIZE, 679, GroupLayout.PREFERRED_SIZE)))
+    				.addGap(43))
     			.addGroup(groupLayout.createSequentialGroup()
-    				.addComponent(tablePanel, GroupLayout.PREFERRED_SIZE, 734, GroupLayout.PREFERRED_SIZE)
-    				.addContainerGap(64, Short.MAX_VALUE))
-    			.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-    				.addGap(125)
+    				.addGap(123)
     				.addComponent(calcButton, GroupLayout.PREFERRED_SIZE, 0, 200)
     				.addGap(88)
     				.addComponent(secondCalcButton, GroupLayout.PREFERRED_SIZE, 0, 200)
-    				.addGap(121))
+    				.addGap(123))
+    			.addGroup(groupLayout.createSequentialGroup()
+    				.addContainerGap()
+    				.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE)
+    				.addContainerGap())
     	);
     	groupLayout.setVerticalGroup(
     		groupLayout.createParallelGroup(Alignment.CENTER)
@@ -298,7 +328,7 @@ public class MainFrame extends JFrame {
     				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
     					.addComponent(secondCalcButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
     					.addComponent(calcButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-    				.addPreferredGap(ComponentPlacement.UNRELATED)
+    				.addGap(11)
     				.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
     					.addGroup(groupLayout.createSequentialGroup()
     						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -313,12 +343,21 @@ public class MainFrame extends JFrame {
     						.addPreferredGap(ComponentPlacement.RELATED)
     						.addComponent(newRowLabel))
     					.addComponent(posredniLabel, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
-    				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+    				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
     					.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-    					.addComponent(complementElevationsChoosed, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-    				.addGap(25)
-    				.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 444, Short.MAX_VALUE)
-    				.addGap(16))
+    					.addGroup(groupLayout.createSequentialGroup()
+    						.addGap(2)
+    						.addComponent(complementElevationsChoosed, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)))
+    				.addGap(9)
+    				.addComponent(labalFileInstrution, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
+    				.addPreferredGap(ComponentPlacement.RELATED)
+    				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+    					.addComponent(buttonChooseFile)
+    					.addComponent(labelFileName, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+    					.addComponent(buttonUnlink))
+    				.addPreferredGap(ComponentPlacement.RELATED)
+    				.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
+    				.addGap(23))
     	);
     	getContentPane().setLayout(groupLayout);
     	
