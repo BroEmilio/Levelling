@@ -2,6 +2,7 @@ package levellingTable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JOptionPane;
@@ -15,6 +16,8 @@ public class LevellingTableModel extends AbstractTableModel {
 	List<Sight> levellingData = new ArrayList<Sight>();
 	CommonMethods commonMethods;
 	Random random = new Random();
+	Map<String, Double> elevationsMap;
+	AttachedFile attachedFile;
 
 	public LevellingTableModel() {
 		for(int i=0; i<500; i++)
@@ -105,7 +108,16 @@ public class LevellingTableModel extends AbstractTableModel {
 		if(rowIndex<levellingData.size()) {
 		Sight sight = levellingData.get(rowIndex);
 		switch(columnIndex) {
-		case 1 : sight.setPointNumber((String) aValue);break;									
+		case 1 :sight.setPointNumber((String) aValue);
+				if(attachedFile.isFileAttached()) {
+					String pointNumber = (String) aValue;
+					if(elevationsMap.containsKey(pointNumber)) {
+						Double elevation = elevationsMap.get(pointNumber);
+						setValueAt(elevation, rowIndex, 7);
+					}
+				}
+				break;	
+				
 		case 2 : sight.setBackOrForeSight1((Integer) aValue);
 					if(rowIndex==0 || shouldBeAsBackSight(rowIndex)) {
 						sight.setAsBackSight(true);
@@ -297,7 +309,10 @@ public class LevellingTableModel extends AbstractTableModel {
 				firstEmptySightIndex = commonMethods.getIndexOfSight(firstEmptySight);
 			}
 			Double averageDisparity = calculateAverageElevationsDisparity(firstBackSight, lastBackSight, nullElevationsCounter);
-			Double randomShift = averageDisparity + (random.nextInt(Math.abs((int)(averageDisparity*1000)))*0.0004 * ( random.nextBoolean() ? 1 : -1 ));
+			Double randomShift;
+			if(averageDisparity != 0) {
+				randomShift = averageDisparity + (random.nextInt(Math.abs((int)(averageDisparity*1000)))*0.0004 * ( random.nextBoolean() ? 1 : -1 ));
+			} else randomShift = averageDisparity + ((random.nextInt(700))*0.001 * ( random.nextBoolean() ? 1 : -1 ));
 			randomShift = commonMethods.round(randomShift, 3);
 			estimatedElevation += randomShift;
 			firstEmptySight.setElevation(estimatedElevation);
@@ -339,6 +354,11 @@ public class LevellingTableModel extends AbstractTableModel {
 		Double averageDisparity = lastBackSight.getElevation()-firstBackSight.getElevation();
 		averageDisparity = averageDisparity / ((nullElevationsCounter/2)+1);
 		return averageDisparity;
+	}
+	
+	public void setElevationsMap(Map<String, Double> elevationsMap, AttachedFile attachedFile) {
+		this.elevationsMap = elevationsMap;
+		this.attachedFile = attachedFile;
 	}
 	
 }
