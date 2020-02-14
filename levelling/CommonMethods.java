@@ -7,9 +7,11 @@ import levellingTable.*;
 
 public class CommonMethods {
 	LevellingTableModel model;
+	List<Sight> data;
 	
 	public CommonMethods(LevellingTableModel model) {
 		this.model = model;
+		data = model.getLevellingData();
 	}
 	
 	public double round(double value, int places) {
@@ -25,9 +27,18 @@ public class CommonMethods {
 		 return new Integer(df.format(value));
 	}
 	
-	Sight lastBackSight(int index) {
+	public int getIndexOfSight(Sight sight) {
+		for(int i=0; i<data.size(); i++) {
+			Sight tempSight = data.get(i);
+			if(tempSight == sight) 
+				return i;
+		}
+		
+		return -1; // if not found
+	}
+	
+	public Sight lastBackSight(int index) {
 		Sight lastBackSight=null;
-		List<Sight> data = model.getLevellingData();
 		ListIterator<Sight> it = data.listIterator(index);
 		while(lastBackSight == null && it.hasPrevious()) {
 			if(it.previous().isBackSight())
@@ -36,9 +47,19 @@ public class CommonMethods {
 		return lastBackSight;
 	}
 	
-	Sight nextBackSight(int index) {
+	public int getIndexOfLastBackSight(int currentRow) {
+		if(currentRow>=0) {
+			for(int i=currentRow; i>=0; i--) {
+				Sight sight=data.get(i);
+				if (sight !=null && sight.isBackSight())
+					return i;
+			}
+		}
+		return -1;
+	}
+	
+	public Sight nextBackSight(int index) {
 		Sight nextBackSight=null;
-		List<Sight> data = model.getLevellingData();
 		ListIterator<Sight> it = data.listIterator(index);
 		while(nextBackSight == null && it.hasNext()) {
 			if(it.next().isBackSight())
@@ -95,10 +116,7 @@ public class CommonMethods {
 		return scatterArray;
 	}
 		
-		
-	
 	public void updateSightsSequence(LevellingTableModel model) {		// update sequence of backsights and foresights in levelling data
-		List<Sight> data = model.getLevellingData();
 		Boolean isBackSight = true;
 		for(int i=0; i<data.size(); i++) {
 			Sight sight = data.get(i);

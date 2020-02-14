@@ -11,12 +11,14 @@ public class CellEditorForDouble extends DefaultCellEditor{
 		
 	private Object value;
 	JTable table;
+	LevellingTableModel model;
 	int currentRow;
 	
-    public CellEditorForDouble(JTable table) {
+    public CellEditorForDouble(JTable table, LevellingTableModel model) {
         super( new JTextField() );
         ((JTextField)getComponent()).setHorizontalAlignment(JTextField.RIGHT);
         this.table = table;
+        this.model = model;
     }
 
     @Override
@@ -26,6 +28,7 @@ public class CellEditorForDouble extends DefaultCellEditor{
 
     @Override
     public boolean stopCellEditing(){
+    	Sight sight = null;
         try {
 	            String editingValue = (String)super.getCellEditorValue();
 	            // Replace local specific character
@@ -42,15 +45,8 @@ public class CellEditorForDouble extends DefaultCellEditor{
 	                editingValue = sb.toString();
 	            }
 	            value = Double.parseDouble( editingValue );
-	            Sight sight = ((LevellingTableModel)table.getModel()).getSightAtIndex(currentRow);
-	            if(currentRow==0)
-					sight.setAsBackSight(true);
-	            if( ! sight.isBackSight() && ! sight.isIntermediate()) {
-	            	table.changeSelection(currentRow+2, 7, false, false);
-	            } 
-	            if (currentRow == 0 && ! sight.isLock()) {
-	            	((LevellingTableModel)table.getModel()).setAsFirstBenchmark();
-	            }
+	            sight = ((LevellingTableModel)table.getModel()).getSightAtIndex(currentRow);
+	            
         }
         catch(NumberFormatException exception){
             JTextField textField = (JTextField)getComponent();
@@ -58,6 +54,18 @@ public class CellEditorForDouble extends DefaultCellEditor{
             value = null;
            return false;
         }
+        
+        if(currentRow==0)
+			sight.setAsBackSight(true);
+    	
+        if (currentRow == 0 && ! sight.isLock()) {
+        	((LevellingTableModel)table.getModel()).setAsFirstBenchmark();
+        }
+        
+        if(model.shouldBeAsBackSight(currentRow) && ! sight.isIntermediate()) {
+        	table.changeSelection(table.getEditingRow()+2, 7, false, false);
+        }
+        
         return super.stopCellEditing();
     }
 
@@ -86,6 +94,7 @@ public class CellEditorForDouble extends DefaultCellEditor{
         }
         return comp;
     }
-        
+    
+    
 }
 

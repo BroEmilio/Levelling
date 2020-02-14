@@ -1,7 +1,7 @@
 package levelling;
 
 import levellingTable.*;
-import tests.*;
+//import tests.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -21,6 +21,10 @@ public class MainFrame extends JFrame {
 	SecondCalculating secondCalc = new SecondCalculating(model, levellingMetaData);
 	public static JButton secondCalcButton;
 	JCheckBox leaveCurrentValues;
+	public static JCheckBox complementElevationsChoosed;
+	AttachedFile attachedFile = new AttachedFile(model);
+	public static JLabel labelFileName;
+	public static JLabel labalFileInstrution;
 	Font style1 = new Font("Arial", Font.ITALIC, 14);
 	Font style2 = new Font("Arial", Font.ITALIC, 12);
 
@@ -36,11 +40,12 @@ public class MainFrame extends JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-    	setPolish();
+    	
         createMenuBar();
         createPanel();
+        setPolish();
 
-        setTitle("NIWELACJA v0.954");
+        setTitle("NIWELACJA v1.08Beta");
         setMinimumSize(new Dimension(750, 450));
         setSize(new Dimension(750, 695));
         setLocationRelativeTo(null);
@@ -128,14 +133,15 @@ public class MainFrame extends JFrame {
         editorPane.setBorder(null);
         editorPane.setText(
         		"<body bgcolor=\"rgb(214,217,223)\" align=\"center\">"+
-        		"<h2 ><u>NIWELACJA v0.954</u></h2>"
-        		+"Film ukazuj¹cy obs³ugê programu w celu doliczenia niektórych odczytów niwelacji<br>"
+        		"<h2 ><u>NIWELACJA v1.08Beta</u></h2>"
+        		+"Filmy instrukta¿owe na YouTube:<br><br>"
+        		+"1. Jak doliczyæ kilka odczytów w niwelacji<br>"
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
-        		+"<br>Film prezentuj¹cy jak korzystaæ z aplikacji aby wykreowaæ ca³¹ niwelacjê <br>"
+        		+"<br>2. Jak wykreowaæ ca³¹ niwelacjê<br>"
         		+"https://youtu.be/ReyWcnZMvvc          (<a href='https://youtu.be/ReyWcnZMvvc'>link</a>)<br><br>"
-        		+"Je¿eli aplikacja jest dla ciebie przydatna - zostaw ³apkê w górê pod filmem na YouTube<br>"
-        		+"(bez obaw, na YouTube nie wyœwietla kto konkretnie polubi³ dany film ;)<br><br>"
-        		+"Ewentualne uwagi proszê kierowaæ na adres: bro.emilio.1.1@gmail.com</body>");
+        		+"Je¿eli aplikacja jest dla ciebie przydatna - zostaw ³apkê w górê pod filmem<br><br>"
+        		+/*"(bez obaw, na YouTube nie wyœwietla kto konkretnie polubi³ dany film ;)<br><br>"
+        		+*/"Ewentualne uwagi proszê kierowaæ na adres: bro.emilio.1.1@gmail.com</body>");
         editorPane.addHyperlinkListener(new HyperlinkListener() {
             @Override
             public void hyperlinkUpdate(HyperlinkEvent hle) {
@@ -163,8 +169,6 @@ public class MainFrame extends JFrame {
     			        JOptionPane.INFORMATION_MESSAGE);
         	}
         });
-        
-        
         
         menubar.add(file);
         menubar.add(info);
@@ -203,6 +207,7 @@ public class MainFrame extends JFrame {
         			secondCalc.setSecondValues();
         	}
     	});
+    	
     	JLabel F5Label = new JLabel("F5");
     	F5Label.setForeground(Color.WHITE);
     	F5Label.setOpaque(true);
@@ -241,52 +246,90 @@ public class MainFrame extends JFrame {
     	leaveCurrentValues.setHorizontalAlignment(SwingConstants.LEFT);
     	leaveCurrentValues.setFont(style1);
     	
-    	setTableView();
-    	addKeyBindings();
+    	complementElevationsChoosed = new JCheckBox(" automatycznie uzupe³niaj puste rzêdne", true);
+    	complementElevationsChoosed.setHorizontalAlignment(SwingConstants.RIGHT);
+    	complementElevationsChoosed.setFont(style1);
+    	
+    	labalFileInstrution = new JLabel("Za³¹czony plik z rzêdnymi (<NR> <X> <Y> <H>) :");
+    	labalFileInstrution.setFont(new Font("Arial", Font.ITALIC, 14));
+    	
+    	JButton buttonChooseAttachedFile = new JButton("Wybierz");
+    	buttonChooseAttachedFile.setFont(style2);
+    	buttonChooseAttachedFile.setPreferredSize(new Dimension(30,10));
+    	buttonChooseAttachedFile.addActionListener(new ActionListener() {
+        	@Override
+        	public void actionPerformed(ActionEvent e) {
+        		attachedFile = new AttachedFile(model);
+	    		attachedFile.chooseAttachedFile();
+        	}
+    	});
+    	
+    	labelFileName = new JLabel("brak");
+    	labelFileName.setFont(new Font("Arial", Font.ITALIC, 12));
+    	
+    	
+    	
+    	JButton buttonUnlink = new JButton("Odepnij");
+    	buttonUnlink.setFont(style2);
+    	buttonUnlink.setPreferredSize(new Dimension(30,10));
+    	buttonUnlink.addActionListener(new ActionListener() {
+    		public void actionPerformed(ActionEvent e) {
+    			attachedFile.unlinkAttachedFile();
+    		}
+    	});
+    	buttonUnlink.setFont(new Font("Arial", Font.ITALIC, 14));
     	
     	JScrollPane tablePanel = new JScrollPane(table);
     	
-    	
+    	setTableView();
+    	addKeyBindings();
     	
     	GroupLayout groupLayout = new GroupLayout(getContentPane());
     	groupLayout.setHorizontalGroup(
     		groupLayout.createParallelGroup(Alignment.LEADING)
     			.addGroup(groupLayout.createSequentialGroup()
-    				.addGap(10)
-    				.addGroup(groupLayout.createParallelGroup(Alignment.CENTER)
+    				.addGap(8)
+    				.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
+    					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+    						.addGroup(groupLayout.createSequentialGroup()
+    							.addGap(18)
+    							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+    								.addGroup(groupLayout.createSequentialGroup()
+    									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+    										.addComponent(F1Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
+    										.addComponent(F5Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
+    									.addPreferredGap(ComponentPlacement.RELATED)
+    									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+    										.addComponent(constFieldsLabel, GroupLayout.PREFERRED_SIZE, 386, GroupLayout.PREFERRED_SIZE)
+    										.addComponent(posredniInstructionLabel, GroupLayout.PREFERRED_SIZE, 394, GroupLayout.PREFERRED_SIZE)))
+    								.addComponent(newRowLabel, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE))
+    							.addPreferredGap(ComponentPlacement.RELATED)
+    							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+    								.addComponent(wprzodLabel, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+    								.addComponent(posredniLabel, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
+    								.addComponent(wsteczLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+    						.addGroup(groupLayout.createSequentialGroup()
+    							.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE)
+    							.addPreferredGap(ComponentPlacement.RELATED)
+    							.addComponent(complementElevationsChoosed, GroupLayout.PREFERRED_SIZE, 298, GroupLayout.PREFERRED_SIZE)))
     					.addGroup(groupLayout.createSequentialGroup()
-    						.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 719, Short.MAX_VALUE)
-    						.addContainerGap())
-    					.addGroup(groupLayout.createSequentialGroup()
-    						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    							.addGroup(groupLayout.createSequentialGroup()
-    								.addGap(5)
-    								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    									.addGroup(groupLayout.createSequentialGroup()
-    										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    											.addComponent(F1Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-    											.addComponent(F5Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-    										.addPreferredGap(ComponentPlacement.RELATED)
-    										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    											.addComponent(constFieldsLabel, GroupLayout.PREFERRED_SIZE, 386, GroupLayout.PREFERRED_SIZE)
-    											.addComponent(posredniInstructionLabel, GroupLayout.PREFERRED_SIZE, 394, GroupLayout.PREFERRED_SIZE)))
-    									.addGroup(groupLayout.createSequentialGroup()
-    										.addPreferredGap(ComponentPlacement.RELATED)
-    										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    											.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE)
-    											.addComponent(newRowLabel, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE))))
-    								.addGap(38)
-    								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-    									.addComponent(wprzodLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
-    									.addComponent(posredniLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE)
-    									.addComponent(wsteczLabel, GroupLayout.PREFERRED_SIZE, 112, GroupLayout.PREFERRED_SIZE))
-    								.addGap(12))
-    							.addGroup(groupLayout.createSequentialGroup()
-    								.addGap(109)
-    								.addComponent(calcButton, GroupLayout.PREFERRED_SIZE, 0, 200)
-    								.addGap(88)
-    								.addComponent(secondCalcButton, GroupLayout.PREFERRED_SIZE, 0, 200)))
-    						.addGap(132))))
+    						.addComponent(buttonChooseAttachedFile, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
+    						.addPreferredGap(ComponentPlacement.RELATED)
+    						.addComponent(labelFileName, GroupLayout.PREFERRED_SIZE, 502, GroupLayout.PREFERRED_SIZE)
+    						.addGap(9)
+    						.addComponent(buttonUnlink, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE))
+    					.addComponent(labalFileInstrution, GroupLayout.PREFERRED_SIZE, 679, GroupLayout.PREFERRED_SIZE))
+    				.addGap(43))
+    			.addGroup(groupLayout.createSequentialGroup()
+    				.addGap(123)
+    				.addComponent(calcButton, GroupLayout.PREFERRED_SIZE, 0, 200)
+    				.addGap(88)
+    				.addComponent(secondCalcButton, GroupLayout.PREFERRED_SIZE, 0, 200)
+    				.addGap(123))
+    			.addGroup(groupLayout.createSequentialGroup()
+    				.addContainerGap()
+    				.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE)
+    				.addContainerGap())
     	);
     	groupLayout.setVerticalGroup(
     		groupLayout.createParallelGroup(Alignment.CENTER)
@@ -295,7 +338,7 @@ public class MainFrame extends JFrame {
     				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
     					.addComponent(secondCalcButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
     					.addComponent(calcButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-    				.addPreferredGap(ComponentPlacement.UNRELATED)
+    				.addGap(11)
     				.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
     					.addGroup(groupLayout.createSequentialGroup()
     						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
@@ -308,12 +351,23 @@ public class MainFrame extends JFrame {
     							.addComponent(posredniInstructionLabel)
     							.addComponent(wprzodLabel, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
     						.addPreferredGap(ComponentPlacement.RELATED)
-    							.addComponent(newRowLabel))
-    							.addComponent(posredniLabel, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
-    						.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-    						.addPreferredGap(ComponentPlacement.UNRELATED)
-    				.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 466, Short.MAX_VALUE)
-    				.addGap(16))
+    						.addComponent(newRowLabel))
+    					.addComponent(posredniLabel, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
+    				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+    					.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
+    					.addGroup(groupLayout.createSequentialGroup()
+    						.addGap(2)
+    						.addComponent(complementElevationsChoosed, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)))
+    				.addGap(9)
+    				.addComponent(labalFileInstrution, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
+    				.addPreferredGap(ComponentPlacement.RELATED)
+    				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+    					.addComponent(buttonChooseAttachedFile)
+    					.addComponent(labelFileName, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
+    					.addComponent(buttonUnlink, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
+    				.addPreferredGap(ComponentPlacement.RELATED)
+    				.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
+    				.addGap(23))
     	);
     	getContentPane().setLayout(groupLayout);
     	
@@ -348,7 +402,7 @@ public class MainFrame extends JFrame {
     	table.getColumnModel().getColumn(3).setCellEditor(new CellEditorForInteger(0,5000));
     	table.getColumnModel().getColumn(4).setCellEditor(new CellEditorForInteger(0,5000));
     	table.getColumnModel().getColumn(5).setCellEditor(new CellEditorForInteger(0,5000));
-    	table.getColumnModel().getColumn(7).setCellEditor(new CellEditorForDouble(table));
+    	table.getColumnModel().getColumn(7).setCellEditor(new CellEditorForDouble(table, model));
     	
     }
     
@@ -502,7 +556,6 @@ public class MainFrame extends JFrame {
         UIManager.put("FileChooser.acceptAllFileFilterText","Wszystkie pliki");
 	}
     
-
     public static void main(String[] args) {
 
         EventQueue.invokeLater(new Runnable() {
@@ -513,8 +566,8 @@ public class MainFrame extends JFrame {
             }
         });
         
-        @SuppressWarnings("unused")
-		InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
+        //@SuppressWarnings("unused")
+		//InsertElevationsAndCalculateLevelling test1 = new InsertElevationsAndCalculateLevelling();
         
     }
 }
