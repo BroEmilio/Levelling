@@ -171,7 +171,9 @@ public class Calculating {
 					double maxSuperiority = commonMethods.round((maxElevation - minElevation), 3);
 					if(maxSuperiority >= 5) {
 						JOptionPane.showMessageDialog(null,
-						        "Za du¿a ró¿nica wysokoœci("+commonMethods.round((maxElevation-minElevation),3)+"m) pomiêdzy rzêdn¹ "+minElevation+"m(wiersz "+(minIndex+1)+") a rzêdn¹ "+maxElevation+"m(wiersz "+(maxIndex+1)+").\n"+
+						        "Za du¿a ró¿nica wysokoœci("+commonMethods.round((maxElevation-minElevation),3)+"m)"
+						        + " pomiêdzy rzêdn¹ "+commonMethods.round(minElevation,3)+"m(wiersz "+(minIndex+1)+") "
+						        + "a rzêdn¹ "+commonMethods.round(maxElevation,3)+"m(wiersz "+(maxIndex+1)+").\n"+
 						        "Maksmymalna ró¿nica mo¿e wynosiæ do 5.000 m ( mo¿e dodaj jakieœ przejœcie ).",
 						        "Za du¿e przewy¿szenie",
 						        JOptionPane.INFORMATION_MESSAGE);

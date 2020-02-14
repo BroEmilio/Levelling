@@ -24,6 +24,7 @@ public class MainFrame extends JFrame {
 	public static JCheckBox complementElevationsChoosed;
 	AttachedFile attachedFile = new AttachedFile(model);
 	public static JLabel labelFileName;
+	public static JLabel labalFileInstrution;
 	Font style1 = new Font("Arial", Font.ITALIC, 14);
 	Font style2 = new Font("Arial", Font.ITALIC, 12);
 
@@ -44,7 +45,7 @@ public class MainFrame extends JFrame {
         createPanel();
         setPolish();
 
-        setTitle("NIWELACJA v0.96Beta");
+        setTitle("NIWELACJA v1.08Beta");
         setMinimumSize(new Dimension(750, 450));
         setSize(new Dimension(750, 695));
         setLocationRelativeTo(null);
@@ -132,13 +133,14 @@ public class MainFrame extends JFrame {
         editorPane.setBorder(null);
         editorPane.setText(
         		"<body bgcolor=\"rgb(214,217,223)\" align=\"center\">"+
-        		"<h2 ><u>NIWELACJA v0.96Beta</u></h2>"
-        		+"Film ukazuj¹cy obs³ugê programu w celu doliczenia niektórych odczytów niwelacji<br>"
+        		"<h2 ><u>NIWELACJA v1.08Beta</u></h2>"
+        		+"Filmy instrukta¿owe na YouTube:<br><br>"
+        		+"1. Jak doliczyæ kilka odczytów w niwelacji<br>"
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
-        		+"<br>Film prezentuj¹cy jak korzystaæ z aplikacji aby wykreowaæ ca³¹ niwelacjê <br>"
+        		+"<br>2. Jak wykreowaæ ca³¹ niwelacjê<br>"
         		+"https://youtu.be/ReyWcnZMvvc          (<a href='https://youtu.be/ReyWcnZMvvc'>link</a>)<br><br>"
-        		+/*"Je¿eli aplikacja jest dla ciebie przydatna - zostaw ³apkê w górê pod filmem na YouTube<br>"
-        		+"(bez obaw, na YouTube nie wyœwietla kto konkretnie polubi³ dany film ;)<br><br>"
+        		+"Je¿eli aplikacja jest dla ciebie przydatna - zostaw ³apkê w górê pod filmem<br><br>"
+        		+/*"(bez obaw, na YouTube nie wyœwietla kto konkretnie polubi³ dany film ;)<br><br>"
         		+*/"Ewentualne uwagi proszê kierowaæ na adres: bro.emilio.1.1@gmail.com</body>");
         editorPane.addHyperlinkListener(new HyperlinkListener() {
             @Override
@@ -248,7 +250,7 @@ public class MainFrame extends JFrame {
     	complementElevationsChoosed.setHorizontalAlignment(SwingConstants.RIGHT);
     	complementElevationsChoosed.setFont(style1);
     	
-    	JLabel labalFileInstrution = new JLabel("Za³¹czony plik z rzêdnymi (<NR> <X> <Y> <H>) :");
+    	labalFileInstrution = new JLabel("Za³¹czony plik z rzêdnymi (<NR> <X> <Y> <H>) :");
     	labalFileInstrution.setFont(new Font("Arial", Font.ITALIC, 14));
     	
     	JButton buttonChooseAttachedFile = new JButton("Wybierz");

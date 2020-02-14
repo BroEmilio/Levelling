@@ -116,8 +116,6 @@ public class CommonMethods {
 		return scatterArray;
 	}
 		
-		
-	
 	public void updateSightsSequence(LevellingTableModel model) {		// update sequence of backsights and foresights in levelling data
 		Boolean isBackSight = true;
 		for(int i=0; i<data.size(); i++) {

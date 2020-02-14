@@ -26,7 +26,7 @@ public class CellEditorForPointNumber extends DefaultCellEditor{
     @Override
     public boolean stopCellEditing(){
     	value=super.getCellEditorValue();
-    	table.changeSelection(currentRow, 2, false, false);
+    	//table.changeSelection(currentRow, 2, false, false);
 
         return super.stopCellEditing();
     }

@@ -1,18 +1,9 @@
 package levelling;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
+import java.io.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import levellingTable.LevellingTableModel;
 
 public class AttachedFile {
@@ -23,6 +14,21 @@ public class AttachedFile {
 	LevellingTableModel model;
 	JFileChooser chooser = new JFileChooser();
 	List<String> missedElevations = new ArrayList<>();
+	FileFilter filter = new FileFilter() {
+		@Override
+		public String getDescription() {
+		  return "Plik z rzêdnymi (.txt, .csv)";
+		}
+		@Override
+		public boolean accept(File f) {
+			if (f.isDirectory()) {
+	            return true;
+	        } else {
+	            return (f.getName().toLowerCase().endsWith(".txt") || f.getName().toLowerCase().endsWith(".csv")
+	            		|| ! f.getName().contains("."));
+	        }
+		}
+	};
 	
 	public AttachedFile(LevellingTableModel model) {
 		elevationsMap = new HashMap<>();
@@ -30,6 +36,8 @@ public class AttachedFile {
 	}
 	
 	public boolean chooseAttachedFile() {
+		chooser.setFileFilter(filter);
+		chooser.setCurrentDirectory(new File(System.getProperty("user.home") + "/Desktop"));
 		chooser.setDialogTitle("Wybierz plik z rzêdnymi (<NR> <X> <Y> <H>)");
     	chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     	chooser.setAcceptAllFileFilterUsed(false);
@@ -37,17 +45,18 @@ public class AttachedFile {
     	file=chooser.getSelectedFile();
     	
     	if(loadElevationsFromFile()) {
-    		for (Map.Entry<String, Double> entry : elevationsMap.entrySet())
-    		     System.out.println(entry.getKey()+" "+entry.getValue());
     		isFileAttached = true;
     		if(file != null)
         		MainFrame.labelFileName.setText(file.getAbsolutePath());
+    			MainFrame.labalFileInstrution.setText("Za³¹czony plik z rzêdnymi (<NR> <X> <Y> <H>) : "+elevationsMap.size()+" pkt");
     		model.setElevationsMap(elevationsMap, this);
     	} else {
     		isFileAttached = false;
     		elevationsMap.clear();
     		model.setElevationsMap(elevationsMap, this);
     		MainFrame.labelFileName.setText("brak");
+    		MainFrame.labalFileInstrution.setText("Za³¹czony plik z rzêdnymi (<NR> <X> <Y> <H>) :");
+    		return false;
     	}
     	
     	return true;
@@ -60,7 +69,7 @@ public class AttachedFile {
 			BufferedReader reader=null;
 			String pointName=null;
 			Double elevation = null;
-			String rowDescription=null;
+			String rowDescription="";
 			try {
 				reader = new BufferedReader(new FileReader(file));
 				String currentLine;
@@ -70,12 +79,11 @@ public class AttachedFile {
 							rowNumber++;
 							rowDescription = "B³¹d w wierszu "+rowNumber+": "+currentLine;
 							String[] subString = currentLine.split("\\s+");
-							if(subString.length>1)
+							if(subString.length>0)
 								pointName = subString[0];
 							else break;
 							
 							elevation = null;
-							System.out.println(rowNumber+": "+currentLine);
 							if(subString.length>3) {
 								if(subString[3] != null) 
 									elevation=Double.parseDouble(subString[3]);
@@ -154,6 +162,7 @@ public class AttachedFile {
 		file = null;
 		isFileAttached=false;
 		MainFrame.labelFileName.setText("brak");
+		MainFrame.labalFileInstrution.setText("Za³¹czony plik z rzêdnymi (<NR> <X> <Y> <H>) :");
 	}
 	
 	String prepareListToDisplay(List<String> missedElevations) {
