@@ -7,8 +7,6 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import javax.swing.event.*;
-import javax.swing.GroupLayout.*;
-import javax.swing.LayoutStyle.*;
 
 
 public class MainFrame extends JFrame {
@@ -45,7 +43,7 @@ public class MainFrame extends JFrame {
         createPanel();
         setPolish();
 
-        setTitle("NIWELACJA v1.08Beta");
+        setTitle("NIWELACJA v1.081");
         setMinimumSize(new Dimension(750, 450));
         setSize(new Dimension(750, 695));
         setLocationRelativeTo(null);
@@ -133,7 +131,7 @@ public class MainFrame extends JFrame {
         editorPane.setBorder(null);
         editorPane.setText(
         		"<body bgcolor=\"rgb(214,217,223)\" align=\"center\">"+
-        		"<h2 ><u>NIWELACJA v1.08Beta</u></h2>"
+        		"<h2 ><u>NIWELACJA v1.081</u></h2>"
         		+"Filmy instrukta¿owe na YouTube:<br><br>"
         		+"1. Jak doliczyæ kilka odczytów w niwelacji<br>"
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
@@ -180,15 +178,18 @@ public class MainFrame extends JFrame {
     	ImageIcon calcIcon = new ImageIcon("./icons/calc.png");
     	ImageIcon secondCalcIcon = new ImageIcon("./icons/secondCalc.png");
     	
-    	
-    	secondCalcButton = new JButton("Oblicz drugie odczyty", secondCalcIcon);
-    	secondCalcButton.setFont(style1);
-    	secondCalcButton.setPreferredSize(new Dimension(210,35));
-    	secondCalcButton.setEnabled(false);
+    	setTableView();
+    	addKeyBindings();
+    	GridBagLayout gridBagLayout = new GridBagLayout();
+    	gridBagLayout.columnWidths = new int[]{5, 17, 69, 280, 120, 30, 18};
+    	gridBagLayout.rowHeights = new int[]{20, 17, 17, 17, 0, 25, 34,404};
+    	gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+    	gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    	getContentPane().setLayout(gridBagLayout);
     	
     	JButton calcButton = new JButton("Oblicz niwelacjê", calcIcon);
     	calcButton.setFont(style1);
-    	calcButton.setPreferredSize(new Dimension(210,35));
+    	calcButton.setPreferredSize(new Dimension(210, 45));
     	calcButton.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
@@ -198,6 +199,18 @@ public class MainFrame extends JFrame {
         	}
     		
     	});
+    	GridBagConstraints gbc_calcButton = new GridBagConstraints();
+    	gbc_calcButton.anchor = GridBagConstraints.NORTH;
+    	gbc_calcButton.insets = new Insets(0, 0, 5, 5);
+    	gbc_calcButton.gridx = 3;
+    	gbc_calcButton.gridy = 0;
+    	getContentPane().add(calcButton, gbc_calcButton);
+    	
+    	
+    	secondCalcButton = new JButton("Oblicz drugie odczyty", secondCalcIcon);
+    	secondCalcButton.setFont(style1);
+    	secondCalcButton.setPreferredSize(new Dimension(210, 45));
+    	secondCalcButton.setEnabled(false);
     	secondCalcButton.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
@@ -207,55 +220,141 @@ public class MainFrame extends JFrame {
         			secondCalc.setSecondValues();
         	}
     	});
+    	GridBagConstraints gbc_secondCalcButton = new GridBagConstraints();
+    	gbc_secondCalcButton.anchor = GridBagConstraints.NORTH;
+    	gbc_secondCalcButton.insets = new Insets(0, 0, 5, 5);
+    	gbc_secondCalcButton.gridx = 4;
+    	gbc_secondCalcButton.gridy = 0;
+    	getContentPane().add(secondCalcButton, gbc_secondCalcButton);
     	
-    	JLabel F5Label = new JLabel("F5");
+    	JLabel F5Label = new JLabel(" F5 ");
     	F5Label.setForeground(Color.WHITE);
     	F5Label.setOpaque(true);
     	F5Label.setBackground(new Color(90,175,240));
     	F5Label.setHorizontalAlignment(SwingConstants.CENTER);
     	F5Label.setFont(style1);
-    	JLabel F1Label = new JLabel("F1");
+    	GridBagConstraints gbc_F5Label = new GridBagConstraints();
+    	gbc_F5Label.anchor = GridBagConstraints.NORTHEAST;
+    	gbc_F5Label.insets = new Insets(0, 0, 5, 5);
+    	gbc_F5Label.gridx = 2;
+    	gbc_F5Label.gridy = 1;
+    	getContentPane().add(F5Label, gbc_F5Label);
+    	
+    	JLabel F1Label = new JLabel(" F1 ");
     	F1Label.setForeground(Color.WHITE);
     	F1Label.setOpaque(true);
     	F1Label.setBackground(Color.GRAY);
     	F1Label.setHorizontalAlignment(SwingConstants.CENTER);
     	F1Label.setFont(style1);
+    	GridBagConstraints gbc_F1Label = new GridBagConstraints();
+    	gbc_F1Label.anchor = GridBagConstraints.NORTHEAST;
+    	gbc_F1Label.insets = new Insets(0, 0, 5, 5);
+    	gbc_F1Label.gridx = 2;
+    	gbc_F1Label.gridy = 2;
+    	getContentPane().add(F1Label, gbc_F1Label);
+    	
     	JLabel constFieldsLabel = new JLabel("-  oznacz/odblokuj punkt pocz¹tkowy lub koñcowy niwelacji");
     	constFieldsLabel.setFont(style1);
+    	GridBagConstraints gbc_constFieldsLabel = new GridBagConstraints();
+    	gbc_constFieldsLabel.gridwidth = 2;
+    	gbc_constFieldsLabel.anchor = GridBagConstraints.NORTHWEST;
+    	gbc_constFieldsLabel.insets = new Insets(0, 0, 5, 5);
+    	gbc_constFieldsLabel.gridx = 3;
+    	gbc_constFieldsLabel.gridy = 1;
+    	getContentPane().add(constFieldsLabel, gbc_constFieldsLabel);
+    	
     	JLabel posredniInstructionLabel = new JLabel("-  oznacz punkt poœredni niwelacji (tylko w trybie kreowania)");
     	posredniInstructionLabel.setFont(style1);
+    	GridBagConstraints gbc_posredniInstructionLabel = new GridBagConstraints();
+    	gbc_posredniInstructionLabel.gridwidth = 2;
+    	gbc_posredniInstructionLabel.anchor = GridBagConstraints.NORTH;
+    	gbc_posredniInstructionLabel.fill = GridBagConstraints.HORIZONTAL;
+    	gbc_posredniInstructionLabel.insets = new Insets(0, 0, 5, 5);
+    	gbc_posredniInstructionLabel.gridx = 3;
+    	gbc_posredniInstructionLabel.gridy = 2;
+    	getContentPane().add(posredniInstructionLabel, gbc_posredniInstructionLabel);
+    	
     	JLabel newRowLabel = new JLabel("Ctrl+W - wstaw nowy wiersz,  Ctrl+K - skasuj zaznaczony wiersz");
     	newRowLabel.setFont(style1);
-    	JLabel wsteczLabel = new JLabel("odczyt wstecz");
+    	GridBagConstraints gbc_newRowLabel = new GridBagConstraints();
+    	gbc_newRowLabel.anchor = GridBagConstraints.NORTHWEST;
+    	gbc_newRowLabel.insets = new Insets(0, 0, 5, 5);
+    	gbc_newRowLabel.gridwidth = 3;
+    	gbc_newRowLabel.gridx = 2;
+    	gbc_newRowLabel.gridy = 3;
+    	getContentPane().add(newRowLabel, gbc_newRowLabel);
+    	
+    	leaveCurrentValues = new JCheckBox(" nie zmieniaj istniej¹cych odczytów", false);
+    	leaveCurrentValues.setHorizontalAlignment(SwingConstants.LEFT);
+    	leaveCurrentValues.setFont(style1);
+    	GridBagConstraints gbc_leaveCurrentValues = new GridBagConstraints();
+    	gbc_leaveCurrentValues.anchor = GridBagConstraints.NORTHWEST;
+    	gbc_leaveCurrentValues.insets = new Insets(0, 0, 5, 5);
+    	gbc_leaveCurrentValues.gridwidth = 2;
+    	gbc_leaveCurrentValues.gridx = 2;
+    	gbc_leaveCurrentValues.gridy = 4;
+    	getContentPane().add(leaveCurrentValues, gbc_leaveCurrentValues);
+    	
+    	complementElevationsChoosed = new JCheckBox(" automatycznie uzupe³niaj puste rzêdne", true);
+    	complementElevationsChoosed.setHorizontalAlignment(SwingConstants.RIGHT);
+    	complementElevationsChoosed.setFont(style1);
+    	GridBagConstraints gbc_complementElevationsChoosed = new GridBagConstraints();
+    	gbc_complementElevationsChoosed.gridwidth = 2;
+    	gbc_complementElevationsChoosed.anchor = GridBagConstraints.NORTHWEST;
+    	gbc_complementElevationsChoosed.insets = new Insets(0, 0, 5, 5);
+    	gbc_complementElevationsChoosed.gridx = 4;
+    	gbc_complementElevationsChoosed.gridy = 4;
+    	getContentPane().add(complementElevationsChoosed, gbc_complementElevationsChoosed);
+    	
+    	JLabel wsteczLabel = new JLabel("  odczyt wstecz  ");
     	wsteczLabel.setOpaque(true);
     	wsteczLabel.setBackground(Color.YELLOW);
     	wsteczLabel.setHorizontalAlignment(SwingConstants.CENTER);
     	wsteczLabel.setFont(style1);
-    	JLabel wprzodLabel = new JLabel("odczyt wprzód");
+    	GridBagConstraints gbc_wsteczLabel = new GridBagConstraints();
+    	gbc_wsteczLabel.anchor = GridBagConstraints.NORTH;
+    	gbc_wsteczLabel.insets = new Insets(0, 0, 5, 5);
+    	gbc_wsteczLabel.gridx = 5;
+    	gbc_wsteczLabel.gridy = 1;
+    	getContentPane().add(wsteczLabel, gbc_wsteczLabel);
+    	
+    	JLabel wprzodLabel = new JLabel(" odczyt w przód ");
     	wprzodLabel.setOpaque(true);
     	wprzodLabel.setHorizontalAlignment(SwingConstants.CENTER);
     	wprzodLabel.setFont(style1);
     	wprzodLabel.setBackground(Color.RED);
+    	GridBagConstraints gbc_wprzodLabel = new GridBagConstraints();
+    	gbc_wprzodLabel.anchor = GridBagConstraints.NORTH;
+    	gbc_wprzodLabel.insets = new Insets(0, 0, 5, 5);
+    	gbc_wprzodLabel.gridx = 5;
+    	gbc_wprzodLabel.gridy = 2;
+    	getContentPane().add(wprzodLabel, gbc_wprzodLabel);
+    	
     	JLabel posredniLabel = new JLabel("odczyt poœredni");
     	posredniLabel.setOpaque(true);
     	posredniLabel.setHorizontalAlignment(SwingConstants.CENTER);
     	posredniLabel.setFont(style1);
     	posredniLabel.setBackground(Color.GRAY);
-    	
-    	leaveCurrentValues = new JCheckBox(" nie zmieniaj istniej¹cych odczytów", false);
-    	leaveCurrentValues.setHorizontalAlignment(SwingConstants.LEFT);
-    	leaveCurrentValues.setFont(style1);
-    	
-    	complementElevationsChoosed = new JCheckBox(" automatycznie uzupe³niaj puste rzêdne", true);
-    	complementElevationsChoosed.setHorizontalAlignment(SwingConstants.RIGHT);
-    	complementElevationsChoosed.setFont(style1);
+    	GridBagConstraints gbc_posredniLabel = new GridBagConstraints();
+    	gbc_posredniLabel.anchor = GridBagConstraints.NORTH;
+    	gbc_posredniLabel.insets = new Insets(0, 0, 5, 5);
+    	gbc_posredniLabel.gridx = 5;
+    	gbc_posredniLabel.gridy = 3;
+    	getContentPane().add(posredniLabel, gbc_posredniLabel);
     	
     	labalFileInstrution = new JLabel("Za³¹czony plik z rzêdnymi (<NR> <X> <Y> <H>) :");
     	labalFileInstrution.setFont(new Font("Arial", Font.ITALIC, 14));
+    	GridBagConstraints gbc_labalFileInstrution = new GridBagConstraints();
+    	gbc_labalFileInstrution.anchor = GridBagConstraints.NORTHWEST;
+    	gbc_labalFileInstrution.insets = new Insets(0, 0, 5, 5);
+    	gbc_labalFileInstrution.gridwidth = 2;
+    	gbc_labalFileInstrution.gridx = 2;
+    	gbc_labalFileInstrution.gridy = 5;
+    	getContentPane().add(labalFileInstrution, gbc_labalFileInstrution);
     	
     	JButton buttonChooseAttachedFile = new JButton("Wybierz");
     	buttonChooseAttachedFile.setFont(style2);
-    	buttonChooseAttachedFile.setPreferredSize(new Dimension(30,10));
+    	buttonChooseAttachedFile.setPreferredSize(new Dimension(80, 25));
     	buttonChooseAttachedFile.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
@@ -263,113 +362,46 @@ public class MainFrame extends JFrame {
 	    		attachedFile.chooseAttachedFile();
         	}
     	});
+    	GridBagConstraints gbc_buttonChooseAttachedFile = new GridBagConstraints();
+    	gbc_buttonChooseAttachedFile.insets = new Insets(0, 0, 5, 5);
+    	gbc_buttonChooseAttachedFile.gridx = 2;
+    	gbc_buttonChooseAttachedFile.gridy = 6;
+    	getContentPane().add(buttonChooseAttachedFile, gbc_buttonChooseAttachedFile);
     	
     	labelFileName = new JLabel("brak");
     	labelFileName.setFont(new Font("Arial", Font.ITALIC, 12));
-    	
-    	
+    	GridBagConstraints gbc_labelFileName = new GridBagConstraints();
+    	gbc_labelFileName.gridwidth = 2;
+    	gbc_labelFileName.anchor = GridBagConstraints.WEST;
+    	gbc_labelFileName.fill = GridBagConstraints.VERTICAL;
+    	gbc_labelFileName.insets = new Insets(0, 0, 5, 5);
+    	gbc_labelFileName.gridx = 3;
+    	gbc_labelFileName.gridy = 6;
+    	getContentPane().add(labelFileName, gbc_labelFileName);
     	
     	JButton buttonUnlink = new JButton("Odepnij");
-    	buttonUnlink.setFont(style2);
-    	buttonUnlink.setPreferredSize(new Dimension(30,10));
+    	buttonChooseAttachedFile.setFont(style2);
+    	buttonUnlink.setPreferredSize(new Dimension(90, 22));
     	buttonUnlink.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			attachedFile.unlinkAttachedFile();
     		}
     	});
     	buttonUnlink.setFont(new Font("Arial", Font.ITALIC, 14));
+    	GridBagConstraints gbc_buttonUnlink = new GridBagConstraints();
+    	gbc_buttonUnlink.insets = new Insets(0, 0, 5, 5);
+    	gbc_buttonUnlink.gridx = 5;
+    	gbc_buttonUnlink.gridy = 6;
+    	getContentPane().add(buttonUnlink, gbc_buttonUnlink);
     	
     	JScrollPane tablePanel = new JScrollPane(table);
-    	
-    	setTableView();
-    	addKeyBindings();
-    	
-    	GroupLayout groupLayout = new GroupLayout(getContentPane());
-    	groupLayout.setHorizontalGroup(
-    		groupLayout.createParallelGroup(Alignment.LEADING)
-    			.addGroup(groupLayout.createSequentialGroup()
-    				.addGap(8)
-    				.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING, false)
-    					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    						.addGroup(groupLayout.createSequentialGroup()
-    							.addGap(18)
-    							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    								.addGroup(groupLayout.createSequentialGroup()
-    									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    										.addComponent(F1Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE)
-    										.addComponent(F5Label, GroupLayout.PREFERRED_SIZE, 30, GroupLayout.PREFERRED_SIZE))
-    									.addPreferredGap(ComponentPlacement.RELATED)
-    									.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    										.addComponent(constFieldsLabel, GroupLayout.PREFERRED_SIZE, 386, GroupLayout.PREFERRED_SIZE)
-    										.addComponent(posredniInstructionLabel, GroupLayout.PREFERRED_SIZE, 394, GroupLayout.PREFERRED_SIZE)))
-    								.addComponent(newRowLabel, GroupLayout.PREFERRED_SIZE, 404, GroupLayout.PREFERRED_SIZE))
-    							.addPreferredGap(ComponentPlacement.RELATED)
-    							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
-    								.addComponent(wprzodLabel, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-    								.addComponent(posredniLabel, GroupLayout.DEFAULT_SIZE, 132, Short.MAX_VALUE)
-    								.addComponent(wsteczLabel, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-    						.addGroup(groupLayout.createSequentialGroup()
-    							.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 366, GroupLayout.PREFERRED_SIZE)
-    							.addPreferredGap(ComponentPlacement.RELATED)
-    							.addComponent(complementElevationsChoosed, GroupLayout.PREFERRED_SIZE, 298, GroupLayout.PREFERRED_SIZE)))
-    					.addGroup(groupLayout.createSequentialGroup()
-    						.addComponent(buttonChooseAttachedFile, GroupLayout.PREFERRED_SIZE, 85, GroupLayout.PREFERRED_SIZE)
-    						.addPreferredGap(ComponentPlacement.RELATED)
-    						.addComponent(labelFileName, GroupLayout.PREFERRED_SIZE, 502, GroupLayout.PREFERRED_SIZE)
-    						.addGap(9)
-    						.addComponent(buttonUnlink, GroupLayout.PREFERRED_SIZE, 83, GroupLayout.PREFERRED_SIZE))
-    					.addComponent(labalFileInstrution, GroupLayout.PREFERRED_SIZE, 679, GroupLayout.PREFERRED_SIZE))
-    				.addGap(43))
-    			.addGroup(groupLayout.createSequentialGroup()
-    				.addGap(123)
-    				.addComponent(calcButton, GroupLayout.PREFERRED_SIZE, 0, 200)
-    				.addGap(88)
-    				.addComponent(secondCalcButton, GroupLayout.PREFERRED_SIZE, 0, 200)
-    				.addGap(123))
-    			.addGroup(groupLayout.createSequentialGroup()
-    				.addContainerGap()
-    				.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 714, Short.MAX_VALUE)
-    				.addContainerGap())
-    	);
-    	groupLayout.setVerticalGroup(
-    		groupLayout.createParallelGroup(Alignment.CENTER)
-    			.addGroup(groupLayout.createSequentialGroup()
-    				.addContainerGap()
-    				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-    					.addComponent(secondCalcButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-    					.addComponent(calcButton, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-    				.addGap(11)
-    				.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-    					.addGroup(groupLayout.createSequentialGroup()
-    						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-    							.addComponent(constFieldsLabel, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
-    							.addComponent(F5Label, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
-    							.addComponent(wsteczLabel))
-    						.addGap(7)
-    						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-    							.addComponent(F1Label)
-    							.addComponent(posredniInstructionLabel)
-    							.addComponent(wprzodLabel, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
-    						.addPreferredGap(ComponentPlacement.RELATED)
-    						.addComponent(newRowLabel))
-    					.addComponent(posredniLabel, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE))
-    				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-    					.addComponent(leaveCurrentValues, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)
-    					.addGroup(groupLayout.createSequentialGroup()
-    						.addGap(2)
-    						.addComponent(complementElevationsChoosed, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE)))
-    				.addGap(9)
-    				.addComponent(labalFileInstrution, GroupLayout.PREFERRED_SIZE, 17, GroupLayout.PREFERRED_SIZE)
-    				.addPreferredGap(ComponentPlacement.RELATED)
-    				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-    					.addComponent(buttonChooseAttachedFile)
-    					.addComponent(labelFileName, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE)
-    					.addComponent(buttonUnlink, GroupLayout.PREFERRED_SIZE, 25, GroupLayout.PREFERRED_SIZE))
-    				.addPreferredGap(ComponentPlacement.RELATED)
-    				.addComponent(tablePanel, GroupLayout.DEFAULT_SIZE, 397, Short.MAX_VALUE)
-    				.addGap(23))
-    	);
-    	getContentPane().setLayout(groupLayout);
+    	GridBagConstraints gbc_tablePanel = new GridBagConstraints();
+    	gbc_tablePanel.gridheight = 2;
+    	gbc_tablePanel.fill = GridBagConstraints.BOTH;
+    	gbc_tablePanel.gridwidth = 6;
+    	gbc_tablePanel.gridx = 1;
+    	gbc_tablePanel.gridy = 7;
+    	getContentPane().add(tablePanel, gbc_tablePanel);
     	
     }
     
