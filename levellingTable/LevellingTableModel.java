@@ -305,6 +305,7 @@ public class LevellingTableModel extends AbstractTableModel {
 		Sight lastBackSight = commonMethods.lastBackSight(currentRow+2);
 		int firstBackSightIndex = commonMethods.getIndexOfSight(firstBackSight);
 		int lastBackSightIndex = commonMethods.getIndexOfSight(lastBackSight);
+		System.out.println(currentRow+":\nFIRST:"+firstBackSight+"\nLAST:"+lastBackSight);
 		if(firstBackSight==lastBackSight)
 			return;
 		int nullElevationsCounter = countNullElevationsBetween(firstBackSightIndex, lastBackSightIndex);
@@ -323,7 +324,14 @@ public class LevellingTableModel extends AbstractTableModel {
 				randomShift = averageDisparity + (random.nextInt(Math.abs((int)(averageDisparity*1000)))*0.0004 * ( random.nextBoolean() ? 1 : -1 ));
 			} else randomShift = averageDisparity + ((random.nextInt(700))*0.001 * ( random.nextBoolean() ? 1 : -1 ));
 			randomShift = commonMethods.round(randomShift, 3);
-			estimatedElevation += randomShift;
+			if(i>firstBackSightIndex+nullElevationsCounter-3) {
+				Double averageLastDisparity = (lastBackSight.getElevation()-estimatedElevation)/2;
+				//System.out.println("averageLastDisparity:"+averageLastDisparity);
+				estimatedElevation += commonMethods.round(averageLastDisparity, 3) + ((random.nextInt(300))*0.001 * ( random.nextBoolean() ? 1 : -1 ));
+			} else {
+				estimatedElevation += randomShift;
+			}
+			//System.out.println("averageDisparity:"+averageDisparity+"; randomShift"+randomShift+"\n");
 			firstEmptySight.setElevation(estimatedElevation);
 			complementNeighborElevation(firstEmptySightIndex);
 		}
