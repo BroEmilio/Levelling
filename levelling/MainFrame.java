@@ -131,7 +131,7 @@ public class MainFrame extends JFrame {
         editorPane.setBorder(null);
         editorPane.setText(
         		"<body bgcolor=\"rgb(214,217,223)\" align=\"center\">"+
-        		"<h2 ><u>NIWELACJA v1.082TEST</u></h2>"
+        		"<h2 ><u>NIWELACJA v1.082TEST2</u></h2>"
         		+"Filmy instrukta¿owe na YouTube:<br><br>"
         		+"1. Jak doliczyæ kilka odczytów w niwelacji<br>"
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
