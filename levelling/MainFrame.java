@@ -189,7 +189,9 @@ public class MainFrame extends JFrame {
     	
     	JButton calcButton = new JButton("Oblicz niwelacjê", calcIcon);
     	calcButton.setFont(style1);
-    	calcButton.setPreferredSize(new Dimension(210, 32));
+    	calcButton.setPreferredSize(new Dimension(200, 33));
+    	calcButton.setMinimumSize(new Dimension(200, 33));
+    	calcButton.setMaximumSize(new Dimension(200, 33));
     	calcButton.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
@@ -200,7 +202,8 @@ public class MainFrame extends JFrame {
     		
     	});
     	GridBagConstraints gbc_calcButton = new GridBagConstraints();
-    	gbc_calcButton.insets = new Insets(0, 0, 5, 5);
+    	gbc_calcButton.anchor = GridBagConstraints.NORTH;
+    	gbc_calcButton.insets = new Insets(5, 0, 0, 0);
     	gbc_calcButton.gridx = 3;
     	gbc_calcButton.gridy = 0;
     	getContentPane().add(calcButton, gbc_calcButton);
@@ -208,7 +211,9 @@ public class MainFrame extends JFrame {
     	
     	secondCalcButton = new JButton("Oblicz drugie odczyty", secondCalcIcon);
     	secondCalcButton.setFont(style1);
-    	secondCalcButton.setPreferredSize(new Dimension(210, 32));
+    	secondCalcButton.setPreferredSize(new Dimension(200, 33));
+    	secondCalcButton.setMinimumSize(new Dimension(200, 33));
+    	secondCalcButton.setMaximumSize(new Dimension(200, 33));
     	secondCalcButton.setEnabled(false);
     	secondCalcButton.addActionListener(new ActionListener() {
         	@Override
@@ -220,7 +225,8 @@ public class MainFrame extends JFrame {
         	}
     	});
     	GridBagConstraints gbc_secondCalcButton = new GridBagConstraints();
-    	gbc_secondCalcButton.insets = new Insets(0, 0, 5, 5);
+    	gbc_secondCalcButton.anchor = GridBagConstraints.NORTH;
+    	gbc_secondCalcButton.insets = new Insets(5, 0, 5, 5);
     	gbc_secondCalcButton.gridx = 4;
     	gbc_secondCalcButton.gridy = 0;
     	getContentPane().add(secondCalcButton, gbc_secondCalcButton);
@@ -353,6 +359,8 @@ public class MainFrame extends JFrame {
     	JButton buttonChooseAttachedFile = new JButton("Wybierz");
     	buttonChooseAttachedFile.setFont(style2);
     	buttonChooseAttachedFile.setPreferredSize(new Dimension(80, 25));
+    	buttonChooseAttachedFile.setMinimumSize(new Dimension(80, 25));
+    	buttonChooseAttachedFile.setMaximumSize(new Dimension(80, 25));
     	buttonChooseAttachedFile.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
@@ -379,6 +387,8 @@ public class MainFrame extends JFrame {
     	JButton buttonUnlink = new JButton("Odepnij");
     	buttonChooseAttachedFile.setFont(style2);
     	buttonUnlink.setPreferredSize(new Dimension(90, 22));
+    	buttonUnlink.setMinimumSize(new Dimension(90, 22));
+    	buttonUnlink.setMaximumSize(new Dimension(90, 22));
     	buttonUnlink.addActionListener(new ActionListener() {
     		public void actionPerformed(ActionEvent e) {
     			attachedFile.unlinkAttachedFile();
