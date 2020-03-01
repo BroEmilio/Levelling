@@ -131,7 +131,7 @@ public class MainFrame extends JFrame {
         editorPane.setBorder(null);
         editorPane.setText(
         		"<body bgcolor=\"rgb(214,217,223)\" align=\"center\">"+
-        		"<h2 ><u>NIWELACJA v1.082TEST2</u></h2>"
+        		"<h2 ><u>NIWELACJA v1.082</u></h2>"
         		+"Filmy instrukta¿owe na YouTube:<br><br>"
         		+"1. Jak doliczyæ kilka odczytów w niwelacji<br>"
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
@@ -182,14 +182,14 @@ public class MainFrame extends JFrame {
     	addKeyBindings();
     	GridBagLayout gridBagLayout = new GridBagLayout();
     	gridBagLayout.columnWidths = new int[]{5, 17, 69, 280, 120, 30, 18};
-    	gridBagLayout.rowHeights = new int[]{20, 17, 17, 17, 0, 25, 34,404};
+    	gridBagLayout.rowHeights = new int[]{35, 17, 17, 17, 0, 25, 34,404};
     	gridBagLayout.columnWeights = new double[]{0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0};
-    	gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    	gridBagLayout.rowWeights = new double[]{0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
     	getContentPane().setLayout(gridBagLayout);
     	
     	JButton calcButton = new JButton("Oblicz niwelacjê", calcIcon);
     	calcButton.setFont(style1);
-    	calcButton.setPreferredSize(new Dimension(210, 45));
+    	calcButton.setPreferredSize(new Dimension(210, 32));
     	calcButton.addActionListener(new ActionListener() {
         	@Override
         	public void actionPerformed(ActionEvent e) {
@@ -200,7 +200,6 @@ public class MainFrame extends JFrame {
     		
     	});
     	GridBagConstraints gbc_calcButton = new GridBagConstraints();
-    	gbc_calcButton.anchor = GridBagConstraints.NORTH;
     	gbc_calcButton.insets = new Insets(0, 0, 5, 5);
     	gbc_calcButton.gridx = 3;
     	gbc_calcButton.gridy = 0;
@@ -209,7 +208,7 @@ public class MainFrame extends JFrame {
     	
     	secondCalcButton = new JButton("Oblicz drugie odczyty", secondCalcIcon);
     	secondCalcButton.setFont(style1);
-    	secondCalcButton.setPreferredSize(new Dimension(210, 45));
+    	secondCalcButton.setPreferredSize(new Dimension(210, 32));
     	secondCalcButton.setEnabled(false);
     	secondCalcButton.addActionListener(new ActionListener() {
         	@Override
@@ -221,7 +220,6 @@ public class MainFrame extends JFrame {
         	}
     	});
     	GridBagConstraints gbc_secondCalcButton = new GridBagConstraints();
-    	gbc_secondCalcButton.anchor = GridBagConstraints.NORTH;
     	gbc_secondCalcButton.insets = new Insets(0, 0, 5, 5);
     	gbc_secondCalcButton.gridx = 4;
     	gbc_secondCalcButton.gridy = 0;
@@ -234,7 +232,7 @@ public class MainFrame extends JFrame {
     	F5Label.setHorizontalAlignment(SwingConstants.CENTER);
     	F5Label.setFont(style1);
     	GridBagConstraints gbc_F5Label = new GridBagConstraints();
-    	gbc_F5Label.anchor = GridBagConstraints.NORTHEAST;
+    	gbc_F5Label.anchor = GridBagConstraints.SOUTHEAST;
     	gbc_F5Label.insets = new Insets(0, 0, 5, 5);
     	gbc_F5Label.gridx = 2;
     	gbc_F5Label.gridy = 1;
@@ -247,7 +245,7 @@ public class MainFrame extends JFrame {
     	F1Label.setHorizontalAlignment(SwingConstants.CENTER);
     	F1Label.setFont(style1);
     	GridBagConstraints gbc_F1Label = new GridBagConstraints();
-    	gbc_F1Label.anchor = GridBagConstraints.NORTHEAST;
+    	gbc_F1Label.anchor = GridBagConstraints.SOUTHEAST;
     	gbc_F1Label.insets = new Insets(0, 0, 5, 5);
     	gbc_F1Label.gridx = 2;
     	gbc_F1Label.gridy = 2;
@@ -257,7 +255,7 @@ public class MainFrame extends JFrame {
     	constFieldsLabel.setFont(style1);
     	GridBagConstraints gbc_constFieldsLabel = new GridBagConstraints();
     	gbc_constFieldsLabel.gridwidth = 2;
-    	gbc_constFieldsLabel.anchor = GridBagConstraints.NORTHWEST;
+    	gbc_constFieldsLabel.anchor = GridBagConstraints.SOUTHWEST;
     	gbc_constFieldsLabel.insets = new Insets(0, 0, 5, 5);
     	gbc_constFieldsLabel.gridx = 3;
     	gbc_constFieldsLabel.gridy = 1;
@@ -267,7 +265,7 @@ public class MainFrame extends JFrame {
     	posredniInstructionLabel.setFont(style1);
     	GridBagConstraints gbc_posredniInstructionLabel = new GridBagConstraints();
     	gbc_posredniInstructionLabel.gridwidth = 2;
-    	gbc_posredniInstructionLabel.anchor = GridBagConstraints.NORTH;
+    	gbc_posredniInstructionLabel.anchor = GridBagConstraints.SOUTH;
     	gbc_posredniInstructionLabel.fill = GridBagConstraints.HORIZONTAL;
     	gbc_posredniInstructionLabel.insets = new Insets(0, 0, 5, 5);
     	gbc_posredniInstructionLabel.gridx = 3;
@@ -277,7 +275,7 @@ public class MainFrame extends JFrame {
     	JLabel newRowLabel = new JLabel("Ctrl+W - wstaw nowy wiersz,  Ctrl+K - skasuj zaznaczony wiersz");
     	newRowLabel.setFont(style1);
     	GridBagConstraints gbc_newRowLabel = new GridBagConstraints();
-    	gbc_newRowLabel.anchor = GridBagConstraints.NORTHWEST;
+    	gbc_newRowLabel.anchor = GridBagConstraints.SOUTHWEST;
     	gbc_newRowLabel.insets = new Insets(0, 0, 5, 5);
     	gbc_newRowLabel.gridwidth = 3;
     	gbc_newRowLabel.gridx = 2;
@@ -288,7 +286,7 @@ public class MainFrame extends JFrame {
     	leaveCurrentValues.setHorizontalAlignment(SwingConstants.LEFT);
     	leaveCurrentValues.setFont(style1);
     	GridBagConstraints gbc_leaveCurrentValues = new GridBagConstraints();
-    	gbc_leaveCurrentValues.anchor = GridBagConstraints.NORTHWEST;
+    	gbc_leaveCurrentValues.anchor = GridBagConstraints.SOUTHWEST;
     	gbc_leaveCurrentValues.insets = new Insets(0, 0, 5, 5);
     	gbc_leaveCurrentValues.gridwidth = 2;
     	gbc_leaveCurrentValues.gridx = 2;
@@ -300,7 +298,7 @@ public class MainFrame extends JFrame {
     	complementElevationsChoosed.setFont(style1);
     	GridBagConstraints gbc_complementElevationsChoosed = new GridBagConstraints();
     	gbc_complementElevationsChoosed.gridwidth = 2;
-    	gbc_complementElevationsChoosed.anchor = GridBagConstraints.NORTHWEST;
+    	gbc_complementElevationsChoosed.anchor = GridBagConstraints.SOUTHWEST;
     	gbc_complementElevationsChoosed.insets = new Insets(0, 0, 5, 5);
     	gbc_complementElevationsChoosed.gridx = 4;
     	gbc_complementElevationsChoosed.gridy = 4;
@@ -312,7 +310,7 @@ public class MainFrame extends JFrame {
     	wsteczLabel.setHorizontalAlignment(SwingConstants.CENTER);
     	wsteczLabel.setFont(style1);
     	GridBagConstraints gbc_wsteczLabel = new GridBagConstraints();
-    	gbc_wsteczLabel.anchor = GridBagConstraints.NORTH;
+    	gbc_wsteczLabel.anchor = GridBagConstraints.SOUTH;
     	gbc_wsteczLabel.insets = new Insets(0, 0, 5, 5);
     	gbc_wsteczLabel.gridx = 5;
     	gbc_wsteczLabel.gridy = 1;
@@ -324,7 +322,7 @@ public class MainFrame extends JFrame {
     	wprzodLabel.setFont(style1);
     	wprzodLabel.setBackground(Color.RED);
     	GridBagConstraints gbc_wprzodLabel = new GridBagConstraints();
-    	gbc_wprzodLabel.anchor = GridBagConstraints.NORTH;
+    	gbc_wprzodLabel.anchor = GridBagConstraints.SOUTH;
     	gbc_wprzodLabel.insets = new Insets(0, 0, 5, 5);
     	gbc_wprzodLabel.gridx = 5;
     	gbc_wprzodLabel.gridy = 2;
@@ -336,7 +334,7 @@ public class MainFrame extends JFrame {
     	posredniLabel.setFont(style1);
     	posredniLabel.setBackground(Color.GRAY);
     	GridBagConstraints gbc_posredniLabel = new GridBagConstraints();
-    	gbc_posredniLabel.anchor = GridBagConstraints.NORTH;
+    	gbc_posredniLabel.anchor = GridBagConstraints.SOUTH;
     	gbc_posredniLabel.insets = new Insets(0, 0, 5, 5);
     	gbc_posredniLabel.gridx = 5;
     	gbc_posredniLabel.gridy = 3;
@@ -345,7 +343,7 @@ public class MainFrame extends JFrame {
     	labalFileInstrution = new JLabel("Za³¹czony plik z rzêdnymi (<NR> <X> <Y> <H>) :");
     	labalFileInstrution.setFont(new Font("Arial", Font.ITALIC, 14));
     	GridBagConstraints gbc_labalFileInstrution = new GridBagConstraints();
-    	gbc_labalFileInstrution.anchor = GridBagConstraints.NORTHWEST;
+    	gbc_labalFileInstrution.anchor = GridBagConstraints.SOUTHWEST;
     	gbc_labalFileInstrution.insets = new Insets(0, 0, 5, 5);
     	gbc_labalFileInstrution.gridwidth = 2;
     	gbc_labalFileInstrution.gridx = 2;
@@ -373,7 +371,6 @@ public class MainFrame extends JFrame {
     	GridBagConstraints gbc_labelFileName = new GridBagConstraints();
     	gbc_labelFileName.gridwidth = 2;
     	gbc_labelFileName.anchor = GridBagConstraints.WEST;
-    	gbc_labelFileName.fill = GridBagConstraints.VERTICAL;
     	gbc_labelFileName.insets = new Insets(0, 0, 5, 5);
     	gbc_labelFileName.gridx = 3;
     	gbc_labelFileName.gridy = 6;
@@ -398,8 +395,8 @@ public class MainFrame extends JFrame {
     	GridBagConstraints gbc_tablePanel = new GridBagConstraints();
     	gbc_tablePanel.gridheight = 2;
     	gbc_tablePanel.fill = GridBagConstraints.BOTH;
-    	gbc_tablePanel.gridwidth = 6;
-    	gbc_tablePanel.gridx = 1;
+    	gbc_tablePanel.gridwidth = 7;
+    	gbc_tablePanel.gridx = 0;
     	gbc_tablePanel.gridy = 7;
     	getContentPane().add(tablePanel, gbc_tablePanel);
     	
