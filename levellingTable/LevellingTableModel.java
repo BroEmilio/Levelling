@@ -309,6 +309,10 @@ public class LevellingTableModel extends AbstractTableModel {
 		if(firstBackSight==lastBackSight)
 			return;
 		int nullElevationsCounter = countNullElevationsBetween(firstBackSightIndex, lastBackSightIndex);
+		if(nullElevationsCounter==-1) { // if firstBacksight doesn't exist
+			complementNeighborElevation(currentRow);
+			return;
+		}
 		Double estimatedElevation = firstBackSight.getElevation();
 		for(int i=firstBackSightIndex; i<firstBackSightIndex+nullElevationsCounter; i+=2) {
 			Sight firstEmptySight = getFirstEmptyElevationSightFromIndex(firstBackSightIndex);
@@ -360,9 +364,11 @@ public class LevellingTableModel extends AbstractTableModel {
 	int countNullElevationsBetween(int startIndex, int endIndex) {
 		int count = 0;
 		for(int i=startIndex; i<=endIndex; i++) {
+			if(i>-1) {
 			Sight sight=levellingData.get(i);
 			if(sight.getElevation() == null && ! sight.isIntermediate())
 				count++;
+			} else return -1;
 		}
 		return count;
 	}

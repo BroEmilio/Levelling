@@ -120,15 +120,15 @@ public class AttachedFile {
 						}
 			}
 			
-			if(missedElevations.size()>0) {
-				JOptionPane.showMessageDialog(null,
-						"Nie zaimportowano rzêdnych dla punktów: \n"+prepareListToDisplay(missedElevations),
-				        "B³ad w za³¹czonym pliku",
-				        JOptionPane.INFORMATION_MESSAGE);
-			}
-			if(checkIsElevationsCorrect())
+			if(checkIsElevationsCorrect()) {
+				if(missedElevations.size()>0) {
+					JOptionPane.showMessageDialog(null,
+							"Nie zaimportowano rzêdnych dla punktów: \n"+prepareListToDisplay(missedElevations),
+					        "B³ad w za³¹czonym pliku",
+					        JOptionPane.INFORMATION_MESSAGE);
+				}
 				return true;
-			else {
+			} else {
 				JOptionPane.showMessageDialog(null,
 						"Niepoprawny format danych w pliku.\n"+
 						"W ka¿dym wierszu dane powinny byæ odzielone spacj¹ i zaczynaæ siê od pocz¹tku linii:\n<NR> <X> <Y> <H>",
@@ -136,6 +136,7 @@ public class AttachedFile {
 				        JOptionPane.ERROR_MESSAGE);
 				return false;
 			}
+			
 		} else return false; // don't choosed file
 	}
 	
@@ -147,14 +148,21 @@ public class AttachedFile {
 	}
 	
 	boolean checkIsElevationsCorrect() {
+		int errorCounter = 0;
 		for (Map.Entry<String, Double> entry : elevationsMap.entrySet()) {
 			Double elevation = entry.getValue();
 			if(elevation != null) {
 				if(elevation>11000.0 || elevation<-110000.0)
-					return false;
-			}
+					errorCounter++;
+			} else errorCounter++;
 		}
-		return true;
+		
+		if(elevationsMap.size()==0)
+			return false;
+		
+		if((errorCounter/elevationsMap.size())>0.85)
+			return false;
+		else return true;
 	}
 	
 	public void unlinkAttachedFile() {
