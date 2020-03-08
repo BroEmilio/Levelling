@@ -89,7 +89,16 @@ public class AttachedFile {
 									elevation=Double.parseDouble(subString[3]);
 								elevationsMap.put(pointName, elevation);
 							} else {
-								missedElevations.add(pointName);
+								boolean foundElevation = false;
+								for(int i=subString.length-1; i>0; i--) {
+									if(canBeElevation(subString[i])) {
+										elevation=Double.parseDouble(subString[i]);
+										elevationsMap.put(pointName, elevation);
+										foundElevation = true;
+									}
+								}
+								if(! foundElevation)
+									missedElevations.add(pointName);
 							}
 						} catch (NumberFormatException e) {
 							missedElevations.add(pointName);
@@ -163,6 +172,20 @@ public class AttachedFile {
 		if((errorCounter/elevationsMap.size())>0.85)
 			return false;
 		else return true;
+	}
+	
+	boolean canBeElevation(String inputString) {
+		try {
+			Double elevation = Double.parseDouble(inputString);
+			if(elevation<11000.0 && elevation>-110000.0)
+				return true;
+			else return false;
+		} catch (NumberFormatException e) {
+			return false;
+		} catch (Exception e) {
+			displayErrorMessege("B³¹d przy przetwarzaniu pliku", e);
+			return false;
+		}
 	}
 	
 	public void unlinkAttachedFile() {
