@@ -305,7 +305,6 @@ public class LevellingTableModel extends AbstractTableModel {
 		Sight lastBackSight = commonMethods.lastBackSight(currentRow+2);
 		int firstBackSightIndex = commonMethods.getIndexOfSight(firstBackSight);
 		int lastBackSightIndex = commonMethods.getIndexOfSight(lastBackSight);
-		System.out.println(currentRow+":\nFIRST:"+firstBackSight+"\nLAST:"+lastBackSight);
 		if(firstBackSight==lastBackSight)
 			return;
 		int nullElevationsCounter = countNullElevationsBetween(firstBackSightIndex, lastBackSightIndex);

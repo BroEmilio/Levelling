@@ -43,7 +43,7 @@ public class MainFrame extends JFrame {
         createPanel();
         setPolish();
 
-        setTitle("NIWELACJA v1.084");
+        setTitle("NIWELACJA v1.1");
         setMinimumSize(new Dimension(750, 450));
         setSize(new Dimension(750, 695));
         setLocationRelativeTo(null);
@@ -131,15 +131,16 @@ public class MainFrame extends JFrame {
         editorPane.setBorder(null);
         editorPane.setText(
         		"<body bgcolor=\"rgb(214,217,223)\" align=\"center\">"+
-        		"<h2 ><u>NIWELACJA v1.084</u></h2>"
+        		"<h2 ><u>NIWELACJA v1.1</u></h2>"
         		+"Filmy instrukta¿owe na YouTube:<br><br>"
         		+"1. Jak doliczyæ kilka odczytów w niwelacji<br>"
         		+"https://youtu.be/GFjh4u5o28g          (<a href=https://youtu.be/GFjh4u5o28g'>link</a>)<br>"
         		+"<br>2. Jak wykreowaæ ca³¹ niwelacjê<br>"
-        		+"https://youtu.be/ReyWcnZMvvc          (<a href='https://youtu.be/ReyWcnZMvvc'>link</a>)<br><br>"
-        		+"Je¿eli aplikacja jest dla ciebie przydatna - zostaw ³apkê w górê pod filmem<br><br>"
-        		+/*"(bez obaw, na YouTube nie wyœwietla kto konkretnie polubi³ dany film ;)<br><br>"
-        		+*/"Ewentualne uwagi proszê kierowaæ na adres: bro.emilio.1.1@gmail.com</body>");
+        		+"https://youtu.be/ReyWcnZMvvc          (<a href='https://youtu.be/ReyWcnZMvvc'>link</a>)<br>"
+        		+"<br>3. Zmiany w wersji 1.1 programu<br>"
+        		+"https://youtu.be/HNM-BNTBxic          (<a href='https://youtu.be/HNM-BNTBxic'>link</a>)<br><br>"
+        		+"Je¿eli doceniasz pracê w³o¿on¹ w powstanie tej aplikacji - zostaw ³apkê w górê pod filmem<br><br>"
+        		+"Ewentualne uwagi proszê kierowaæ na adres: bro.emilio.1.1@gmail.com</body>");
         editorPane.addHyperlinkListener(new HyperlinkListener() {
             @Override
             public void hyperlinkUpdate(HyperlinkEvent hle) {
